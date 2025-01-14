@@ -69,9 +69,10 @@ class LoginPage extends StatelessWidget {
 
             //pw field
             MyTextField(
-              controller: _pwController,
+
               hintText: "Password",
               obscureText: true,
+              controller: _pwController,
 
             ),
 
