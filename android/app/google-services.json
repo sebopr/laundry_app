@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "400898242156",
+    "project_id": "chatappdb-b4ba4",
+    "storage_bucket": "chatappdb-b4ba4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400898242156:android:b1d9bb6a9f1845452e0a49",
+        "android_client_info": {
+          "package_name": "com.example.laundry_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1OIGAPIjNv5rNG0070pmyTAXrRfAY-DY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
