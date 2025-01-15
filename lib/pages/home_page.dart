@@ -20,6 +20,7 @@ class HomePage extends StatelessWidget {
          IconButton(onPressed: logout, icon: const Icon(Icons.logout))
       ],
       ),
+      drawer: Drawer(),
     );
   }
 }
