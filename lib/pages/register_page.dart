@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:laundry_app/auth/auth_service.dart';
+import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/components/my_textfield.dart';
 import 'package:laundry_app/components/my_button.dart';
 

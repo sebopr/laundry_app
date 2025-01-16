@@ -1,5 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:laundry_app/auth/auth_service.dart';
+import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/components/my_textfield.dart';
 import 'package:laundry_app/components/my_button.dart';
 import 'package:flutter/material.dart';
@@ -69,11 +69,9 @@ class LoginPage extends StatelessWidget {
 
             //pw field
             MyTextField(
-
               hintText: "Password",
               obscureText: true,
               controller: _pwController,
-
             ),
 
             //login button
