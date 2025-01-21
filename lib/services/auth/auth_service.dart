@@ -44,6 +44,10 @@ class AuthService {
     }
   }
 
+  User? getCurrentUser() {
+    return _auth.currentUser;
+  }
+
   //sign out
   Future<void> signOut() async {
     try {
