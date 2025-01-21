@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry_app/components/my_drawer.dart';
 import 'package:laundry_app/components/user_tile.dart';
-import 'package:laundry_app/services/auth/auth_service.dart';
+//import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
 import 'package:laundry_app/pages/chat_page.dart';
 
@@ -10,7 +10,7 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final ChatService _chatService = ChatService();
-  final AuthService _authService = AuthService();
+  // final AuthService _authService = AuthService();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
