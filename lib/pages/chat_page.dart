@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:laundry_app/components/chat_bubble.dart';
 import 'package:laundry_app/components/my_textfield.dart';
 import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
@@ -65,7 +66,21 @@ class ChatPage extends StatelessWidget {
 
   Widget _buildMessageItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return Text(data["message"]);
+
+    bool isCurrentUser = data["senderId"] == _authService.getCurrentUser()!.uid;
+
+    var alignment =
+        isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
+
+    return Container(
+        alignment: alignment,
+        child: Column(
+          crossAxisAlignment:
+              isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            ChatBubble(message: data["message"], isCurrentUser: isCurrentUser)
+          ],
+        ));
   }
 
   //message input
@@ -80,9 +95,17 @@ class ChatPage extends StatelessWidget {
             obscureText: false,
           ),
         ),
-        IconButton(
-          onPressed: sendMessage,
-          icon: const Icon(Icons.arrow_upward),
+        //send button
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.green,
+            shape: BoxShape.circle,
+          ),
+          margin: const EdgeInsets.only(right: 25),
+          child: IconButton(
+            onPressed: sendMessage,
+            icon: const Icon(Icons.arrow_upward),
+          ),
         )
       ],
     );
