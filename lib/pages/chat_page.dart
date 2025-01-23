@@ -5,23 +5,61 @@ import 'package:laundry_app/components/my_textfield.dart';
 import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatefulWidget {
   final String receiverEmail;
   final String receiverId;
 
-  ChatPage({super.key, required this.receiverEmail, required this.receiverId});
+  const ChatPage(
+      {super.key, required this.receiverEmail, required this.receiverId});
 
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
 //text controller
   final TextEditingController _messageController = TextEditingController();
 
 //chat and auth services
-
   final ChatService _chatService = ChatService();
   final AuthService _authService = AuthService();
 
+//for textfield focusing
+
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+//add listener to focus node
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        Future.delayed(const Duration(milliseconds: 500), () => _scrollDown());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _messageController.dispose();
+    super.dispose();
+  }
+//scroll controller
+
+  final ScrollController _scrollController = ScrollController();
+  void _scrollDown() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(seconds: 1),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(receiverId, _messageController.text);
+      await _chatService.sendMessage(
+          widget.receiverId, _messageController.text);
       _messageController.clear();
     }
   }
@@ -30,7 +68,7 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(receiverEmail),
+          title: Text(widget.receiverEmail),
         ),
         body: Column(
           children: [
@@ -45,7 +83,7 @@ class ChatPage extends StatelessWidget {
   Widget _buildMessagesList() {
     String senderId = _authService.getCurrentUser()!.uid; //get current user id
     return StreamBuilder(
-      stream: _chatService.getMessages(senderId, receiverId),
+      stream: _chatService.getMessages(senderId, widget.receiverId),
       builder: (context, snapshot) {
         //error
         if (snapshot.hasError) {
@@ -57,6 +95,7 @@ class ChatPage extends StatelessWidget {
         }
         //return listview
         return ListView(
+          controller: _scrollController,
           children:
               snapshot.data!.docs.map((doc) => _buildMessageItem(doc)).toList(),
         );
@@ -84,10 +123,9 @@ class ChatPage extends StatelessWidget {
   }
 
   //message input
-
   Widget _buildMessageInput() {
     return Padding(
-        padding: EdgeInsets.only(bottom: 50),
+        padding: const EdgeInsets.only(bottom: 50),
         child: Row(
           children: [
             Expanded(

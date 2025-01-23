@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:laundry_app/themes/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class ChatBubble extends StatelessWidget {
   final String message;
@@ -12,16 +14,25 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkmode =
+        Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
     return Container(
       decoration: BoxDecoration(
-        color: isCurrentUser ? Colors.green : Colors.grey.shade800,
+        color: isCurrentUser
+            ? (isDarkmode ? Colors.green.shade600 : Colors.grey.shade500)
+            : (isDarkmode ? Colors.grey.shade800 : Colors.grey.shade200),
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
       child: Text(
         message,
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(
+          color: isCurrentUser
+              ? Colors.white
+              : (isDarkmode ? Colors.white : Colors.black),
+          fontSize: 16,
+        ),
       ),
     );
   }
