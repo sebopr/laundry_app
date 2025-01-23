@@ -86,28 +86,29 @@ class ChatPage extends StatelessWidget {
   //message input
 
   Widget _buildMessageInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: MyTextField(
-            controller: _messageController,
-            hintText: "Type your message",
-            obscureText: false,
-          ),
-        ),
-        //send button
-        Container(
-          decoration: const BoxDecoration(
-            color: Colors.green,
-            shape: BoxShape.circle,
-          ),
-          margin: const EdgeInsets.only(right: 25),
-          child: IconButton(
-            onPressed: sendMessage,
-            icon: const Icon(Icons.arrow_upward),
-          ),
-        )
-      ],
-    );
+    return Padding(
+        padding: EdgeInsets.only(bottom: 50),
+        child: Row(
+          children: [
+            Expanded(
+              child: MyTextField(
+                controller: _messageController,
+                hintText: "Type your message",
+                obscureText: false,
+              ),
+            ),
+            //send button
+            Container(
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                margin: const EdgeInsets.only(right: 25),
+                child: IconButton(
+                  onPressed: sendMessage,
+                  icon: const Icon(Icons.arrow_upward),
+                ))
+          ],
+        ));
   }
 }
