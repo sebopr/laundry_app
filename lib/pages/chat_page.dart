@@ -133,6 +133,7 @@ class _ChatPageState extends State<ChatPage> {
                 controller: _messageController,
                 hintText: "Type your message",
                 obscureText: false,
+                focusNode: _focusNode,
               ),
             ),
             //send button
