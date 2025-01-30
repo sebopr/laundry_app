@@ -37,6 +37,10 @@ class _ChatPageState extends State<ChatPage> {
         Future.delayed(const Duration(milliseconds: 500), () => _scrollDown());
       }
     });
+
+//wait for the ist to be built, and then scroll down
+
+    Future.delayed(const Duration(milliseconds: 500), () => _scrollDown());
   }
 
   @override
