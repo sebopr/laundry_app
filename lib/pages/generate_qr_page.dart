@@ -33,17 +33,22 @@ class _GenerateQrPageState extends State<GenerateQrPage> {
         centerTitle: true,
         backgroundColor: Colors.blue,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top: 55),
-        child: Column(
-          children: [
-            QrImageView(
-              data: uuid,
-              version: QrVersions.auto,
-            ),
-            const SizedBox(height: 40),
-            Text(uuid),
-          ],
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(top: 45),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              QrImageView(
+                data: uuid,
+                version: QrVersions.auto,
+                size: 200.0,
+              ),
+              const SizedBox(height: 40),
+              Text(uuid),
+            ],
+          ),
         ),
       ),
     );

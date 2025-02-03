@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry_app/components/my_drawer.dart';
 import 'package:laundry_app/components/user_tile.dart';
-//import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
 import 'package:laundry_app/pages/chat_page.dart';
 
@@ -60,6 +59,7 @@ class HomePage extends StatelessWidget {
     if (userData["email"] != getCurrentUser()!.email) {
       return UserTile(
           text: userData["email"],
+          hasNewMessage: true,
           onTap: () {
             // tapped on use > go to chat page
             Navigator.push(

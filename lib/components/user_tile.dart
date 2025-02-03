@@ -3,35 +3,51 @@ import 'package:flutter/material.dart';
 class UserTile extends StatelessWidget {
   final String text;
   final void Function()? onTap;
+  final bool hasNewMessage;
 
   const UserTile({
     super.key,
     required this.text,
     required this.onTap,
+    required this.hasNewMessage,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-          borderRadius: BorderRadius.circular(12),
+      child: Stack(children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondary,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              //Icon or user picture later on
+              const Icon(Icons.person),
+              //User name
+              Text(text),
+              if (hasNewMessage)
+                Positioned(
+                  top: -5,
+                  right: -5,
+                  child: Container(
+                    width: 16,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
-        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            //Icon
-
-            const Icon(Icons.person),
-
-            //User name
-            Text(text)
-          ],
-        ),
-      ),
+      ]),
     );
   }
 }
