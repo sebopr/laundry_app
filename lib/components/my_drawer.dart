@@ -79,6 +79,23 @@ class MyDrawer extends StatelessWidget {
                   },
                 ),
               ),
+              //calendar
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: ListTile(
+                  title: const Text("C A L E N D A R"),
+                  leading: const Icon(Icons.calendar_month),
+                  onTap: () {
+                    //pop the drawer
+                    Navigator.pop(context);
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => const EnrollPage(),
+                    //     ));
+                  },
+                ),
+              ),
               //settings list
               Padding(
                 padding: const EdgeInsets.only(left: 25),
