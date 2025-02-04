@@ -3,7 +3,7 @@ import 'package:laundry_app/pages/enroll_page.dart';
 import 'package:laundry_app/pages/generate_qr_page.dart';
 import 'package:laundry_app/pages/settings_page.dart';
 import '../services/auth/auth_service.dart';
-//import 'package:laundry_app/pages/calendar_page.dart';
+import 'package:laundry_app/pages/calendar_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -85,14 +85,14 @@ class MyDrawer extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 25),
                 child: ListTile(
                   title: const Text("C A L E N D A R"),
-                  leading: const Icon(Icons.calendar_view_month_sharp),
+                  leading: const Icon(Icons.calendar_view_week_sharp),
                   onTap: () {
                     //pop the drawer
                     Navigator.pop(context);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const EnrollPage(),
+                          builder: (context) => const CalendarPage(),
                         ));
                   },
                 ),

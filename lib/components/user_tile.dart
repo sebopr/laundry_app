@@ -26,24 +26,34 @@ class UserTile extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Row(
             children: [
-              //Icon or user picture later on
-              const Icon(Icons.person),
-              //User name
-              Text(text),
               if (hasNewMessage)
-                Positioned(
-                  top: -5,
-                  right: -5,
-                  child: Container(
-                    width: 16,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Positioned(
+                    top: -5,
+                    right: -5,
+                    child: Container(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: const Color.fromARGB(255, 19, 18, 18),
+                            width: 1),
+                      ),
                     ),
                   ),
                 ),
+
+              //Icon or user picture later on
+              const Icon(Icons.person),
+
+              //User name
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(text),
+              ),
             ],
           ),
         ),
