@@ -31,6 +31,7 @@ class ChatService {
       receiverId: receiverId,
       message: message,
       timestamp: timestamp,
+      isRead: false,
     );
 
 //add chatroom id for the users who chat together
@@ -59,6 +60,9 @@ class ChatService {
         .doc(chatRoomId)
         .collection("messages")
         .orderBy("timestamp", descending: false)
+        .where("isRead", isEqualTo: false)
         .snapshots();
   }
 }
+
+//mark messages as read

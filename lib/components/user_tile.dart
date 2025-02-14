@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
 
 class UserTile extends StatelessWidget {
   final String text;
   final void Function()? onTap;
-  final bool hasNewMessage;
+  final int unreadMessages;
 
   const UserTile({
     super.key,
     required this.text,
     required this.onTap,
-    required this.hasNewMessage,
+    required this.unreadMessages,
   });
 
   @override
@@ -26,25 +27,13 @@ class UserTile extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Row(
             children: [
-              if (hasNewMessage)
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: Positioned(
-                    top: -5,
-                    right: -5,
-                    child: Container(
-                      width: 16,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: const Color.fromARGB(255, 19, 18, 18),
-                            width: 1),
-                      ),
-                    ),
-                  ),
+              //Badge for unread messages
+              badges.Badge(
+                badgeContent: Text(
+                  unreadMessages.toString(),
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
+              ),
 
               //Icon or user picture later on
               const Icon(Icons.person),
