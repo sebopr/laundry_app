@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:laundry_app/components/my_calendar.dart';
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
@@ -11,10 +11,7 @@ class CalendarPage extends StatelessWidget {
         title: const Text("Calendar"),
         centerTitle: true,
       ),
-      body: SfCalendar(
-        view: CalendarView.month,
-        //  dataSource: MeetingDataSource(_getDataSource()),
-      ),
+      body: const MyCalendar(),
     );
   }
 }
