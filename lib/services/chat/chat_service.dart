@@ -18,6 +18,7 @@ class ChatService {
   }
 
   //send message
+
   Future<void> sendMessage(String receiverId, message) async {
     //get current user info
     final String currentUserId = _auth.currentUser!.uid;
@@ -39,12 +40,20 @@ class ChatService {
     ids.sort(); //sort the ids making sure that it is the same for any two users
     String chatRoomId = ids.join('_');
 
+//add unread count to each chatroom
+
 //add message to firestore
     await _firestore
         .collection("chat_rooms")
         .doc(chatRoomId)
         .collection("messages")
         .add(newMessage.toMap());
+
+    //increment message count for receiver
+
+    await _firestore.collection('chat_rooms').doc(chatRoomId).update({
+      'participants.$receiverId.unreadCount': FieldValue.increment(1),
+    });
   }
 
   //receive message
@@ -66,3 +75,5 @@ class ChatService {
 }
 
 //mark messages as read
+
+Future<void> resetUnreadCount(String chatId, String userId) async {}

@@ -4,13 +4,13 @@ import 'package:badges/badges.dart' as badges;
 class UserTile extends StatelessWidget {
   final String text;
   final void Function()? onTap;
-  final int unreadMessages;
+  //final int unreadMessages;
 
   const UserTile({
     super.key,
     required this.text,
     required this.onTap,
-    required this.unreadMessages,
+    // required this.unreadMessages,
   });
 
   @override
@@ -28,10 +28,10 @@ class UserTile extends StatelessWidget {
           child: Row(
             children: [
               //Badge for unread messages
-              badges.Badge(
+              const badges.Badge(
                 badgeContent: Text(
-                  unreadMessages.toString(),
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  "1",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
 
