@@ -59,7 +59,7 @@ class HomePage extends StatelessWidget {
     if (userData["email"] != getCurrentUser()!.email) {
       return UserTile(
           text: userData["email"],
-          //  unreadMessages: userData["unreadMessages"], // add unreadMessages),
+          receiverId: userData["uid"],
           onTap: () {
             // tapped on use > go to chat page
             Navigator.push(

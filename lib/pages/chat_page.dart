@@ -39,7 +39,7 @@ class _ChatPageState extends State<ChatPage> {
     });
 
 //wait for the ist to be built, and then scroll down
-
+    resetUnreadCount();
     Future.delayed(const Duration(milliseconds: 500), () => _scrollDown());
   }
 
@@ -60,12 +60,17 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  void resetUnreadCount() async {
+    await _chatService.resetUnreadCount(
+        _authService.getCurrentUser()!.uid, widget.receiverId);
+  }
+
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
           widget.receiverId, _messageController.text);
-      _messageController.clear();
     }
+    _messageController.clear();
   }
 
   @override

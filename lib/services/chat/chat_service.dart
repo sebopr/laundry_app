@@ -8,12 +8,32 @@ class ChatService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   //get user stream
 
+  String chatRoomId = '';
+
   Stream<List<Map<String, dynamic>>> getUsersStream() {
     return _firestore.collection("users").snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         final user = doc.data();
         return user;
       }).toList();
+    });
+  }
+
+//get unread count
+  Stream<int> getUnreadCount(String currentUserId, String receiverId) {
+    List<String> ids = [currentUserId, receiverId];
+    ids.sort(); //sort the ids making sure that it is the same for any two users
+    chatRoomId = ids.join('_');
+
+    return FirebaseFirestore.instance
+        .collection('chat_rooms')
+        .doc(chatRoomId)
+        .snapshots()
+        .map((snapshot) {
+      final data = snapshot.data();
+      return data != null
+          ? (data['participants'][currentUserId]['unreadCount'] ?? 0)
+          : 0;
     });
   }
 
@@ -38,7 +58,7 @@ class ChatService {
 //add chatroom id for the users who chat together
     List<String> ids = [currentUserId, receiverId];
     ids.sort(); //sort the ids making sure that it is the same for any two users
-    String chatRoomId = ids.join('_');
+    chatRoomId = ids.join('_');
 
 //add unread count to each chatroom
 
@@ -69,11 +89,31 @@ class ChatService {
         .doc(chatRoomId)
         .collection("messages")
         .orderBy("timestamp", descending: false)
-        .where("isRead", isEqualTo: false)
         .snapshots();
   }
+
+  Future<void> resetUnreadCount(curentUserId, receiverId) async {
+    List<String> ids = [curentUserId, receiverId];
+    ids.sort();
+    String chatRoomId = ids.join('_');
+
+//reset unread count
+    await _firestore.collection('chat_rooms').doc(chatRoomId).update({
+      'participants.$curentUserId.unreadCount': 0,
+    });
+
+// Mark all unread messages as read
+
+    var messages = await _firestore
+        .collection('chat_rooms')
+        .doc(chatRoomId)
+        .collection('messages')
+        .where('receiverId', isEqualTo: receiverId)
+        .where('isRead', isEqualTo: false)
+        .get();
+
+    for (var doc in messages.docs) {
+      doc.reference.update({'isRead': true});
+    }
+  }
 }
-
-//mark messages as read
-
-Future<void> resetUnreadCount(String chatId, String userId) async {}
