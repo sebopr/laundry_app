@@ -4,6 +4,8 @@ import 'package:laundry_app/components/chat_bubble.dart';
 import 'package:laundry_app/components/my_textfield.dart';
 import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
+import 'package:provider/provider.dart';
+import 'package:laundry_app/providers/chat_provider.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverEmail;
@@ -29,6 +31,12 @@ class _ChatPageState extends State<ChatPage> {
   final FocusNode _focusNode = FocusNode();
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<ChatProvider>(context, listen: false).setChatPageActive(true);
+  }
+
+  @override
   void initState() {
     super.initState();
 //add listener to focus node
@@ -47,6 +55,8 @@ class _ChatPageState extends State<ChatPage> {
   void dispose() {
     _focusNode.dispose();
     _messageController.dispose();
+    resetUnreadCount();
+    Provider.of<ChatProvider>(context, listen: false).setChatPageActive(false);
     super.dispose();
   }
 //scroll controller
@@ -70,7 +80,21 @@ class _ChatPageState extends State<ChatPage> {
       await _chatService.sendMessage(
           widget.receiverId, _messageController.text);
     }
+
     _messageController.clear();
+  }
+
+  Stream<QuerySnapshot> receiveMessages() {
+    return _chatService.getMessages(
+        _authService.getCurrentUser()!.uid, widget.receiverId);
+  }
+
+  void incrementUnreadCount() async {
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+    if (!chatProvider.isChatPageActive) {
+      await _chatService.incrementUnreadCount(
+          _authService.getCurrentUser()!.uid, widget.receiverId);
+    }
   }
 
   @override
@@ -90,9 +114,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessagesList() {
-    String senderId = _authService.getCurrentUser()!.uid; //get current user id
     return StreamBuilder(
-      stream: _chatService.getMessages(senderId, widget.receiverId),
+      stream: receiveMessages(),
       builder: (context, snapshot) {
         //error
         if (snapshot.hasError) {

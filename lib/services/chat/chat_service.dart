@@ -68,8 +68,14 @@ class ChatService {
         .doc(chatRoomId)
         .collection("messages")
         .add(newMessage.toMap());
+  }
 
-    //increment message count for receiver
+  //incrment unreat message count
+
+  Future<void> incrementUnreadCount(String currentUserId, receiverId) async {
+    List<String> ids = [currentUserId, receiverId];
+    ids.sort();
+    String chatRoomId = ids.join('_');
 
     await _firestore.collection('chat_rooms').doc(chatRoomId).update({
       'participants.$receiverId.unreadCount': FieldValue.increment(1),
