@@ -3,7 +3,6 @@ import 'package:laundry_app/pages/enroll_page.dart';
 import 'package:laundry_app/pages/generate_qr_page.dart';
 import 'package:laundry_app/pages/settings_page.dart';
 import '../services/auth/auth_service.dart';
-//import 'package:laundry_app/pages/calendar_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -77,35 +76,6 @@ class MyDrawer extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => const EnrollPage(),
                         ));
-                  },
-                ),
-              ),
-              //calendar
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: ListTile(
-                  title: const Text("C A L E N D A R"),
-<<<<<<< HEAD
-                  leading: const Icon(Icons.calendar_month),
-                  onTap: () {
-                    //pop the drawer
-                    Navigator.pop(context);
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => const EnrollPage(),
-                    //     ));
-=======
-                  leading: const Icon(Icons.calendar_view_month_sharp),
-                  onTap: () {
-                    //pop the drawer
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EnrollPage(),
-                        ));
->>>>>>> 125592c (last)
                   },
                 ),
               ),
