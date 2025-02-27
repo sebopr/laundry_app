@@ -68,18 +68,20 @@ class ChatService {
         .doc(chatRoomId)
         .collection("messages")
         .add(newMessage.toMap());
-  }
 
-  //incrment unreat message count
+//incrment unread message count
 
-  Future<void> incrementUnreadCount(String currentUserId, receiverId) async {
-    List<String> ids = [currentUserId, receiverId];
-    ids.sort();
-    String chatRoomId = ids.join('_');
+    await _firestore.collection('chat_rooms').doc(chatRoomId).set({
+      "participants": {
+        receiverId: {"unreadCount": FieldValue.increment(1)}
+      },
+    }, SetOptions(merge: true));
 
-    await _firestore.collection('chat_rooms').doc(chatRoomId).update({
-      'participants.$receiverId.unreadCount': FieldValue.increment(1),
-    });
+    await _firestore.collection('chat_rooms').doc(chatRoomId).set({
+      "participants": {
+        receiverId: {"isTyping": true}
+      },
+    }, SetOptions(merge: true));
   }
 
   //receive message
@@ -87,7 +89,6 @@ class ChatService {
   Stream<QuerySnapshot> getMessages(String userId, otherUserId) {
     List<String> ids = [userId, otherUserId];
     ids.sort();
-
     String chatRoomId = ids.join('_');
 
     return _firestore
@@ -103,23 +104,36 @@ class ChatService {
     ids.sort();
     String chatRoomId = ids.join('_');
 
+    DocumentReference docRef =
+        _firestore.collection("chat_rooms").doc(chatRoomId);
+
+    DocumentSnapshot docSnap = await docRef.get();
+
+    if (docSnap.exists) {
+      Map<String, dynamic>? data = docSnap.data() as Map<String, dynamic>?;
+
+      if (data != null && data.containsKey("participants")) {
+        // Field exists, update it
+        await docRef.update({
+          "participants.$curentUserId.unreadCount": 0,
+        });
+
 //reset unread count
-    await _firestore.collection('chat_rooms').doc(chatRoomId).update({
-      'participants.$curentUserId.unreadCount': 0,
-    });
 
 // Mark all unread messages as read
 
-    var messages = await _firestore
-        .collection('chat_rooms')
-        .doc(chatRoomId)
-        .collection('messages')
-        .where('receiverId', isEqualTo: receiverId)
-        .where('isRead', isEqualTo: false)
-        .get();
+        var messages = await _firestore
+            .collection('chat_rooms')
+            .doc(chatRoomId)
+            .collection('messages')
+            .where('receiverId', isEqualTo: curentUserId)
+            .where('isRead', isEqualTo: false)
+            .get();
 
-    for (var doc in messages.docs) {
-      doc.reference.update({'isRead': true});
+        for (var doc in messages.docs) {
+          doc.reference.update({'isRead': true});
+        }
+      }
     }
   }
 }

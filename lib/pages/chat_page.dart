@@ -4,8 +4,6 @@ import 'package:laundry_app/components/chat_bubble.dart';
 import 'package:laundry_app/components/my_textfield.dart';
 import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
-import 'package:provider/provider.dart';
-import 'package:laundry_app/providers/chat_provider.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverEmail;
@@ -31,12 +29,6 @@ class _ChatPageState extends State<ChatPage> {
   final FocusNode _focusNode = FocusNode();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    Provider.of<ChatProvider>(context, listen: false).setChatPageActive(true);
-  }
-
-  @override
   void initState() {
     super.initState();
 //add listener to focus node
@@ -56,7 +48,6 @@ class _ChatPageState extends State<ChatPage> {
     _focusNode.dispose();
     _messageController.dispose();
     resetUnreadCount();
-    Provider.of<ChatProvider>(context, listen: false).setChatPageActive(false);
     super.dispose();
   }
 //scroll controller
@@ -87,14 +78,6 @@ class _ChatPageState extends State<ChatPage> {
   Stream<QuerySnapshot> receiveMessages() {
     return _chatService.getMessages(
         _authService.getCurrentUser()!.uid, widget.receiverId);
-  }
-
-  void incrementUnreadCount() async {
-    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-    if (!chatProvider.isChatPageActive) {
-      await _chatService.incrementUnreadCount(
-          _authService.getCurrentUser()!.uid, widget.receiverId);
-    }
   }
 
   @override
