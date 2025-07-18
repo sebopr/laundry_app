@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:laundry_app/components/chat_icon_badge.dart';
 import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
-import 'package:badges/badges.dart' as badges;
 
 class UserTile extends StatelessWidget {
   final String text;
   final void Function()? onTap;
+  final ChatIconBadge leading;
+
+//chat and auth services
+  final ChatService _chatService = ChatService();
+  final AuthService _authService = AuthService();
 
   UserTile({
     super.key,
     required this.text,
     required this.onTap,
+    required this.leading,
   });
 
   @override
@@ -27,7 +33,7 @@ class UserTile extends StatelessWidget {
         child: Row(
           children: [
             //Icon
-
+            leading,
             const Icon(Icons.person),
 
             //User name

@@ -70,6 +70,7 @@ class _ChatPageState extends State<ChatPage> {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
           widget.receiverId, _messageController.text);
+      _scrollDown();
     }
 
     _messageController.clear();
@@ -109,6 +110,8 @@ class _ChatPageState extends State<ChatPage> {
           return const Text("Loading ...");
         }
         //return listview
+        // scroll after messages are updated
+        WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown());
         return ListView(
           controller: _scrollController,
           children:

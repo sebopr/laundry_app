@@ -4,6 +4,7 @@ import 'package:laundry_app/components/my_drawer.dart';
 import 'package:laundry_app/components/user_tile.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
 import 'package:laundry_app/pages/chat_page.dart';
+import 'package:laundry_app/components/chat_icon_badge.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -21,7 +22,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home Screen"),
+        title: Text(getCurrentUser()!.email ?? "No Email"),
         centerTitle: true,
       ),
       drawer: const MyDrawer(),
@@ -56,22 +57,35 @@ class HomePage extends StatelessWidget {
 
   Widget _buildeUserListItem(
       Map<String, dynamic> userData, BuildContext context) {
-    if (userData["email"] != getCurrentUser()!.email) {
-      return UserTile(
+    final currentUser = getCurrentUser()!;
+    final otherUserId = userData["uid"];
+    final otherUserEmail = userData["email"];
+
+    if (otherUserEmail == currentUser.email) return Container(); // skip self
+
+    return StreamBuilder<int>(
+      stream: ChatService().getUnreadCount(currentUser.uid, otherUserId),
+      builder: (context, snapshot) {
+        final unread = snapshot.data ?? 0;
+
+        return UserTile(
+          leading: ChatIconBadge(unreadCount: unread),
           text: userData["email"],
           onTap: () {
-            // tapped on use > go to chat page
+            // tapped on user > go to chat page
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(
-                    receiverEmail: userData["email"],
-                    receiverId: userData["uid"],
-                  ),
-                ));
-          });
-    } else {
-      return Container();
-    }
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  receiverEmail: userData["email"],
+                  receiverId: userData["uid"],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
+  // Return an empty SizedBox if the user is the current user
 }

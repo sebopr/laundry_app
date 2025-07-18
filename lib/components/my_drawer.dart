@@ -26,9 +26,9 @@ class MyDrawer extends StatelessWidget {
               DrawerHeader(
                 child: Center(
                   child: Icon(
-                    Icons.message,
+                    Icons.local_laundry_service,
                     color: Theme.of(context).colorScheme.primary,
-                    size: 40,
+                    size: 90,
                   ),
                 ),
               ),
