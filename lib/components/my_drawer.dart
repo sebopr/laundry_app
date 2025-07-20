@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:laundry_app/pages/enroll_page.dart';
 import 'package:laundry_app/pages/generate_qr_page.dart';
 import 'package:laundry_app/pages/settings_page.dart';
+import 'package:laundry_app/pages/calendar_page.dart';
 import '../services/auth/auth_service.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -74,11 +75,32 @@ class MyDrawer extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const EnrollPage(),
+                          builder: (context) => const ScanQrToJoinGroupPage(),
                         ));
                   },
                 ),
               ),
+
+              //Calendar page
+
+//Enroll Washing machine
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: ListTile(
+                  title: const Text("C A L E N D A R"),
+                  leading: const Icon(Icons.qr_code_scanner),
+                  onTap: () {
+                    //pop the drawer
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BookingCalendarPage(),
+                        ));
+                  },
+                ),
+              ),
+
               //settings list
               Padding(
                 padding: const EdgeInsets.only(left: 25),

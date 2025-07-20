@@ -10,13 +10,48 @@ class ChatService {
 
   String chatRoomId = '';
 
-  Stream<List<Map<String, dynamic>>> getUsersStream() {
-    return _firestore.collection("users").snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final user = doc.data();
-        return user;
-      }).toList();
-    });
+  // Stream<List<Map<String, dynamic>>> getUsersStream() {
+  //   return _firestore.collection("users").snapshots().map((snapshot) {
+  //     return snapshot.docs.map((doc) {
+  //       final user = doc.data();
+  //       return user;
+  //     }).toList();
+  //   });
+  // }
+
+  Stream<List<Map<String, dynamic>>> getUsersStream() async* {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUserId == null) {
+      yield [];
+      return;
+    }
+
+    // First get the current user's linked_uuid
+    final currentUserDoc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currentUserId)
+        .get();
+    final currentUserData = currentUserDoc.data();
+    final currentLinkedUuid = currentUserData?['linked_uuid'];
+
+    if (currentLinkedUuid == null) {
+      yield [];
+      return;
+    }
+
+    // Now stream all users with the same linked_uuid
+    yield* FirebaseFirestore.instance
+        .collection("users")
+        .where('linked_uuid', isEqualTo: currentLinkedUuid)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) {
+              final data = doc.data();
+              final uid = doc.id;
+              return {
+                "uid": uid,
+                ...data,
+              };
+            }).toList());
   }
 
 //get unread count
