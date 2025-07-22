@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:laundry_app/components/custom_cam_painter.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:laundry_app/pages/home_page.dart';
 
@@ -62,9 +63,22 @@ class _ScanQrToJoinGroupPageState extends State<ScanQrToJoinGroupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Scan QR Code")),
-      body: QRView(
-        key: qrKey,
-        onQRViewCreated: _onQRViewCreated,
+      body: Stack(
+        children: [
+          QRView(
+            key: qrKey,
+            onQRViewCreated: _onQRViewCreated,
+          ),
+          Center(
+            child: SizedBox(
+              width: 250,
+              height: 250,
+              child: CustomPaint(
+                painter: BracketPainter(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
