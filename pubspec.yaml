@@ -47,6 +47,8 @@ dependencies:
   qr_code_scanner_plus: ^2.0.10+1
   syncfusion_flutter_calendar: ^30.1.40
   local_auth: ^2.3.0
+  connectivity_plus: ^6.1.4  
+  internet_connection_checker: ^3.0.1
   #google_sign_in: ^6.2.2
 
 dev_dependencies:
