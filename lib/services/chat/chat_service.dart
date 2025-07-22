@@ -31,6 +31,7 @@ class ChatService {
         .collection("users")
         .doc(currentUserId)
         .get();
+
     final currentUserData = currentUserDoc.data();
     final currentLinkedUuid = currentUserData?['linked_uuid'];
 
@@ -111,12 +112,6 @@ class ChatService {
         receiverId: {"unreadCount": FieldValue.increment(1)}
       },
     }, SetOptions(merge: true));
-
-    await _firestore.collection('chat_rooms').doc(chatRoomId).set({
-      "participants": {
-        receiverId: {"isTyping": true}
-      },
-    }, SetOptions(merge: true));
   }
 
   //receive message
@@ -132,6 +127,38 @@ class ChatService {
         .collection("messages")
         .orderBy("timestamp", descending: false)
         .snapshots();
+  }
+
+// Set typing status for current user in the chat room
+  Future<void> setTypingStatus(String receiverId, bool isTyping) async {
+    final currentUserId = _auth.currentUser!.uid;
+    List<String> ids = [currentUserId, receiverId];
+    ids.sort();
+    String chatRoomId = ids.join('_');
+
+    await _firestore.collection('chat_rooms').doc(chatRoomId).set({
+      "participants": {
+        currentUserId: {"isTyping": isTyping}
+      },
+    }, SetOptions(merge: true));
+  }
+
+// Listen to the other user's typing status
+  Stream<bool> isOtherUserTyping(String userId, String otherUserId) {
+    List<String> ids = [userId, otherUserId];
+    ids.sort();
+    String chatRoomId = ids.join('_');
+
+    return _firestore
+        .collection('chat_rooms')
+        .doc(chatRoomId)
+        .snapshots()
+        .map((snapshot) {
+      final data = snapshot.data();
+      if (data == null) return false;
+      final participants = data['participants'] ?? {};
+      return participants[otherUserId]?['isTyping'] ?? false;
+    });
   }
 
   Future<void> resetUnreadCount(curentUserId, receiverId) async {

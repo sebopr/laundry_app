@@ -15,7 +15,7 @@ class AuthService {
         "uid": userCredential.user!.uid,
         "email": email,
         "createdAt": FieldValue.serverTimestamp()
-      });
+      }, SetOptions(merge: true));
       return userCredential;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
@@ -36,7 +36,7 @@ class AuthService {
         "uid": userCredential.user!.uid,
         "email": email,
         "createdAt": FieldValue.serverTimestamp()
-      });
+      }, SetOptions(merge: true));
 
       return userCredential;
     } on FirebaseAuthException catch (e) {

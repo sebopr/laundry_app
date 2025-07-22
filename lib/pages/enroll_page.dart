@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:laundry_app/pages/home_page.dart';
 
 class ScanQrToJoinGroupPage extends StatefulWidget {
   const ScanQrToJoinGroupPage({super.key});
@@ -39,10 +42,16 @@ class _ScanQrToJoinGroupPageState extends State<ScanQrToJoinGroupPage> {
               .set({'linked_uuid': uuid}, SetOptions(merge: true));
 
           if (context.mounted) {
+            // ignore: duplicate_ignore
+            // ignore: use_build_context_synchronously
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('UUID linked: $uuid')),
             );
-            Navigator.pop(context); // close after success
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+              (route) => false,
+            );
           }
         }
       }

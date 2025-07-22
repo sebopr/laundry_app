@@ -16,28 +16,25 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
   String? linkedUuid;
   late CalendarController _controller;
 
+  Future<void> _loadLinkedUuid() async {
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    if (doc.exists && doc.data()!.containsKey('linked_uuid')) {
+      linkedUuid = doc['linked_uuid'];
+      setState(() {});
+    } else {
+      // Optionally log or handle the missing linked_uuid
+      print("⚠️ linked_uuid missing for user $userId");
+      // You may choose to show an error or fallback behavior here
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     userId = FirebaseAuth.instance.currentUser!.uid;
     _controller = CalendarController();
     _loadLinkedUuid();
-  }
-
-  Future<void> _loadLinkedUuid() async {
-    final doc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    if (doc.exists && doc.data()!.containsKey('linked_uuid')) {
-      linkedUuid = doc['linked_uuid'];
-      // } else {
-      //   linkedUuid = const Uuid().v4();
-      //   await FirebaseFirestore.instance
-      //       .collection('users')
-      //       .doc(userId)
-      //       .set({'linked_uuid': linkedUuid}, SetOptions(merge: true));
-      // }
-      setState(() {});
-    }
   }
 
   Stream<List<Appointment>> _getAppointments() {

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry_app/components/chat_bubble.dart';
 import 'package:laundry_app/components/my_textfield.dart';
+import 'package:laundry_app/components/typing_indicator.dart';
 import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/chat/chat_service.dart';
 
@@ -19,6 +22,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
 //text controller
   final TextEditingController _messageController = TextEditingController();
+  Timer? _typingTimer;
 
 //chat and auth services
   final ChatService _chatService = ChatService();
@@ -84,17 +88,55 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.receiverEmail),
-        ),
-        body: Column(
-          children: [
-            //display the messages
-            Expanded(child: _buildMessagesList()),
-            //display the send field and button
-            _buildMessageInput(),
-          ],
-        ));
+      appBar: AppBar(
+        title: Text(widget.receiverEmail),
+      ),
+      body: Column(
+        children: [
+          // 👇 Typing Indicator
+          StreamBuilder<bool>(
+            stream: _chatService.isOtherUserTyping(
+              _authService.getCurrentUser()!.uid,
+              widget.receiverId,
+            ),
+            builder: (context, snapshot) {
+              final isTyping = snapshot.hasData && snapshot.data!;
+              return AnimatedOpacity(
+                opacity: isTyping ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const TypingIndicator(),
+                        const SizedBox(width: 8),
+                        Text(
+                          "${widget.receiverEmail} is typing...",
+                          style: const TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+
+          // 👇 Messages List
+          Expanded(child: _buildMessagesList()),
+
+          // 👇 Input Field
+          _buildMessageInput(),
+        ],
+      ),
+    );
   }
 
   Widget _buildMessagesList() {
@@ -152,6 +194,24 @@ class _ChatPageState extends State<ChatPage> {
                 hintText: "Type your message",
                 obscureText: false,
                 focusNode: _focusNode,
+                onChanged: (value) {
+                  _chatService.setTypingStatus(
+                      //set is typing
+                      widget.receiverId,
+                      value.isNotEmpty);
+                  // reset is typing after 1 second of inactivity
+                  _typingTimer?.cancel();
+                  if (value.isNotEmpty) {
+                    _typingTimer = Timer(const Duration(seconds: 2), () {
+                      _chatService.setTypingStatus(widget.receiverId, false);
+                    });
+                  }
+                },
+                onSubmitted: (value) async {
+                  await _chatService.sendMessage(widget.receiverId, value);
+                  await _chatService.setTypingStatus(
+                      widget.receiverId, false); // stop typing
+                },
               ),
             ),
             //send button

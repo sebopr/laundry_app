@@ -6,12 +6,17 @@ class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode? focusNode;
 
+  final ValueChanged<String>? onChanged; // <-- Add this
+  final ValueChanged<String>? onSubmitted;
+
   const MyTextField({
     super.key,
     required this.hintText,
     required this.obscureText,
     required this.controller,
     this.focusNode,
+    this.onChanged,
+    this.onSubmitted,
   });
 
   @override
@@ -19,24 +24,25 @@ class MyTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(
-        obscureText: obscureText,
-        controller: controller,
-        focusNode: focusNode,
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).colorScheme.tertiary),
+          obscureText: obscureText,
+          controller: controller,
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: Theme.of(context).colorScheme.tertiary),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: Theme.of(context).colorScheme.primary),
+            ),
+            fillColor: Theme.of(context).colorScheme.secondary,
+            filled: true,
+            hintText: hintText,
+            hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).colorScheme.primary),
-          ),
-          fillColor: Theme.of(context).colorScheme.secondary,
-          filled: true,
-          hintText: hintText,
-          hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-        ),
-      ),
+          onChanged: onChanged,
+          onSubmitted: onSubmitted),
     );
   }
 }
