@@ -1,61 +1,106 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService {
-  //instance of auth and firestore
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  //sign in
-  Future<UserCredential> signInWithEmailPassword(String email, password) async {
+
+  // ── Email / password ──────────────────────────────────────────────────────
+
+  Future<UserCredential> signInWithEmailPassword(
+      String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      final cred = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      //create user in firestore and save user data if it does not exist
-      _firestore.collection("users").doc(userCredential.user!.uid).set({
-        "uid": userCredential.user!.uid,
-        "email": email,
-        "createdAt": FieldValue.serverTimestamp()
-      }, SetOptions(merge: true));
-      return userCredential;
+      await _saveUserDoc(cred);
+      return cred;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
 
-  //sign up
-
-  Future<UserCredential> signUpWithEmailPassword(String email, password) async {
+  Future<UserCredential> signUpWithEmailPassword(
+      String email, String password) async {
     try {
-      //create user
-
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
-
-      //create user in firestore and save user data
-      _firestore.collection("users").doc(userCredential.user!.uid).set({
-        "uid": userCredential.user!.uid,
-        "email": email,
-        "createdAt": FieldValue.serverTimestamp()
-      }, SetOptions(merge: true));
-
-      return userCredential;
+      final cred = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      await _saveUserDoc(cred);
+      return cred;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
 
-  User? getCurrentUser() {
-    return _auth.currentUser;
+  // ── Google ────────────────────────────────────────────────────────────────
+
+  Future<UserCredential?> signInWithGoogle() async {
+    final googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return null; // user cancelled
+
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    final cred = await _auth.signInWithCredential(credential);
+    await _saveUserDoc(cred);
+    return cred;
   }
 
-  //sign out
+  // ── Apple ─────────────────────────────────────────────────────────────────
+  // Android requires a Service URL configured in Firebase Console under
+  // Authentication → Sign-in method → Apple → Service URL.
+
+  Future<UserCredential?> signInWithApple() async {
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final oauthCredential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+      final cred = await _auth.signInWithCredential(oauthCredential);
+      // Apple only sends name on the very first sign-in
+      if ((cred.additionalUserInfo?.isNewUser ?? false) &&
+          appleCredential.givenName != null) {
+        final fullName =
+            '${appleCredential.givenName} ${appleCredential.familyName ?? ''}'
+                .trim();
+        if (fullName.isNotEmpty) {
+          await cred.user!.updateDisplayName(fullName);
+        }
+      }
+      await _saveUserDoc(cred);
+      return cred;
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code == AuthorizationErrorCode.canceled) return null;
+      rethrow;
+    }
+  }
+
+  // ── Shared ────────────────────────────────────────────────────────────────
+
+  Future<void> _saveUserDoc(UserCredential cred) async {
+    await _firestore.collection('users').doc(cred.user!.uid).set({
+      'uid': cred.user!.uid,
+      'email': cred.user!.email,
+      'createdAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+  }
+
+  User? getCurrentUser() => _auth.currentUser;
+
   Future<void> signOut() async {
     try {
-      return await _auth.signOut();
+      await _auth.signOut();
     } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
-
-  //errors
 }

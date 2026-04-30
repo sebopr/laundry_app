@@ -1,85 +1,65 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:laundry_app/components/custom_cam_painter.dart';
-import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import 'package:laundry_app/pages/home_page.dart';
+import 'package:flutter/material.dart';
+import 'package:laundry_app/pages/onboarding_page.dart';
+import 'package:laundry_app/services/household/household_service.dart';
 
+// Kept for re-scanning from Settings (e.g. moving buildings).
+// Handles both building: and household: prefixes.
 class ScanQrToJoinGroupPage extends StatefulWidget {
   const ScanQrToJoinGroupPage({super.key});
 
   @override
-  State<ScanQrToJoinGroupPage> createState() => _ScanQrToJoinGroupPageState();
+  State<ScanQrToJoinGroupPage> createState() =>
+      _ScanQrToJoinGroupPageState();
 }
 
 class _ScanQrToJoinGroupPageState extends State<ScanQrToJoinGroupPage> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
-  bool isScanned = false;
+  bool _processing = false;
 
-  @override
-  void dispose() {
-    // ignore: deprecated_member_use
-    controller?.dispose();
-    super.dispose();
-  }
+  Future<void> _handleScan(String code) async {
+    if (_processing) return;
+    setState(() => _processing = true);
 
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-
-    controller.scannedDataStream.listen((scanData) async {
-      if (!isScanned) {
-        isScanned = true; // prevent multiple scans
-
-        final uuid = scanData.code ?? '';
-        final currentUser = FirebaseAuth.instance.currentUser;
-
-        if (currentUser != null && uuid.isNotEmpty) {
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(currentUser.uid)
-              .set({'linked_uuid': uuid}, SetOptions(merge: true));
-
-          if (context.mounted) {
-            // ignore: duplicate_ignore
-            // ignore: use_build_context_synchronously
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('UUID linked: $uuid')),
-            );
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-              (route) => false,
-            );
-          }
+    try {
+      if (code.startsWith('building:')) {
+        final linkedUuid = code.substring('building:'.length);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({'linked_uuid': linkedUuid});
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Building joined successfully.')));
+          Navigator.pop(context);
+        }
+      } else if (code.startsWith('household:')) {
+        await HouseholdService.join(code.substring('household:'.length));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Household joined successfully.')));
+          Navigator.pop(context);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Unrecognised QR code.')));
+          setState(() => _processing = false);
         }
       }
-    });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+        setState(() => _processing = false);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Scan QR Code")),
-      body: Stack(
-        children: [
-          QRView(
-            key: qrKey,
-            onQRViewCreated: _onQRViewCreated,
-          ),
-          Center(
-            child: SizedBox(
-              width: 250,
-              height: 250,
-              child: CustomPaint(
-                painter: BracketPainter(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return QrScanPage(onScanned: _handleScan);
   }
 }
