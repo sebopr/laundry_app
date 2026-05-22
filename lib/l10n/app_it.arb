@@ -1,0 +1,188 @@
+{
+  "@@locale": "it",
+
+  "navBookings": "Prenotazioni",
+  "navNeighbours": "Vicini",
+  "navAdmin": "Admin",
+  "navSettings": "Impostazioni",
+
+  "appName": "Lavanderia",
+  "appTagline": "Prenota la tua fascia oraria",
+
+  "loginTitle": "Bentornato",
+  "loginSubtitle": "Accedi per continuare",
+  "fieldEmail": "E-mail",
+  "fieldPassword": "Password",
+  "fieldConfirmPassword": "Conferma password",
+  "btnSignIn": "Accedi",
+  "btnSignUp": "Registrati",
+  "btnCreateAccount": "Crea account",
+  "btnContinueGoogle": "Continua con Google",
+  "btnContinueApple": "Continua con Apple",
+  "loginNoAccount": "Non hai un account?",
+  "registerHaveAccount": "Hai già un account?",
+  "registerTitle": "Crea account",
+  "registerSubtitle": "Unisciti al sistema di lavanderia del tuo edificio",
+
+  "errorPasswordMismatch": "Le password non corrispondono.",
+  "errorWrongCredentials": "E-mail o password non corretti.",
+  "errorInvalidEmail": "Inserisci un'e-mail valida.",
+  "errorEmailInUse": "Esiste già un account con questa e-mail.",
+  "errorWeakPassword": "La password deve contenere almeno 6 caratteri.",
+  "errorNoInternet": "Nessuna connessione internet.",
+  "errorTooManyRequests": "Troppi tentativi. Riprova più tardi.",
+  "errorGeneric": "Qualcosa è andato storto. Riprova.",
+  "somethingWentWrong": "Qualcosa è andato storto",
+
+  "btnSave": "Salva",
+  "btnCancel": "Annulla",
+  "btnContinue": "Continua",
+  "btnPrint": "Stampa",
+  "btnRemove": "Rimuovi",
+  "btnBook": "Prenota",
+
+  "settingsTitle": "Impostazioni",
+  "sectionAppearance": "Aspetto",
+  "sectionHousehold": "Famiglia",
+  "sectionAccount": "Account",
+  "darkMode": "Modalità scura",
+  "language": "Lingua",
+  "signOut": "Esci",
+  "setupHousehold": "Configura famiglia",
+  "youManageHousehold": "Gestisci questa famiglia",
+  "memberLabel": "Membro",
+  "myHousehold": "La mia famiglia",
+  "householdMembers": "Membri",
+  "inviteHouseholdMember": "Invita un membro",
+  "inviteScanText": "Fai scansionare per unirsi alla tua famiglia.",
+  "youLabel": "Tu",
+
+  "editProfile": "Modifica profilo",
+  "displayNameLabel": "Nome visualizzato",
+  "yourFirstName": "Il tuo nome",
+  "shownToNeighbours": "Questo viene mostrato ai tuoi vicini nell'app.",
+
+  "neighboursTitle": "Vicini",
+  "noNeighboursYet": "Nessun vicino ancora",
+
+  "onbWhatsYourName": "Come ti chiami?",
+  "onbNameSubtitle": "Così ti vedranno i tuoi vicini.",
+  "onbNameHint": "es. Anna",
+  "onbHowWillYouUse": "Come userai questa app?",
+  "onbChangeInSettings": "Puoi cambiarlo nelle Impostazioni.",
+  "onbImAResident": "Sono un residente",
+  "onbResidentSubtitle": "Vivo nell'edificio e voglio prenotare le macchine",
+  "onbIManageBuildings": "Gestisco edifici",
+  "onbManagerSubtitle": "Sono responsabile della lavanderia",
+  "onbAlsoLive": "Vivo anche in uno di questi edifici",
+  "onbAlsoLiveSubtitle": "Potrai anche prenotare macchine come residente",
+  "onbJoinYourBuilding": "Unisciti al tuo edificio",
+  "onbCreateOrScan": "Crea un nuovo edificio o scansiona un QR esistente.",
+  "onbScanQrRoom": "Scansiona il QR nella lavanderia.",
+  "onbCreateNewBuilding": "Crea un nuovo edificio",
+  "onbCreateBuildingSubtitle": "Configura un edificio e ottieni il suo QR",
+  "onbScanExisting": "Scansiona QR edificio esistente",
+  "onbScanExistingSubtitle": "Unisciti a un edificio già configurato",
+  "onbScanQrCode": "Scansiona QR",
+  "onbYourHousehold": "La tua famiglia",
+  "onbSetUpHousehold": "Configura chi condivide la lavanderia con te.",
+  "onbFirstFromHousehold": "Primo della mia famiglia",
+  "onbFirstSubtitle": "Crea una nuova famiglia e invita gli altri dopo",
+  "onbJoinExisting": "Unisciti a una famiglia esistente",
+  "onbJoinSubtitle": "Scansiona il QR d'invito del tuo membro",
+  "onbNameOnMailbox": "Nome sulla cassetta delle lettere",
+  "onbMailboxHint": "es. Müller",
+  "onbCreateHousehold": "Crea famiglia",
+  "onbNotHouseholdQr": "Questo non è un QR d'invito famiglia.",
+  "onbNotBuildingQr": "Non sembra un QR dell'edificio. Riprova.",
+
+  "scanQrCode": "Scansiona QR",
+
+  "adminTitle": "Admin",
+  "addBuilding": "Aggiungi edificio",
+  "noBuildingsYet": "Nessun edificio ancora",
+  "tapToAddBuilding": "Premi + Aggiungi edificio per iniziare.",
+  "residentsCount": "{count, plural, =1{1 residente} other{{count} residenti}}",
+  "@residentsCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "maintenanceCount": "{count, plural, =1{1 macchina in manutenzione} other{{count} macchine in manutenzione}}",
+  "@maintenanceCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+
+  "residentsTab": "Residenti",
+  "machinesTab": "Macchine",
+  "noResidentsYet": "Nessun residente ancora",
+  "noHousehold": "Nessuna famiglia",
+  "removeResident": "Rimuovi residente",
+  "removeResidentContent": "Il residente verrà rimosso dall'edificio. Dovrà ri-scansionare il QR per rientrare.",
+  "machinesDescription": "Attiva/disattiva le macchine, aggiungile o rimuovile.",
+  "removeMachineTitle": "Rimuovere la macchina?",
+  "removeMachineContent": "La macchina {number} verrà rimossa. Le prenotazioni esistenti non verranno cancellate automaticamente.",
+  "@removeMachineContent": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "addMachine": "Aggiungi macchina",
+  "headLabel": "Capo",
+  "activeStatus": "Attiva",
+  "maintenanceStatus": "Manutenzione",
+  "removeMachineTooltip": "Rimuovi macchina",
+  "removeFromBuilding": "Rimuovi dall'edificio",
+  "buildingQrTooltip": "QR edificio",
+  "machineN": "Macchina {number}",
+  "@machineN": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+
+  "newBuilding": "Nuovo edificio",
+  "buildingNameOrAddress": "Nome o indirizzo edificio",
+  "buildingNameHint": "es. Via Roma 12",
+  "createBuilding": "Crea edificio",
+  "buildingCreatedMsg": "Edificio creato. Affiggi questo QR nella lavanderia.",
+  "scanToJoin": "Scansiona per unirti al sistema di prenotazione",
+  "buildingQrCode": "QR edificio",
+  "postInLaundryRoom": "Affiggi nella lavanderia",
+  "residentsCanScan": "I residenti lo scansionano per iscriversi.",
+  "printQr": "Stampa QR",
+  "laundryRoomScanToJoin": "Lavanderia — Scansiona per unirti",
+  "scanWithApp": "Scansiona con l'app per prenotare le macchine.",
+  "buildingJoined": "Edificio raggiunto con successo.",
+  "householdJoined": "Famiglia raggiunta con successo.",
+  "unrecognisedQr": "QR non riconosciuto.",
+
+  "calendarTitle": "Lavanderia",
+  "todayBtn": "Oggi",
+  "tomorrowBtn": "Domani",
+  "slotMorning": "Mattina",
+  "slotAfternoon": "Pomeriggio",
+  "yourBookingToday": "La tua prenotazione oggi",
+  "machineOutOfService": "Questa macchina è temporaneamente fuori servizio.",
+  "statusYourBooking": "La tua prenotazione",
+  "statusTaken": "Occupato",
+  "statusPassed": "Passato",
+  "statusAvailable": "Disponibile",
+  "legendAvailable": "Disponibile",
+  "legendPartlyBooked": "Parzialmente prenotato",
+  "legendFull": "Completo",
+  "calMonthNames": "Gennaio,Febbraio,Marzo,Aprile,Maggio,Giugno,Luglio,Agosto,Settembre,Ottobre,Novembre,Dicembre",
+  "calShortMonths": "Gen,Feb,Mar,Apr,Mag,Giu,Lug,Ago,Set,Ott,Nov,Dic",
+  "calShortDays": "Lun,Mar,Mer,Gio,Ven,Sab,Dom",
+  "calDayLabels": "L,M,M,G,V,S,D",
+
+  "isTypingText": "{name} sta scrivendo...",
+  "@isTypingText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "typeYourMessage": "Scrivi un messaggio"
+}

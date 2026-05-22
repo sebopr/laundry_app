@@ -1,0 +1,188 @@
+{
+  "@@locale": "fr",
+
+  "navBookings": "Réservations",
+  "navNeighbours": "Voisins",
+  "navAdmin": "Admin",
+  "navSettings": "Paramètres",
+
+  "appName": "Laverie",
+  "appTagline": "Réservez votre créneau",
+
+  "loginTitle": "Bon retour",
+  "loginSubtitle": "Connectez-vous pour continuer",
+  "fieldEmail": "E-mail",
+  "fieldPassword": "Mot de passe",
+  "fieldConfirmPassword": "Confirmer le mot de passe",
+  "btnSignIn": "Se connecter",
+  "btnSignUp": "S'inscrire",
+  "btnCreateAccount": "Créer un compte",
+  "btnContinueGoogle": "Continuer avec Google",
+  "btnContinueApple": "Continuer avec Apple",
+  "loginNoAccount": "Pas encore de compte ?",
+  "registerHaveAccount": "Déjà un compte ?",
+  "registerTitle": "Créer un compte",
+  "registerSubtitle": "Rejoignez le système de laverie de votre immeuble",
+
+  "errorPasswordMismatch": "Les mots de passe ne correspondent pas.",
+  "errorWrongCredentials": "E-mail ou mot de passe incorrect.",
+  "errorInvalidEmail": "Veuillez saisir un e-mail valide.",
+  "errorEmailInUse": "Un compte existe déjà pour cet e-mail.",
+  "errorWeakPassword": "Le mot de passe doit contenir au moins 6 caractères.",
+  "errorNoInternet": "Pas de connexion internet.",
+  "errorTooManyRequests": "Trop de tentatives. Réessayez plus tard.",
+  "errorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
+  "somethingWentWrong": "Une erreur s'est produite",
+
+  "btnSave": "Enregistrer",
+  "btnCancel": "Annuler",
+  "btnContinue": "Continuer",
+  "btnPrint": "Imprimer",
+  "btnRemove": "Supprimer",
+  "btnBook": "Réserver",
+
+  "settingsTitle": "Paramètres",
+  "sectionAppearance": "Apparence",
+  "sectionHousehold": "Ménage",
+  "sectionAccount": "Compte",
+  "darkMode": "Mode sombre",
+  "language": "Langue",
+  "signOut": "Se déconnecter",
+  "setupHousehold": "Configurer le ménage",
+  "youManageHousehold": "Vous gérez ce ménage",
+  "memberLabel": "Membre",
+  "myHousehold": "Mon ménage",
+  "householdMembers": "Membres",
+  "inviteHouseholdMember": "Inviter un membre du ménage",
+  "inviteScanText": "Laissez-les scanner pour rejoindre votre ménage.",
+  "youLabel": "Vous",
+
+  "editProfile": "Modifier le profil",
+  "displayNameLabel": "Nom affiché",
+  "yourFirstName": "Votre prénom",
+  "shownToNeighbours": "C'est ce que vos voisins verront dans l'application.",
+
+  "neighboursTitle": "Voisins",
+  "noNeighboursYet": "Pas encore de voisins",
+
+  "onbWhatsYourName": "Quel est votre nom ?",
+  "onbNameSubtitle": "C'est ainsi que vos voisins vous verront.",
+  "onbNameHint": "ex. Anna",
+  "onbHowWillYouUse": "Comment utiliserez-vous cette application ?",
+  "onbChangeInSettings": "Vous pouvez modifier cela dans les Paramètres.",
+  "onbImAResident": "Je suis un résident",
+  "onbResidentSubtitle": "Je vis dans l'immeuble et souhaite réserver des machines",
+  "onbIManageBuildings": "Je gère des immeubles",
+  "onbManagerSubtitle": "Je suis responsable de la laverie",
+  "onbAlsoLive": "Je vis aussi dans un de ces immeubles",
+  "onbAlsoLiveSubtitle": "Vous pourrez aussi réserver des machines en tant que résident",
+  "onbJoinYourBuilding": "Rejoindre votre immeuble",
+  "onbCreateOrScan": "Créer un nouvel immeuble ou scanner un QR existant.",
+  "onbScanQrRoom": "Scannez le QR affiché dans votre laverie.",
+  "onbCreateNewBuilding": "Créer un nouvel immeuble",
+  "onbCreateBuildingSubtitle": "Configurer un immeuble et obtenir son QR",
+  "onbScanExisting": "Scanner un QR d'immeuble existant",
+  "onbScanExistingSubtitle": "Rejoindre un immeuble déjà configuré",
+  "onbScanQrCode": "Scanner le QR",
+  "onbYourHousehold": "Votre ménage",
+  "onbSetUpHousehold": "Configurez qui partage la laverie avec vous.",
+  "onbFirstFromHousehold": "Premier de mon ménage",
+  "onbFirstSubtitle": "Créer un nouveau ménage et inviter les autres plus tard",
+  "onbJoinExisting": "Rejoindre un ménage existant",
+  "onbJoinSubtitle": "Scannez le QR d'invitation de votre membre de ménage",
+  "onbNameOnMailbox": "Nom sur la boîte aux lettres",
+  "onbMailboxHint": "ex. Müller",
+  "onbCreateHousehold": "Créer un ménage",
+  "onbNotHouseholdQr": "Ce n'est pas un QR d'invitation de ménage.",
+  "onbNotBuildingQr": "Cela ne ressemble pas à un QR d'immeuble. Réessayez.",
+
+  "scanQrCode": "Scanner le QR",
+
+  "adminTitle": "Admin",
+  "addBuilding": "Ajouter un immeuble",
+  "noBuildingsYet": "Pas encore d'immeubles",
+  "tapToAddBuilding": "Appuyez sur + Ajouter un immeuble pour commencer.",
+  "residentsCount": "{count, plural, =1{1 résident} other{{count} résidents}}",
+  "@residentsCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "maintenanceCount": "{count, plural, =1{1 machine en maintenance} other{{count} machines en maintenance}}",
+  "@maintenanceCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+
+  "residentsTab": "Résidents",
+  "machinesTab": "Machines",
+  "noResidentsYet": "Pas encore de résidents",
+  "noHousehold": "Pas de ménage",
+  "removeResident": "Supprimer le résident",
+  "removeResidentContent": "Cela supprimera le résident de l'immeuble. Il devra re-scanner le QR pour rejoindre.",
+  "machinesDescription": "Activez ou désactivez les machines, ajoutez ou supprimez-en.",
+  "removeMachineTitle": "Supprimer la machine ?",
+  "removeMachineContent": "La machine {number} sera supprimée. Les réservations existantes ne seront pas annulées automatiquement.",
+  "@removeMachineContent": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "addMachine": "Ajouter une machine",
+  "headLabel": "Chef",
+  "activeStatus": "Actif",
+  "maintenanceStatus": "Maintenance",
+  "removeMachineTooltip": "Supprimer la machine",
+  "removeFromBuilding": "Supprimer de l'immeuble",
+  "buildingQrTooltip": "QR de l'immeuble",
+  "machineN": "Machine {number}",
+  "@machineN": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+
+  "newBuilding": "Nouvel immeuble",
+  "buildingNameOrAddress": "Nom ou adresse de l'immeuble",
+  "buildingNameHint": "ex. Bahnhofstrasse 12",
+  "createBuilding": "Créer l'immeuble",
+  "buildingCreatedMsg": "Immeuble créé. Affichez ce QR dans la laverie.",
+  "scanToJoin": "Scanner pour rejoindre le système de réservation",
+  "buildingQrCode": "QR de l'immeuble",
+  "postInLaundryRoom": "Afficher dans la laverie",
+  "residentsCanScan": "Les résidents le scannent pour rejoindre le système.",
+  "printQr": "Imprimer le QR",
+  "laundryRoomScanToJoin": "Laverie — Scanner pour rejoindre",
+  "scanWithApp": "Scanner avec l'application pour réserver des machines.",
+  "buildingJoined": "Immeuble rejoint avec succès.",
+  "householdJoined": "Ménage rejoint avec succès.",
+  "unrecognisedQr": "QR non reconnu.",
+
+  "calendarTitle": "Laverie",
+  "todayBtn": "Aujourd'hui",
+  "tomorrowBtn": "Demain",
+  "slotMorning": "Matin",
+  "slotAfternoon": "Après-midi",
+  "yourBookingToday": "Votre réservation aujourd'hui",
+  "machineOutOfService": "Cette machine est temporairement hors service.",
+  "statusYourBooking": "Votre réservation",
+  "statusTaken": "Pris",
+  "statusPassed": "Passé",
+  "statusAvailable": "Disponible",
+  "legendAvailable": "Disponible",
+  "legendPartlyBooked": "Partiellement réservé",
+  "legendFull": "Complet",
+  "calMonthNames": "Janvier,Février,Mars,Avril,Mai,Juin,Juillet,Août,Septembre,Octobre,Novembre,Décembre",
+  "calShortMonths": "Jan,Fév,Mar,Avr,Mai,Jun,Jul,Aoû,Sep,Oct,Nov,Déc",
+  "calShortDays": "Lun,Mar,Mer,Jeu,Ven,Sam,Dim",
+  "calDayLabels": "L,M,M,J,V,S,D",
+
+  "isTypingText": "{name} est en train d'écrire...",
+  "@isTypingText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "typeYourMessage": "Votre message"
+}

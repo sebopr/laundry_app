@@ -208,7 +208,7 @@ class _RegisterPageState extends State<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 48),
-              _AuthHeader(tagline: 'Book your laundry slot'),
+              const _AuthHeader(tagline: 'Book your laundry slot'),
               const SizedBox(height: 48),
               Text('Create account',
                   style: theme.textTheme.titleLarge

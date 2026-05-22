@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:laundry_app/firebase_options.dart';
+import 'package:laundry_app/l10n/app_localizations.dart';
 import 'package:laundry_app/services/auth/auth_gate.dart';
+import 'package:laundry_app/services/locale/locale_provider.dart';
 import 'package:laundry_app/themes/theme_provider.dart';
 import 'package:laundry_app/services/conectivity/conectivity_service.dart';
 import 'package:laundry_app/services/conectivity/global_overlay_wrapper.dart';
@@ -13,7 +15,7 @@ final connectivityService = ConnectivityService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  ConnectivityService(); // Singleton initializes
+  ConnectivityService();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -22,12 +24,14 @@ void main() async {
     persistenceEnabled: true,
   );
 
+  final localeProvider = LocaleProvider();
+  await localeProvider.loadFromFirestore();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => ThemeProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider.value(value: localeProvider),
       ],
       child: const MyApp(),
     ),
@@ -39,9 +43,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Provider.of<ThemeProvider>(context).themeData,
+      locale: localeProvider.locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, child) {
         return GlobalOverlayWrapper(child: child ?? const SizedBox());
       },

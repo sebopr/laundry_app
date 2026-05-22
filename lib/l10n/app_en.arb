@@ -1,0 +1,188 @@
+{
+  "@@locale": "en",
+
+  "navBookings": "Bookings",
+  "navNeighbours": "Neighbours",
+  "navAdmin": "Admin",
+  "navSettings": "Settings",
+
+  "appName": "Laundry",
+  "appTagline": "Book your laundry slot",
+
+  "loginTitle": "Welcome back",
+  "loginSubtitle": "Sign in to continue",
+  "fieldEmail": "Email",
+  "fieldPassword": "Password",
+  "fieldConfirmPassword": "Confirm password",
+  "btnSignIn": "Sign in",
+  "btnSignUp": "Sign up",
+  "btnCreateAccount": "Create account",
+  "btnContinueGoogle": "Continue with Google",
+  "btnContinueApple": "Continue with Apple",
+  "loginNoAccount": "Don't have an account?",
+  "registerHaveAccount": "Already have an account?",
+  "registerTitle": "Create account",
+  "registerSubtitle": "Join your building's laundry system",
+
+  "errorPasswordMismatch": "Passwords do not match.",
+  "errorWrongCredentials": "Incorrect email or password.",
+  "errorInvalidEmail": "Please enter a valid email.",
+  "errorEmailInUse": "An account already exists for this email.",
+  "errorWeakPassword": "Password must be at least 6 characters.",
+  "errorNoInternet": "No internet connection.",
+  "errorTooManyRequests": "Too many attempts. Try again later.",
+  "errorGeneric": "Something went wrong. Please try again.",
+  "somethingWentWrong": "Something went wrong",
+
+  "btnSave": "Save",
+  "btnCancel": "Cancel",
+  "btnContinue": "Continue",
+  "btnPrint": "Print",
+  "btnRemove": "Remove",
+  "btnBook": "Book",
+
+  "settingsTitle": "Settings",
+  "sectionAppearance": "Appearance",
+  "sectionHousehold": "Household",
+  "sectionAccount": "Account",
+  "darkMode": "Dark mode",
+  "language": "Language",
+  "signOut": "Sign out",
+  "setupHousehold": "Set up household",
+  "youManageHousehold": "You manage this household",
+  "memberLabel": "Member",
+  "myHousehold": "My household",
+  "householdMembers": "Members",
+  "inviteHouseholdMember": "Invite a household member",
+  "inviteScanText": "Let them scan this to join your household.",
+  "youLabel": "You",
+
+  "editProfile": "Edit profile",
+  "displayNameLabel": "Display name",
+  "yourFirstName": "Your first name",
+  "shownToNeighbours": "This is shown to your neighbours in the app.",
+
+  "neighboursTitle": "Neighbours",
+  "noNeighboursYet": "No neighbours yet",
+
+  "onbWhatsYourName": "What's your name?",
+  "onbNameSubtitle": "This is how your neighbours will see you.",
+  "onbNameHint": "e.g. Anna",
+  "onbHowWillYouUse": "How will you use this app?",
+  "onbChangeInSettings": "You can change this later in Settings.",
+  "onbImAResident": "I'm a resident",
+  "onbResidentSubtitle": "I live in the building and want to book machines",
+  "onbIManageBuildings": "I manage building(s)",
+  "onbManagerSubtitle": "I'm responsible for the laundry room",
+  "onbAlsoLive": "I also live in one of these buildings",
+  "onbAlsoLiveSubtitle": "You'll be able to book machines as a resident too",
+  "onbJoinYourBuilding": "Join your building",
+  "onbCreateOrScan": "Create a new building or scan an existing QR.",
+  "onbScanQrRoom": "Scan the QR code posted in your laundry room.",
+  "onbCreateNewBuilding": "Create a new building",
+  "onbCreateBuildingSubtitle": "Set up a building and get its QR code",
+  "onbScanExisting": "Scan existing building QR",
+  "onbScanExistingSubtitle": "Join a building that's already set up",
+  "onbScanQrCode": "Scan QR code",
+  "onbYourHousehold": "Your household",
+  "onbSetUpHousehold": "Set up who shares the laundry with you.",
+  "onbFirstFromHousehold": "First from my household",
+  "onbFirstSubtitle": "Create a new household and invite others later",
+  "onbJoinExisting": "Join an existing household",
+  "onbJoinSubtitle": "Scan the invite QR from your household member",
+  "onbNameOnMailbox": "Name on your mailbox",
+  "onbMailboxHint": "e.g. Müller",
+  "onbCreateHousehold": "Create household",
+  "onbNotHouseholdQr": "This is not a household invite QR.",
+  "onbNotBuildingQr": "This doesn't look like a building QR. Try again.",
+
+  "scanQrCode": "Scan QR Code",
+
+  "adminTitle": "Admin",
+  "addBuilding": "Add building",
+  "noBuildingsYet": "No buildings yet",
+  "tapToAddBuilding": "Tap + Add building to get started.",
+  "residentsCount": "{count, plural, =1{1 resident} other{{count} residents}}",
+  "@residentsCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "maintenanceCount": "{count, plural, =1{1 machine in maintenance} other{{count} machines in maintenance}}",
+  "@maintenanceCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+
+  "residentsTab": "Residents",
+  "machinesTab": "Machines",
+  "noResidentsYet": "No residents yet",
+  "noHousehold": "No household",
+  "removeResident": "Remove resident",
+  "removeResidentContent": "This will remove the resident from the building. They will need to re-scan the QR to rejoin.",
+  "machinesDescription": "Toggle machines in or out of service, or add/remove machines.",
+  "removeMachineTitle": "Remove machine?",
+  "removeMachineContent": "Machine {number} will be removed. Existing bookings for this machine are not automatically cancelled.",
+  "@removeMachineContent": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "addMachine": "Add machine",
+  "headLabel": "Head",
+  "activeStatus": "Active",
+  "maintenanceStatus": "Maintenance",
+  "removeMachineTooltip": "Remove machine",
+  "removeFromBuilding": "Remove from building",
+  "buildingQrTooltip": "Building QR",
+  "machineN": "Machine {number}",
+  "@machineN": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+
+  "newBuilding": "New building",
+  "buildingNameOrAddress": "Building name or address",
+  "buildingNameHint": "e.g. Bahnhofstrasse 12",
+  "createBuilding": "Create building",
+  "buildingCreatedMsg": "Building created. Post this QR in the laundry room.",
+  "scanToJoin": "Scan to join the laundry booking system",
+  "buildingQrCode": "Building QR Code",
+  "postInLaundryRoom": "Post this in your laundry room",
+  "residentsCanScan": "Residents scan it to join the booking system.",
+  "printQr": "Print QR",
+  "laundryRoomScanToJoin": "Laundry Room — Scan to join",
+  "scanWithApp": "Scan with the Laundry app to book machines.",
+  "buildingJoined": "Building joined successfully.",
+  "householdJoined": "Household joined successfully.",
+  "unrecognisedQr": "Unrecognised QR code.",
+
+  "calendarTitle": "Laundry",
+  "todayBtn": "Today",
+  "tomorrowBtn": "Tomorrow",
+  "slotMorning": "Morning",
+  "slotAfternoon": "Afternoon",
+  "yourBookingToday": "Your booking today",
+  "machineOutOfService": "This machine is temporarily out of service.",
+  "statusYourBooking": "Your booking",
+  "statusTaken": "Taken",
+  "statusPassed": "Passed",
+  "statusAvailable": "Available",
+  "legendAvailable": "Available",
+  "legendPartlyBooked": "Partly booked",
+  "legendFull": "Full",
+  "calMonthNames": "January,February,March,April,May,June,July,August,September,October,November,December",
+  "calShortMonths": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
+  "calShortDays": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+  "calDayLabels": "M,T,W,T,F,S,S",
+
+  "isTypingText": "{name} is typing...",
+  "@isTypingText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "typeYourMessage": "Type your message"
+}

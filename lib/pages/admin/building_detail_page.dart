@@ -263,6 +263,12 @@ class _MachinesTab extends StatelessWidget {
   final String buildingUuid;
   const _MachinesTab({required this.buildingUuid});
 
+  static String _machineStatus(dynamic value) {
+    if (value is String) return value;
+    if (value is Map) return value['status'] as String? ?? 'active';
+    return 'active';
+  }
+
   Future<void> _addMachine(Map<String, dynamic> machines) async {
     final keys = machines.keys.map(int.parse).toList();
     final next =
@@ -307,14 +313,21 @@ class _MachinesTab extends StatelessWidget {
           .doc(buildingUuid)
           .snapshots(),
       builder: (context, snap) {
+        if (snap.hasError) {
+          return Center(child: Text('Error: ${snap.error}'));
+        }
         if (!snap.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final machines = Map<String, dynamic>.from(
-            snap.data!.data()?['machines'] as Map? ?? {});
+        final raw = snap.data!.data()?['machines'];
+        final machines = raw is Map
+            ? Map<String, dynamic>.from(raw)
+            : <String, dynamic>{};
 
-        final sortedEntries = machines.entries.toList()
+        final sortedEntries = machines.entries
+            .where((e) => int.tryParse(e.key) != null)
+            .toList()
           ..sort((a, b) => int.parse(a.key).compareTo(int.parse(b.key)));
 
         return ListView(
@@ -332,7 +345,7 @@ class _MachinesTab extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _MachineToggleCard(
                     number: int.parse(e.key),
-                    status: e.value as String,
+                    status: _machineStatus(e.value),
                     buildingUuid: buildingUuid,
                     onRemove: () =>
                         _removeMachine(context, int.parse(e.key)),

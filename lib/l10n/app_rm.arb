@@ -1,0 +1,188 @@
+{
+  "@@locale": "rm",
+
+  "navBookings": "Reservaziuns",
+  "navNeighbours": "Viscinanza",
+  "navAdmin": "Admin",
+  "navSettings": "Parameters",
+
+  "appName": "Lavandaria",
+  "appTagline": "Reservar in slot per la lavandaria",
+
+  "loginTitle": "Bainvgnü",
+  "loginSubtitle": "Annunziar per cuntinuar",
+  "fieldEmail": "E-mail",
+  "fieldPassword": "Pled-clav",
+  "fieldConfirmPassword": "Confermar pled-clav",
+  "btnSignIn": "Annunziar",
+  "btnSignUp": "Registrar",
+  "btnCreateAccount": "Crear quint",
+  "btnContinueGoogle": "Cuntinuar cun Google",
+  "btnContinueApple": "Cuntinuar cun Apple",
+  "loginNoAccount": "Nagin quint ancamó?",
+  "registerHaveAccount": "Hai gia in quint?",
+  "registerTitle": "Crear quint",
+  "registerSubtitle": "Unir-se al sistem da lavandaria da voss edifizi",
+
+  "errorPasswordMismatch": "Ils pleds-clav na correspundan betg.",
+  "errorWrongCredentials": "E-mail u pled-clav incorrect.",
+  "errorInvalidEmail": "Endatescha ina e-mail valida.",
+  "errorEmailInUse": "In quint cun questa e-mail exista gia.",
+  "errorWeakPassword": "Il pled-clav sto avair almain 6 karakters.",
+  "errorNoInternet": "Nagin colliament d'internet.",
+  "errorTooManyRequests": "Memia bleras emprovas. Retenta pli tard.",
+  "errorGeneric": "Insatge è stà errà. Retenta.",
+  "somethingWentWrong": "Insatge è stà errà",
+
+  "btnSave": "Memorisar",
+  "btnCancel": "Interrumper",
+  "btnContinue": "Cuntinuar",
+  "btnPrint": "Stampar",
+  "btnRemove": "Allontanar",
+  "btnBook": "Reservar",
+
+  "settingsTitle": "Parameters",
+  "sectionAppearance": "Aspetta",
+  "sectionHousehold": "Chasa",
+  "sectionAccount": "Quint",
+  "darkMode": "Modus nair",
+  "language": "Lingua",
+  "signOut": "Sortir",
+  "setupHousehold": "Configurar chasa",
+  "youManageHousehold": "Vus administrais questa chasa",
+  "memberLabel": "Commember",
+  "myHousehold": "Mia chasa",
+  "householdMembers": "Commembers",
+  "inviteHouseholdMember": "Invitar in commember",
+  "inviteScanText": "Laschai els scannar per s'unir a vossa chasa.",
+  "youLabel": "Vus",
+
+  "editProfile": "Modifitgar profil",
+  "displayNameLabel": "Num d'affichada",
+  "yourFirstName": "Voss num",
+  "shownToNeighbours": "Quai vegn mussà a vossa viscinanza en l'app.",
+
+  "neighboursTitle": "Viscinanza",
+  "noNeighboursYet": "Nagin vischin ancamó",
+
+  "onbWhatsYourName": "Co s'appellais vus?",
+  "onbNameSubtitle": "Uschia vegnis vus vis da vossa viscinanza.",
+  "onbNameHint": "ex. Anna",
+  "onbHowWillYouUse": "Co duvrais vus questa app?",
+  "onbChangeInSettings": "Vus pudais midar quai en ils Parameters.",
+  "onbImAResident": "Sun in abitant",
+  "onbResidentSubtitle": "Abitel en l'edifizi e vul reservar maschinas",
+  "onbIManageBuildings": "Administrel edifizis",
+  "onbManagerSubtitle": "Sun responsabel per la lavandaria",
+  "onbAlsoLive": "Abitel era en in da quests edifizis",
+  "onbAlsoLiveSubtitle": "Pudais era reservar maschinas sco abitant",
+  "onbJoinYourBuilding": "Unir-se a voss edifizi",
+  "onbCreateOrScan": "Crear in nov edifizi u scannar in QR existenta.",
+  "onbScanQrRoom": "Scannar il QR en la lavandaria.",
+  "onbCreateNewBuilding": "Crear in nov edifizi",
+  "onbCreateBuildingSubtitle": "Configurar in edifizi e obtegnair ses QR",
+  "onbScanExisting": "Scannar QR d'edifizi existenta",
+  "onbScanExistingSubtitle": "S'unir ad in edifizi gia configurà",
+  "onbScanQrCode": "Scannar QR",
+  "onbYourHousehold": "Vossa chasa",
+  "onbSetUpHousehold": "Configurar co participescha a la lavandaria.",
+  "onbFirstFromHousehold": "Emprim da mia chasa",
+  "onbFirstSubtitle": "Crear ina nova chasa ed invitar auters pli tard",
+  "onbJoinExisting": "S'unir ad ina chasa existenta",
+  "onbJoinSubtitle": "Scannar il QR d'invitaziun da voss commember",
+  "onbNameOnMailbox": "Num sin la bustga",
+  "onbMailboxHint": "ex. Müller",
+  "onbCreateHousehold": "Crear chasa",
+  "onbNotHouseholdQr": "Quai n'è betg in QR d'invitaziun da chasa.",
+  "onbNotBuildingQr": "Quai na para betg in QR d'edifizi. Retenta.",
+
+  "scanQrCode": "Scannar QR",
+
+  "adminTitle": "Admin",
+  "addBuilding": "Agiuntar edifizi",
+  "noBuildingsYet": "Nagin edifizi ancamó",
+  "tapToAddBuilding": "Tura sin + Agiuntar edifizi per cumenzar.",
+  "residentsCount": "{count, plural, =1{1 abitant} other{{count} abitants}}",
+  "@residentsCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "maintenanceCount": "{count, plural, =1{1 maschina en mantegniment} other{{count} maschinas en mantegniment}}",
+  "@maintenanceCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+
+  "residentsTab": "Abitants",
+  "machinesTab": "Maschinas",
+  "noResidentsYet": "Nagin abitant ancamó",
+  "noHousehold": "Nagin'a chasa",
+  "removeResident": "Allontanar abitant",
+  "removeResidentContent": "Quai allontana l'abitant da l'edifizi. El sto rescannar il QR per s'unir.",
+  "machinesDescription": "Activar u deactivar maschinas, agiuntar u allontanar.",
+  "removeMachineTitle": "Allontanar maschina?",
+  "removeMachineContent": "La maschina {number} vegn allontanada. Las reservaziuns existentas n'vegnan betg annulladas.",
+  "@removeMachineContent": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "addMachine": "Agiuntar maschina",
+  "headLabel": "Cap",
+  "activeStatus": "Activa",
+  "maintenanceStatus": "Mantegniment",
+  "removeMachineTooltip": "Allontanar maschina",
+  "removeFromBuilding": "Allontanar da l'edifizi",
+  "buildingQrTooltip": "QR edifizi",
+  "machineN": "Maschina {number}",
+  "@machineN": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+
+  "newBuilding": "Nov edifizi",
+  "buildingNameOrAddress": "Num u adressa dal edifizi",
+  "buildingNameHint": "ex. Bahnhofstrasse 12",
+  "createBuilding": "Crear edifizi",
+  "buildingCreatedMsg": "Edifizi creà. Affiger quest QR en la lavandaria.",
+  "scanToJoin": "Scannar per s'unir al sistem da reservaziun",
+  "buildingQrCode": "QR dal edifizi",
+  "postInLaundryRoom": "Affiger en la lavandaria",
+  "residentsCanScan": "Ils abitants scannan per s'inscriver.",
+  "printQr": "Stampar QR",
+  "laundryRoomScanToJoin": "Lavandaria — Scannar per s'unir",
+  "scanWithApp": "Scannar cun l'app per reservar maschinas.",
+  "buildingJoined": "Unì a l'edifizi cun success.",
+  "householdJoined": "Unì a la chasa cun success.",
+  "unrecognisedQr": "QR nunenconuschent.",
+
+  "calendarTitle": "Lavandaria",
+  "todayBtn": "Oz",
+  "tomorrowBtn": "Damaun",
+  "slotMorning": "Damaun",
+  "slotAfternoon": "Suentermezdi",
+  "yourBookingToday": "Vossa reservaziun oz",
+  "machineOutOfService": "Questa maschina è temporaneamain fuo da servetsch.",
+  "statusYourBooking": "Vossa reservaziun",
+  "statusTaken": "Occupà",
+  "statusPassed": "Passà",
+  "statusAvailable": "Disponibel",
+  "legendAvailable": "Disponibel",
+  "legendPartlyBooked": "Parzialmain reservà",
+  "legendFull": "Cumplì",
+  "calMonthNames": "Schaner,Favrer,Mars,Avrigl,Matg,Zercladur,Fanadur,Avust,Settember,October,November,December",
+  "calShortMonths": "Schan,Fav,Mar,Avr,Matg,Zerc,Fan,Avust,Set,Oct,Nov,Dec",
+  "calShortDays": "Gli,Mar,Me,Gie,Ve,Sa,Du",
+  "calDayLabels": "G,M,M,G,V,S,D",
+
+  "isTypingText": "{name} scriva...",
+  "@isTypingText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "typeYourMessage": "Scriver in messadi"
+}

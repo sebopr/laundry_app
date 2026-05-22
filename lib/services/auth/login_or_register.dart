@@ -1,6 +1,5 @@
-import 'package:laundry_app/pages/login_page.dart';
-import 'package:laundry_app/pages/register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:laundry_app/pages/login_page.dart';
 
 class LoginOrRegister extends StatefulWidget {
   const LoginOrRegister({super.key});
@@ -10,25 +9,16 @@ class LoginOrRegister extends StatefulWidget {
 }
 
 class _LoginOrRegisterState extends State<LoginOrRegister> {
-//show login page
-  bool showLoginPage = true;
+  bool _showLogin = true;
 
-  void togglePages() {
-    setState(() {
-      showLoginPage = !showLoginPage;
-    });
-  }
+  void _toggle() => setState(() => _showLogin = !_showLogin);
 
   @override
   Widget build(BuildContext context) {
-    if (showLoginPage) {
-      return LoginPage(
-        onTap: togglePages,
-      );
+    if (_showLogin) {
+      return LoginPage(onRegisterTap: _toggle);
     } else {
-      return RegisterPage(
-        onTap: togglePages,
-      );
+      return RegisterPage(onLoginTap: _toggle);
     }
   }
 }

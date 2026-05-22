@@ -54,8 +54,7 @@ class _OptionsShellState extends State<OptionsShell> {
             bottom: false,
             child: Container(
               color: theme.colorScheme.primary,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(
                 children: [
                   _OptionChip(
@@ -116,9 +115,7 @@ class _OptionChip extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: selected
-                ? const Color(0xFF5C6BC0)
-                : Colors.white,
+            color: selected ? const Color(0xFF5C6BC0) : Colors.white,
           ),
         ),
       ),
@@ -183,8 +180,7 @@ class _MachineRow extends StatelessWidget {
   final int number;
   final MachineStatus status;
   final String? endsAt;
-  const _MachineRow(
-      {required this.number, required this.status, this.endsAt});
+  const _MachineRow({required this.number, required this.status, this.endsAt});
 
   @override
   Widget build(BuildContext context) {
@@ -202,12 +198,7 @@ class _MachineRow extends StatelessWidget {
           'Your booking',
           'Cancel'
         ),
-      MachineStatus.taken => (
-          Colors.red.shade50,
-          Colors.red,
-          'In use',
-          null
-        ),
+      MachineStatus.taken => (Colors.red.shade50, Colors.red, 'In use', null),
     };
 
     return Container(
@@ -238,8 +229,8 @@ class _MachineRow extends StatelessWidget {
           if (btnLabel != null)
             FilledButton.tonal(
               onPressed: () {},
-              style: FilledButton.styleFrom(
-                  visualDensity: VisualDensity.compact),
+              style:
+                  FilledButton.styleFrom(visualDensity: VisualDensity.compact),
               child: Text(btnLabel),
             ),
         ],
@@ -301,16 +292,26 @@ class _MockWeekCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    final hours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00',
-        '14:00', '15:00', '16:00', '17:00'];
+    final hours = [
+      '08:00',
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '13:00',
+      '14:00',
+      '15:00',
+      '16:00',
+      '17:00'
+    ];
 
     // Fake bookings: (dayIndex, hourIndex, isMine)
     const bookings = [
       (1, 2, false), // Tue 10:00 - taken
-      (1, 5, true),  // Tue 13:00 - mine
+      (1, 5, true), // Tue 13:00 - mine
       (3, 1, false), // Thu 09:00 - taken
       (4, 4, false), // Fri 12:00 - taken
-      (6, 3, true),  // Sun 11:00 - mine
+      (6, 3, true), // Sun 11:00 - mine
     ];
 
     return Container(
@@ -348,13 +349,14 @@ class _MockWeekCalendar extends StatelessWidget {
                           width: 44,
                           child: Center(
                             child: Text(hour,
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                    color: Colors.grey.shade500)),
+                                style: theme.textTheme.labelSmall
+                                    ?.copyWith(color: Colors.grey.shade500)),
                           ),
                         ),
                         ...List.generate(7, (di) {
-                          final booking = bookings.where(
-                              (b) => b.$1 == di && b.$2 == hi).firstOrNull;
+                          final booking = bookings
+                              .where((b) => b.$1 == di && b.$2 == hi)
+                              .firstOrNull;
                           return Expanded(
                             child: Container(
                               margin: const EdgeInsets.all(2),
@@ -371,7 +373,9 @@ class _MockWeekCalendar extends StatelessWidget {
                               child: booking != null
                                   ? Center(
                                       child: Text(
-                                        booking.$3 ? 'Me' : 'W${booking.$1 + 1}',
+                                        booking.$3
+                                            ? 'Me'
+                                            : 'W${booking.$1 + 1}',
                                         style: const TextStyle(fontSize: 9),
                                       ),
                                     )
@@ -415,12 +419,12 @@ class OptionA extends StatelessWidget {
               const _SectionTitle('Machines'),
               ..._mockMachines.map((m) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
-                    child: _MachineRow(
-                        number: m.$1, status: m.$2, endsAt: m.$3),
+                    child:
+                        _MachineRow(number: m.$1, status: m.$2, endsAt: m.$3),
                   )),
               const _SectionTitle('Upcoming bookings'),
-              ..._mockUpcoming.map((u) =>
-                  _UpcomingTile(machine: u.$1, date: u.$2, time: u.$3)),
+              ..._mockUpcoming.map(
+                  (u) => _UpcomingTile(machine: u.$1, date: u.$2, time: u.$3)),
               const SizedBox(height: 16),
             ]),
           ),
@@ -459,8 +463,7 @@ class _OptionBState extends State<OptionB> {
                     : Icons.calendar_month_outlined,
               ),
               tooltip: _showCalendar ? 'Dashboard' : 'Calendar',
-              onPressed: () =>
-                  setState(() => _showCalendar = !_showCalendar),
+              onPressed: () => setState(() => _showCalendar = !_showCalendar),
             ),
           ],
         ),
@@ -495,8 +498,8 @@ class _OptionBState extends State<OptionB> {
                 const _SectionTitle('Machines'),
                 ..._mockMachines.map((m) => Padding(
                       padding: const EdgeInsets.only(bottom: 8),
-                      child: _MachineRow(
-                          number: m.$1, status: m.$2, endsAt: m.$3),
+                      child:
+                          _MachineRow(number: m.$1, status: m.$2, endsAt: m.$3),
                     )),
                 const _SectionTitle('Upcoming bookings'),
                 ..._mockUpcoming.map((u) =>

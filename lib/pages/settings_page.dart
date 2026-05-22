@@ -1,33 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/pages/generate_qr_page.dart';
+import 'package:laundry_app/l10n/app_localizations.dart';
 import 'package:laundry_app/pages/onboarding_page.dart';
 import 'package:laundry_app/pages/profile_page.dart';
 import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/household/household_service.dart';
+import 'package:laundry_app/services/locale/locale_provider.dart';
 import 'package:laundry_app/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
-
-  @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  String _language = 'English';
 
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(l10n.settingsTitle),
         centerTitle: false,
         automaticallyImplyLeading: false,
       ),
@@ -39,14 +35,10 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (context, snap) {
           final userData = snap.data?.data() ?? {};
           final displayName = userData['displayName'] as String? ?? '';
-          final email =
-              FirebaseAuth.instance.currentUser!.email ?? '';
-          final householdId =
-              userData['household_id'] as String?;
-          final householdName =
-              userData['household_name'] as String?;
-          final isHead =
-              userData['isHouseholdHead'] as bool? ?? false;
+          final email = FirebaseAuth.instance.currentUser!.email ?? '';
+          final householdId = userData['household_id'] as String?;
+          final householdName = userData['household_name'] as String?;
+          final isHead = userData['isHouseholdHead'] as bool? ?? false;
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -58,17 +50,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 householdName: householdName,
                 onEdit: () => Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (_) => const ProfilePage()),
+                  MaterialPageRoute(builder: (_) => const ProfilePage()),
                 ),
               ),
               const SizedBox(height: 24),
 
               // ── Appearance ────────────────────────────────────────
-              const _SectionLabel('Appearance'),
+              _SectionLabel(l10n.sectionAppearance),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Dark mode'),
+                title: Text(l10n.darkMode),
                 secondary: const Icon(Icons.dark_mode_outlined),
                 value: themeProvider.isDarkMode,
                 onChanged: (_) => themeProvider.toggleTheme(),
@@ -76,35 +67,35 @@ class _SettingsPageState extends State<SettingsPage> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.language),
-                title: const Text('Language'),
+                title: Text(l10n.language),
                 trailing: DropdownButton<String>(
-                  value: _language,
+                  value: localeProvider.languageName,
                   underline: const SizedBox(),
-                  items: [
+                  items: const [
                     'English',
                     'Deutsch',
                     'Français',
                     'Italiano',
-                    'Rumantsch'
+                    'Rumantsch',
                   ]
-                      .map((l) =>
-                          DropdownMenuItem(value: l, child: Text(l)))
+                      .map((lang) =>
+                          DropdownMenuItem(value: lang, child: Text(lang)))
                       .toList(),
-                  onChanged: (v) => setState(() => _language = v!),
+                  onChanged: (v) => localeProvider.setLanguage(v!),
                 ),
               ),
               const Divider(height: 32),
 
               // ── Household ─────────────────────────────────────────
-              const _SectionLabel('Household'),
+              _SectionLabel(l10n.sectionHousehold),
               if (householdId != null) ...[
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.home_outlined),
-                  title: Text(householdName ?? 'My household'),
+                  title: Text(householdName ?? l10n.myHousehold),
                   subtitle: isHead
-                      ? const Text('You manage this household')
-                      : const Text('Member'),
+                      ? Text(l10n.youManageHousehold)
+                      : Text(l10n.memberLabel),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _showHouseholdSheet(
                       context, householdId, householdName ?? '', isHead),
@@ -113,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.group_add_outlined),
-                  title: const Text('Set up household'),
+                  title: Text(l10n.setupHousehold),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => Navigator.push(
                     context,
@@ -123,28 +114,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ],
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.qr_code),
-                title: const Text('Building QR code'),
-                subtitle: const Text('Print and post in laundry room'),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const GenerateQrPage()),
-                ),
-              ),
               const Divider(height: 32),
 
               // ── Account ───────────────────────────────────────────
-              const _SectionLabel('Account'),
+              _SectionLabel(l10n.sectionAccount),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading:
                     const Icon(Icons.logout, color: Colors.redAccent),
-                title: const Text('Sign out',
-                    style: TextStyle(color: Colors.redAccent)),
+                title: Text(l10n.signOut,
+                    style: const TextStyle(color: Colors.redAccent)),
                 onTap: () => AuthService().signOut(),
               ),
             ],
@@ -197,6 +176,7 @@ class _ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final name = displayName.isNotEmpty ? displayName : email;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -238,7 +218,7 @@ class _ProfileCard extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.edit_outlined, size: 20),
             onPressed: onEdit,
-            tooltip: 'Edit profile',
+            tooltip: l10n.editProfile,
           ),
         ],
       ),
@@ -259,12 +239,12 @@ class _HouseholdSheet extends StatelessWidget {
     required this.isHead,
   });
 
-  // Household invite QR payload
   String get _inviteData => 'household:$householdId';
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.6,
@@ -274,8 +254,7 @@ class _HouseholdSheet extends StatelessWidget {
         stream: HouseholdService.stream(householdId),
         builder: (context, snap) {
           final data = snap.data?.data();
-          final members =
-              List<String>.from(data?['members'] ?? []);
+          final members = List<String>.from(data?['members'] ?? []);
 
           return ListView(
             controller: controller,
@@ -303,24 +282,19 @@ class _HouseholdSheet extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
-
-              // Members list
-              Text('Members',
+              Text(l10n.householdMembers,
                   style: theme.textTheme.labelSmall?.copyWith(
-                      color: Colors.grey.shade600,
-                      letterSpacing: 1.2)),
+                      color: Colors.grey.shade600, letterSpacing: 1.2)),
               const SizedBox(height: 8),
               _MembersList(memberUids: members),
               const Divider(height: 32),
-
-              // Invite QR (head only)
               if (isHead) ...[
-                Text('Invite a household member',
+                Text(l10n.inviteHouseholdMember,
                     style: theme.textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 4),
                 Text(
-                  'Let them scan this to join your household.',
+                  l10n.inviteScanText,
                   style: theme.textTheme.bodySmall
                       ?.copyWith(color: Colors.grey.shade600),
                 ),
@@ -361,6 +335,7 @@ class _MembersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: HouseholdService.getMembers(memberUids),
       builder: (context, snap) {
@@ -397,7 +372,7 @@ class _MembersList extends StatelessWidget {
               ),
               title: Text(name),
               trailing: isCurrentUser
-                  ? Text('You',
+                  ? Text(l10n.youLabel,
                       style: TextStyle(
                           color: Colors.grey.shade500, fontSize: 12))
                   : null,

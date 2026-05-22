@@ -1,0 +1,188 @@
+{
+  "@@locale": "de",
+
+  "navBookings": "Buchungen",
+  "navNeighbours": "Nachbarn",
+  "navAdmin": "Admin",
+  "navSettings": "Einstellungen",
+
+  "appName": "Wäsche",
+  "appTagline": "Waschmaschine buchen",
+
+  "loginTitle": "Willkommen zurück",
+  "loginSubtitle": "Melde dich an, um fortzufahren",
+  "fieldEmail": "E-Mail",
+  "fieldPassword": "Passwort",
+  "fieldConfirmPassword": "Passwort bestätigen",
+  "btnSignIn": "Anmelden",
+  "btnSignUp": "Registrieren",
+  "btnCreateAccount": "Konto erstellen",
+  "btnContinueGoogle": "Weiter mit Google",
+  "btnContinueApple": "Weiter mit Apple",
+  "loginNoAccount": "Noch kein Konto?",
+  "registerHaveAccount": "Bereits ein Konto?",
+  "registerTitle": "Konto erstellen",
+  "registerSubtitle": "Tritt dem Waschsystem deines Gebäudes bei",
+
+  "errorPasswordMismatch": "Passwörter stimmen nicht überein.",
+  "errorWrongCredentials": "Falsche E-Mail-Adresse oder falsches Passwort.",
+  "errorInvalidEmail": "Bitte eine gültige E-Mail eingeben.",
+  "errorEmailInUse": "Ein Konto mit dieser E-Mail existiert bereits.",
+  "errorWeakPassword": "Passwort muss mindestens 6 Zeichen haben.",
+  "errorNoInternet": "Keine Internetverbindung.",
+  "errorTooManyRequests": "Zu viele Versuche. Später nochmal versuchen.",
+  "errorGeneric": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+  "somethingWentWrong": "Etwas ist schiefgelaufen",
+
+  "btnSave": "Speichern",
+  "btnCancel": "Abbrechen",
+  "btnContinue": "Weiter",
+  "btnPrint": "Drucken",
+  "btnRemove": "Entfernen",
+  "btnBook": "Buchen",
+
+  "settingsTitle": "Einstellungen",
+  "sectionAppearance": "Erscheinungsbild",
+  "sectionHousehold": "Haushalt",
+  "sectionAccount": "Konto",
+  "darkMode": "Dunkelmodus",
+  "language": "Sprache",
+  "signOut": "Abmelden",
+  "setupHousehold": "Haushalt einrichten",
+  "youManageHousehold": "Du verwaltest diesen Haushalt",
+  "memberLabel": "Mitglied",
+  "myHousehold": "Mein Haushalt",
+  "householdMembers": "Mitglieder",
+  "inviteHouseholdMember": "Haushaltsmitglied einladen",
+  "inviteScanText": "Lass sie diesen Code scannen, um deinem Haushalt beizutreten.",
+  "youLabel": "Du",
+
+  "editProfile": "Profil bearbeiten",
+  "displayNameLabel": "Anzeigename",
+  "yourFirstName": "Dein Vorname",
+  "shownToNeighbours": "Dies wird deinen Nachbarn in der App angezeigt.",
+
+  "neighboursTitle": "Nachbarn",
+  "noNeighboursYet": "Noch keine Nachbarn",
+
+  "onbWhatsYourName": "Wie heißt du?",
+  "onbNameSubtitle": "So werden dich deine Nachbarn sehen.",
+  "onbNameHint": "z.B. Anna",
+  "onbHowWillYouUse": "Wie wirst du die App verwenden?",
+  "onbChangeInSettings": "Das kannst du später in den Einstellungen ändern.",
+  "onbImAResident": "Ich bin ein Bewohner",
+  "onbResidentSubtitle": "Ich lebe im Gebäude und möchte Maschinen buchen",
+  "onbIManageBuildings": "Ich verwalte Gebäude",
+  "onbManagerSubtitle": "Ich bin für den Waschraum verantwortlich",
+  "onbAlsoLive": "Ich lebe auch in einem dieser Gebäude",
+  "onbAlsoLiveSubtitle": "Du kannst als Bewohner auch Maschinen buchen",
+  "onbJoinYourBuilding": "Deinem Gebäude beitreten",
+  "onbCreateOrScan": "Neues Gebäude erstellen oder vorhandenen QR scannen.",
+  "onbScanQrRoom": "Scanne den QR-Code im Waschraum.",
+  "onbCreateNewBuilding": "Neues Gebäude erstellen",
+  "onbCreateBuildingSubtitle": "Gebäude einrichten und QR-Code erhalten",
+  "onbScanExisting": "Vorhandenen Gebäude-QR scannen",
+  "onbScanExistingSubtitle": "Einem bereits eingerichteten Gebäude beitreten",
+  "onbScanQrCode": "QR-Code scannen",
+  "onbYourHousehold": "Dein Haushalt",
+  "onbSetUpHousehold": "Richte deinen gemeinsamen Waschraum ein.",
+  "onbFirstFromHousehold": "Erster aus meinem Haushalt",
+  "onbFirstSubtitle": "Neuen Haushalt erstellen und andere später einladen",
+  "onbJoinExisting": "Vorhandenem Haushalt beitreten",
+  "onbJoinSubtitle": "Scanne den Einladungs-QR von deinem Haushaltsmitglied",
+  "onbNameOnMailbox": "Name am Briefkasten",
+  "onbMailboxHint": "z.B. Müller",
+  "onbCreateHousehold": "Haushalt erstellen",
+  "onbNotHouseholdQr": "Dies ist kein Haushalt-Einladungs-QR.",
+  "onbNotBuildingQr": "Das sieht nicht wie ein Gebäude-QR aus. Bitte erneut versuchen.",
+
+  "scanQrCode": "QR-Code scannen",
+
+  "adminTitle": "Admin",
+  "addBuilding": "Gebäude hinzufügen",
+  "noBuildingsYet": "Noch keine Gebäude",
+  "tapToAddBuilding": "Tippe auf + Gebäude hinzufügen, um zu beginnen.",
+  "residentsCount": "{count, plural, =1{1 Bewohner} other{{count} Bewohner}}",
+  "@residentsCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "maintenanceCount": "{count, plural, =1{1 Maschine in Wartung} other{{count} Maschinen in Wartung}}",
+  "@maintenanceCount": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+
+  "residentsTab": "Bewohner",
+  "machinesTab": "Maschinen",
+  "noResidentsYet": "Noch keine Bewohner",
+  "noHousehold": "Kein Haushalt",
+  "removeResident": "Bewohner entfernen",
+  "removeResidentContent": "Dies entfernt den Bewohner aus dem Gebäude. Er muss den QR erneut scannen, um wieder beizutreten.",
+  "machinesDescription": "Maschinen ein- oder ausschalten, hinzufügen oder entfernen.",
+  "removeMachineTitle": "Maschine entfernen?",
+  "removeMachineContent": "Maschine {number} wird entfernt. Bestehende Buchungen werden nicht automatisch storniert.",
+  "@removeMachineContent": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "addMachine": "Maschine hinzufügen",
+  "headLabel": "Leitung",
+  "activeStatus": "Aktiv",
+  "maintenanceStatus": "Wartung",
+  "removeMachineTooltip": "Maschine entfernen",
+  "removeFromBuilding": "Aus Gebäude entfernen",
+  "buildingQrTooltip": "Gebäude-QR",
+  "machineN": "Maschine {number}",
+  "@machineN": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+
+  "newBuilding": "Neues Gebäude",
+  "buildingNameOrAddress": "Gebäudename oder -adresse",
+  "buildingNameHint": "z.B. Bahnhofstrasse 12",
+  "createBuilding": "Gebäude erstellen",
+  "buildingCreatedMsg": "Gebäude erstellt. Hänge diesen QR im Waschraum auf.",
+  "scanToJoin": "Scannen, um dem Waschsystem beizutreten",
+  "buildingQrCode": "Gebäude-QR-Code",
+  "postInLaundryRoom": "Diesen im Waschraum aufhängen",
+  "residentsCanScan": "Bewohner scannen ihn, um dem Buchungssystem beizutreten.",
+  "printQr": "QR drucken",
+  "laundryRoomScanToJoin": "Waschraum — Scannen zum Beitreten",
+  "scanWithApp": "Mit der Wäsche-App scannen, um Maschinen zu buchen.",
+  "buildingJoined": "Gebäude erfolgreich beigetreten.",
+  "householdJoined": "Haushalt erfolgreich beigetreten.",
+  "unrecognisedQr": "Unbekannter QR-Code.",
+
+  "calendarTitle": "Wäsche",
+  "todayBtn": "Heute",
+  "tomorrowBtn": "Morgen",
+  "slotMorning": "Morgens",
+  "slotAfternoon": "Nachmittags",
+  "yourBookingToday": "Deine heutige Buchung",
+  "machineOutOfService": "Diese Maschine ist vorübergehend außer Betrieb.",
+  "statusYourBooking": "Deine Buchung",
+  "statusTaken": "Belegt",
+  "statusPassed": "Vergangen",
+  "statusAvailable": "Verfügbar",
+  "legendAvailable": "Verfügbar",
+  "legendPartlyBooked": "Teilweise gebucht",
+  "legendFull": "Voll",
+  "calMonthNames": "Januar,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember",
+  "calShortMonths": "Jan,Feb,Mär,Apr,Mai,Jun,Jul,Aug,Sep,Okt,Nov,Dez",
+  "calShortDays": "Mo,Di,Mi,Do,Fr,Sa,So",
+  "calDayLabels": "M,D,M,D,F,S,S",
+
+  "isTypingText": "{name} schreibt...",
+  "@isTypingText": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "typeYourMessage": "Nachricht eingeben"
+}
