@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:laundry_app/pages/home_page.dart';
 import 'package:laundry_app/pages/onboarding_page.dart';
+import 'package:laundry_app/pages/verify_email_page.dart';
+import 'package:laundry_app/services/auth/auth_service.dart';
 import 'package:laundry_app/services/auth/login_or_register.dart';
 
 class AuthGate extends StatelessWidget {
@@ -11,19 +13,29 @@ class AuthGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+      // userChanges() (not authStateChanges) so the tree rebuilds when the
+      // email confirmation lands and the ID token is refreshed.
+      stream: FirebaseAuth.instance.userChanges(),
       builder: (context, authSnap) {
         if (authSnap.connectionState == ConnectionState.waiting) {
           return const Scaffold(
               body: Center(child: CircularProgressIndicator()));
         }
 
-        if (authSnap.data == null) return const LoginOrRegister();
+        final user = authSnap.data;
+        if (user == null) return const LoginOrRegister();
+
+        // Email + password accounts wait here until the address is confirmed.
+        // Google and Apple users arrive already confirmed and pass straight
+        // through.
+        if (AuthService.needsEmailConfirmation(user)) {
+          return VerifyEmailPage(user: user);
+        }
 
         return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection('users')
-              .doc(authSnap.data!.uid)
+              .doc(user.uid)
               .snapshots(),
           builder: (context, userSnap) {
             if (!userSnap.hasData) {

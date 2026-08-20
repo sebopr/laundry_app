@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:laundry_app/firebase_options.dart';
 import 'package:laundry_app/l10n/app_localizations.dart';
+import 'package:laundry_app/l10n/rm_fallback_localizations.dart';
 import 'package:laundry_app/services/auth/auth_gate.dart';
 import 'package:laundry_app/services/locale/locale_provider.dart';
 import 'package:laundry_app/themes/theme_provider.dart';
@@ -48,7 +49,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: Provider.of<ThemeProvider>(context).themeData,
       locale: localeProvider.locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        ...AppLocalizations.localizationsDelegates,
+        ...rmFallbackLocalizationsDelegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, child) {
         return GlobalOverlayWrapper(child: child ?? const SizedBox());
