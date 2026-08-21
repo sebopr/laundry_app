@@ -6,6 +6,7 @@ import 'package:lavaplan/pages/onboarding_page.dart';
 import 'package:lavaplan/pages/verify_email_page.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/auth/login_or_register.dart';
+import 'package:lavaplan/services/notifications/push_notification_service.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -32,6 +33,11 @@ class AuthGate extends StatelessWidget {
           return VerifyEmailPage(user: user);
         }
 
+        // A no-op if this device is already registered for this uid — makes
+        // sure a persisted login (no fresh sign-in call) still ends up with
+        // its push token saved.
+        PushNotificationService.instance.registerToken(user.uid);
+
         return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection('users')
@@ -50,10 +56,21 @@ class AuthGate extends StatelessWidget {
               return const OnboardingPage(initialStep: 0);
             }
 
-            // Step 1: role
+            // Step 1: contact details (address + phone)
+            final hasAddress = (d['street'] as String? ?? '').isNotEmpty &&
+                (d['houseNumber'] as String? ?? '').isNotEmpty &&
+                (d['postalCode'] as String? ?? '').isNotEmpty &&
+                (d['city'] as String? ?? '').isNotEmpty &&
+                (d['canton'] as String? ?? '').isNotEmpty;
+            final phone = d['phone'] as String? ?? '';
+            if (!hasAddress || phone.isEmpty) {
+              return const OnboardingPage(initialStep: 1);
+            }
+
+            // Step 2: role
             final role = d['role'] as String?;
             if (role == null) {
-              return const OnboardingPage(initialStep: 1);
+              return const OnboardingPage(initialStep: 2);
             }
 
             // Admin-only (not a resident): skip building + household steps
@@ -62,14 +79,14 @@ class AuthGate extends StatelessWidget {
               return const HomePage();
             }
 
-            // Step 2: building
+            // Step 3: building
             if (d['linked_uuid'] == null) {
-              return const OnboardingPage(initialStep: 2);
+              return const OnboardingPage(initialStep: 3);
             }
 
-            // Step 3: household
+            // Step 4: household
             if (d['household_id'] == null) {
-              return const OnboardingPage(initialStep: 3);
+              return const OnboardingPage(initialStep: 4);
             }
 
             return const HomePage();

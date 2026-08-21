@@ -3,9 +3,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/components/avatar_photo_picker.dart';
 import 'package:lavaplan/components/custom_cam_painter.dart';
+import 'package:lavaplan/constants/swiss_cantons.dart';
 import 'package:lavaplan/pages/admin/create_building_page.dart';
 import 'package:lavaplan/services/household/household_service.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -43,8 +46,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Steps: 0=name, 1=role, 2=building, 3=household
-    const totalSteps = 4;
+    // Steps: 0=name, 1=profile details, 2=role, 3=building, 4=household
+    const totalSteps = 5;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
@@ -77,6 +80,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   _NameStep(onDone: _nextStep),
+                  _ProfileDetailsStep(onDone: _nextStep),
                   _RoleStep(onDone: _nextStep),
                   _BuildingStep(onDone: _nextStep),
                   const _HouseholdStep(),
@@ -196,7 +200,211 @@ class _NameStepState extends State<_NameStep> {
   }
 }
 
-// ─── Step 1: Role ─────────────────────────────────────────────────────────────
+// ─── Step 1: Profile details ──────────────────────────────────────────────────
+
+class _ProfileDetailsStep extends StatefulWidget {
+  final VoidCallback onDone;
+  const _ProfileDetailsStep({required this.onDone});
+
+  @override
+  State<_ProfileDetailsStep> createState() => _ProfileDetailsStepState();
+}
+
+class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
+  final _streetController = TextEditingController();
+  final _houseNumberController = TextEditingController();
+  final _postalCodeController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _phoneController = TextEditingController();
+  String? _canton;
+  String _initials = '?';
+  bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitials();
+  }
+
+  Future<void> _loadInitials() async {
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    final name = doc.data()?['displayName'] as String? ?? '';
+    if (name.isEmpty || !mounted) return;
+    final parts = name.trim().split(' ');
+    setState(() {
+      _initials = parts.length >= 2 && parts[0].isNotEmpty && parts[1].isNotEmpty
+          ? '${parts[0][0]}${parts[1][0]}'.toUpperCase()
+          : (name.length >= 2 ? name.substring(0, 2) : name).toUpperCase();
+    });
+  }
+
+  @override
+  void dispose() {
+    _streetController.dispose();
+    _houseNumberController.dispose();
+    _postalCodeController.dispose();
+    _cityController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final street = _streetController.text.trim();
+    final houseNumber = _houseNumberController.text.trim();
+    final postalCode = _postalCodeController.text.trim();
+    final city = _cityController.text.trim();
+    final phone = _phoneController.text.trim();
+    if (street.isEmpty ||
+        houseNumber.isEmpty ||
+        postalCode.isEmpty ||
+        city.isEmpty ||
+        _canton == null ||
+        phone.isEmpty) {
+      return;
+    }
+    setState(() => _loading = true);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'street': street,
+      'houseNumber': houseNumber,
+      'postalCode': postalCode,
+      'city': city,
+      'canton': _canton,
+      'phone': phone,
+    });
+    setState(() => _loading = false);
+    widget.onDone();
+  }
+
+  InputDecoration _fieldDecoration(BuildContext context, String hint) {
+    final theme = Theme.of(context);
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: theme.colorScheme.secondary,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Your contact details',
+              style: theme.textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text('Shared with your neighbours so they can reach you.',
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: Colors.grey.shade600)),
+          const SizedBox(height: 24),
+          Center(
+            child: AvatarPhotoPicker(
+              initials: _initials,
+              radius: 36,
+            ),
+          ),
+          const SizedBox(height: 28),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: TextField(
+                  controller: _streetController,
+                  autofocus: true,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: _fieldDecoration(context, 'Street'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 1,
+                child: TextField(
+                  controller: _houseNumberController,
+                  keyboardType: TextInputType.text,
+                  decoration: _fieldDecoration(context, 'No.'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 1,
+                child: TextField(
+                  controller: _postalCodeController,
+                  keyboardType: TextInputType.number,
+                  decoration: _fieldDecoration(context, 'PLZ'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: TextField(
+                  controller: _cityController,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: _fieldDecoration(context, 'City'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          DropdownButtonFormField<String>(
+            initialValue: _canton,
+            decoration: _fieldDecoration(context, 'Canton'),
+            icon: const Icon(LucideIcons.chevronDown),
+            items: swissCantons
+                .map((c) => DropdownMenuItem(
+                      value: c.code,
+                      child: Text('${c.code} — ${c.name}'),
+                    ))
+                .toList(),
+            onChanged: (v) => setState(() => _canton = v),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _phoneController,
+            keyboardType: TextInputType.phone,
+            decoration: _fieldDecoration(context, 'Phone number'),
+            onSubmitted: (_) => _save(),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: _loading ? null : _save,
+              child: _loading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                          color: Colors.white, strokeWidth: 2))
+                  : const Text('Continue'),
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Step 2: Role ─────────────────────────────────────────────────────────────
 
 class _RoleStep extends StatefulWidget {
   final VoidCallback onDone;
@@ -247,7 +455,7 @@ class _RoleStepState extends State<_RoleStep> {
                   ?.copyWith(color: Colors.grey.shade600)),
           const SizedBox(height: 28),
           _RoleCard(
-            icon: Icons.home_outlined,
+            icon: LucideIcons.house,
             title: 'I\'m a resident',
             subtitle: 'I live in the building and want to book machines',
             selected: _role == 'resident',
@@ -258,7 +466,7 @@ class _RoleStepState extends State<_RoleStep> {
           ),
           const SizedBox(height: 12),
           _RoleCard(
-            icon: Icons.manage_accounts_outlined,
+            icon: LucideIcons.userCog2,
             title: 'I manage building(s)',
             subtitle: 'I\'m responsible for the laundry room',
             selected: _role == 'admin',
@@ -353,7 +561,9 @@ class _RoleCard extends StatelessWidget {
           border: Border.all(
             color: selected
                 ? theme.colorScheme.primary
-                : Colors.grey.shade200,
+                : (theme.brightness == Brightness.dark
+                    ? const Color(0xFF2B3542)
+                    : const Color(0xFFE7EEEE)),
             width: selected ? 2 : 1,
           ),
         ),
@@ -388,7 +598,7 @@ class _RoleCard extends StatelessWidget {
   }
 }
 
-// ─── Step 2: Building ─────────────────────────────────────────────────────────
+// ─── Step 3: Building ─────────────────────────────────────────────────────────
 
 class _BuildingStep extends StatefulWidget {
   final VoidCallback onDone;
@@ -484,7 +694,7 @@ class _BuildingStepState extends State<_BuildingStep> {
           const SizedBox(height: 32),
           if (isAdmin) ...[
             _OptionCard(
-              icon: Icons.add_business_outlined,
+              icon: LucideIcons.building2,
               title: 'Create a new building',
               subtitle: 'Set up a building and get its QR code',
               onTap: () => Navigator.push(
@@ -498,14 +708,14 @@ class _BuildingStepState extends State<_BuildingStep> {
             ),
             const SizedBox(height: 12),
             _OptionCard(
-              icon: Icons.qr_code_scanner,
+              icon: LucideIcons.scanLine,
               title: 'Scan existing building QR',
               subtitle: 'Join a building that\'s already set up',
               onTap: _scanExisting,
             ),
           ] else ...[
             Center(
-              child: Icon(Icons.qr_code_scanner,
+              child: Icon(LucideIcons.scanLine,
                   size: 96, color: theme.colorScheme.primary),
             ),
             const SizedBox(height: 32),
@@ -526,7 +736,7 @@ class _BuildingStepState extends State<_BuildingStep> {
                         height: 16,
                         child: CircularProgressIndicator(
                             color: Colors.white, strokeWidth: 2))
-                    : const Icon(Icons.qr_code_scanner),
+                    : const Icon(LucideIcons.scanLine),
                 label: const Text('Scan QR code'),
               ),
             ),
@@ -537,7 +747,7 @@ class _BuildingStepState extends State<_BuildingStep> {
   }
 }
 
-// ─── Step 3: Household ────────────────────────────────────────────────────────
+// ─── Step 4: Household ────────────────────────────────────────────────────────
 
 class _HouseholdStep extends StatefulWidget {
   const _HouseholdStep();
@@ -571,14 +781,14 @@ class _HouseholdStepState extends State<_HouseholdStep> {
             Column(
               children: [
                 _OptionCard(
-                  icon: Icons.home_outlined,
+                  icon: LucideIcons.house,
                   title: 'First from my household',
                   subtitle: 'Create a new household and invite others later',
                   onTap: () => setState(() => _creating = true),
                 ),
                 const SizedBox(height: 12),
                 _OptionCard(
-                  icon: Icons.group_add_outlined,
+                  icon: LucideIcons.userPlus2,
                   title: 'Join an existing household',
                   subtitle:
                       'Scan the invite QR from your household member',
@@ -638,7 +848,10 @@ class _OptionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: theme.colorScheme.secondary,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(
+              color: theme.brightness == Brightness.dark
+                  ? const Color(0xFF2B3542)
+                  : const Color(0xFFE7EEEE)),
         ),
         child: Row(
           children: [
@@ -658,7 +871,7 @@ class _OptionCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: Colors.grey),
+            const Icon(LucideIcons.chevronRight, color: Colors.grey),
           ],
         ),
       ),

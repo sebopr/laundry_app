@@ -2,18 +2,24 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lavaplan/components/chat_bubble.dart';
-import 'package:lavaplan/components/my_textfield.dart';
 import 'package:lavaplan/components/typing_indicator.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/chat/chat_service.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverEmail;
   final String receiverId;
+  final String? receiverName;
 
-  const ChatPage(
-      {super.key, required this.receiverEmail, required this.receiverId});
+  const ChatPage({
+    super.key,
+    required this.receiverEmail,
+    required this.receiverId,
+    this.receiverName,
+  });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -31,6 +37,19 @@ class _ChatPageState extends State<ChatPage> {
 //for textfield focusing
 
   final FocusNode _focusNode = FocusNode();
+
+  String get _displayName => widget.receiverName ?? widget.receiverEmail;
+
+  String get _initials {
+    final parts = _displayName.trim().split(' ');
+    if (parts.length >= 2 && parts[0].isNotEmpty && parts[1].isNotEmpty) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return (_displayName.length >= 2
+            ? _displayName.substring(0, 2)
+            : _displayName)
+        .toUpperCase();
+  }
 
   @override
   void initState() {
@@ -58,6 +77,7 @@ class _ChatPageState extends State<ChatPage> {
 
   final ScrollController _scrollController = ScrollController();
   void _scrollDown() {
+    if (!_scrollController.hasClients) return;
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(seconds: 1),
@@ -85,14 +105,46 @@ class _ChatPageState extends State<ChatPage> {
         _authService.getCurrentUser()!.uid, widget.receiverId);
   }
 
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.receiverEmail),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
+              child: Text(
+                _initials,
+                style: TextStyle(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                _displayName,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
+          // 👇 Messages List
+          Expanded(child: _buildMessagesList()),
+
           // 👇 Typing Indicator
           StreamBuilder<bool>(
             stream: _chatService.isOtherUserTyping(
@@ -101,36 +153,52 @@ class _ChatPageState extends State<ChatPage> {
             ),
             builder: (context, snapshot) {
               final isTyping = snapshot.hasData && snapshot.data!;
-              return AnimatedOpacity(
-                opacity: isTyping ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const TypingIndicator(),
-                        const SizedBox(width: 8),
-                        Text(
-                          "${widget.receiverEmail} is typing...",
-                          style: const TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Colors.grey,
-                          ),
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: isTyping
+                    ? Padding(
+                        key: const ValueKey('typing'),
+                        padding:
+                            const EdgeInsets.only(left: 12, bottom: 8, top: 2),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            CircleAvatar(
+                              radius: 13,
+                              backgroundColor:
+                                  theme.colorScheme.primary.withValues(alpha: 0.15),
+                              child: Text(
+                                _initials,
+                                style: TextStyle(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 12),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.secondary,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(18),
+                                  topRight: Radius.circular(18),
+                                  bottomRight: Radius.circular(18),
+                                  bottomLeft: Radius.circular(4),
+                                ),
+                              ),
+                              child: const TypingIndicator(),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      )
+                    : const SizedBox.shrink(key: ValueKey('not-typing')),
               );
             },
           ),
-
-          // 👇 Messages List
-          Expanded(child: _buildMessagesList()),
 
           // 👇 Input Field
           _buildMessageInput(),
@@ -145,55 +213,177 @@ class _ChatPageState extends State<ChatPage> {
       builder: (context, snapshot) {
         //error
         if (snapshot.hasError) {
-          return const Text("Error");
+          return const Center(child: Text("Something went wrong"));
         }
         //loading...
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text("Loading ...");
+          return const Center(child: CircularProgressIndicator());
         }
-        //return listview
+
+        final docs = snapshot.data!.docs;
+        if (docs.isEmpty) {
+          return Center(
+            child: Text(
+              "Say hello to $_displayName",
+              style: TextStyle(color: Colors.grey.shade500),
+            ),
+          );
+        }
+
         // scroll after messages are updated
         WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown());
+
+        // mark newly-arrived messages from the other user as read while
+        // the chat page is already open, not just when it's first opened
+        final currentUserId = _authService.getCurrentUser()!.uid;
+        final hasUnread = docs.any((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return data["receiverId"] == currentUserId &&
+              data["isRead"] == false;
+        });
+        if (hasUnread) resetUnreadCount();
+
         return ListView(
           controller: _scrollController,
-          children:
-              snapshot.data!.docs.map((doc) => _buildMessageItem(doc)).toList(),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          children: _buildMessageWidgets(context, docs),
         );
       },
     );
   }
 
-  Widget _buildMessageItem(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  List<Widget> _buildMessageWidgets(
+      BuildContext context, List<QueryDocumentSnapshot> docs) {
+    final theme = Theme.of(context);
+    final currentUserId = _authService.getCurrentUser()!.uid;
+    final maxBubbleWidth = MediaQuery.of(context).size.width * 0.72;
 
-    bool isCurrentUser = data["senderId"] == _authService.getCurrentUser()!.uid;
+    final widgets = <Widget>[];
+    List<Widget> groupBubbles = [];
+    bool groupIsMine = false;
 
-    var alignment =
-        isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
+    void flushGroup() {
+      if (groupBubbles.isEmpty) return;
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment:
+                groupIsMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              if (!groupIsMine) ...[
+                CircleAvatar(
+                  radius: 13,
+                  backgroundColor:
+                      theme.colorScheme.primary.withValues(alpha: 0.15),
+                  child: Text(
+                    _initials,
+                    style: TextStyle(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxBubbleWidth),
+                child: Column(
+                  crossAxisAlignment: groupIsMine
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.of(groupBubbles),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+      groupBubbles = [];
+    }
 
-    return Container(
-        alignment: alignment,
-        child: Column(
-          crossAxisAlignment:
-              isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            ChatBubble(message: data["message"], isCurrentUser: isCurrentUser)
-          ],
-        ));
+    DateTime? lastDate;
+    String? lastSenderId;
+
+    for (var i = 0; i < docs.length; i++) {
+      final data = docs[i].data() as Map<String, dynamic>;
+      final senderId = data["senderId"] as String;
+      final isMine = senderId == currentUserId;
+      final timestamp = (data["timestamp"] as Timestamp).toDate();
+
+      final isNewDay = lastDate == null || !_isSameDay(lastDate, timestamp);
+      if (isNewDay) {
+        flushGroup();
+        widgets.add(_DayDivider(date: timestamp));
+        lastSenderId = null;
+      }
+
+      if (lastSenderId != senderId) {
+        flushGroup();
+        groupIsMine = isMine;
+      }
+
+      bool isLastInGroup = true;
+      if (i < docs.length - 1) {
+        final nextData = docs[i + 1].data() as Map<String, dynamic>;
+        final nextTimestamp = (nextData["timestamp"] as Timestamp).toDate();
+        isLastInGroup = nextData["senderId"] != senderId ||
+            !_isSameDay(timestamp, nextTimestamp);
+      }
+
+      groupBubbles.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 2),
+          child: ChatBubble(
+            message: data["message"] as String,
+            isCurrentUser: isMine,
+            time: timestamp,
+            isRead: data["isRead"] as bool? ?? false,
+            isLastInGroup: isLastInGroup,
+          ),
+        ),
+      );
+
+      lastDate = timestamp;
+      lastSenderId = senderId;
+    }
+
+    flushGroup();
+    return widgets;
   }
 
   //message input
   Widget _buildMessageInput() {
+    final theme = Theme.of(context);
+
     return Padding(
-        padding: const EdgeInsets.only(bottom: 50),
-        child: Row(
-          children: [
-            Expanded(
-              child: MyTextField(
+      padding: const EdgeInsets.fromLTRB(12, 6, 12, 24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 44),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.secondary,
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: TextField(
                 controller: _messageController,
-                hintText: "Type your message",
-                obscureText: false,
                 focusNode: _focusNode,
+                minLines: 1,
+                maxLines: 5,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  isCollapsed: true,
+                  hintText: "Message $_displayName",
+                  hintStyle: TextStyle(color: Colors.grey.shade500),
+                ),
                 onChanged: (value) {
                   _chatService.setTypingStatus(
                       //set is typing
@@ -208,24 +398,79 @@ class _ChatPageState extends State<ChatPage> {
                   }
                 },
                 onSubmitted: (value) async {
+                  if (value.trim().isEmpty) return;
                   await _chatService.sendMessage(widget.receiverId, value);
                   await _chatService.setTypingStatus(
                       widget.receiverId, false); // stop typing
+                  _messageController.clear();
+                  _scrollDown();
                 },
               ),
             ),
-            //send button
-            Container(
-                decoration: const BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-                margin: const EdgeInsets.only(right: 25),
-                child: IconButton(
-                  onPressed: sendMessage,
-                  icon: const Icon(Icons.arrow_upward),
-                ))
-          ],
-        ));
+          ),
+          const SizedBox(width: 8),
+          //send button
+          Container(
+            width: 44,
+            height: 44,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF22C6C6), Color(0xFF12A3A8)],
+              ),
+            ),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: sendMessage,
+              icon: const Icon(LucideIcons.arrowUp, color: Colors.white, size: 20),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DayDivider extends StatelessWidget {
+  final DateTime date;
+
+  const _DayDivider({required this.date});
+
+  String _label() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final day = DateTime(date.year, date.month, date.day);
+
+    if (day == today) return "Today";
+    if (day == yesterday) return "Yesterday";
+    if (date.year == now.year) return DateFormat('MMMM d').format(date);
+    return DateFormat('MMMM d, yyyy').format(date);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondary,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Text(
+            _label(),
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade500,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/services/notifications/notification_service.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 // ─── Slot definitions ─────────────────────────────────────────────────────────
 
@@ -29,6 +31,7 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
   DateTime _selectedDate = _today();
   final String _userId = FirebaseAuth.instance.currentUser!.uid;
   String? _linkedUuid;
+  String? _displayName;
 
   static DateTime _today() {
     final n = DateTime.now();
@@ -37,6 +40,13 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
 
   static String _dateKey(DateTime d) =>
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  static String _greeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  }
 
   @override
   void initState() {
@@ -50,9 +60,13 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
         .doc(_userId)
         .get();
     if (!mounted) return;
-    if (doc.exists && (doc.data()?.containsKey('linked_uuid') ?? false)) {
-      setState(() => _linkedUuid = doc['linked_uuid']);
-    }
+    final data = doc.data();
+    setState(() {
+      _displayName = data?['displayName'] as String?;
+      if (data?.containsKey('linked_uuid') ?? false) {
+        _linkedUuid = data!['linked_uuid'];
+      }
+    });
   }
 
   // Requires a composite Firestore index on (linked_uuid, date).
@@ -94,21 +108,29 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
   Future<void> _book(int machine, _Slot slot) async {
     if (_linkedUuid == null) return;
     final d = _selectedDate;
-    await FirebaseFirestore.instance.collection('bookings').add({
+    final start = DateTime(d.year, d.month, d.day, slot.startHour);
+    final end = DateTime(d.year, d.month, d.day, slot.endHour);
+    final doc = await FirebaseFirestore.instance.collection('bookings').add({
       'user_id': _userId,
       'email': FirebaseAuth.instance.currentUser!.email,
       'linked_uuid': _linkedUuid,
       'date': _dateKey(d),
       'slot': slot.name,
       'machine': machine,
-      'start': Timestamp.fromDate(
-          DateTime(d.year, d.month, d.day, slot.startHour)),
-      'end': Timestamp.fromDate(
-          DateTime(d.year, d.month, d.day, slot.endHour)),
+      'start': Timestamp.fromDate(start),
+      'end': Timestamp.fromDate(end),
     });
+    await NotificationService.instance.scheduleBookingReminders(
+      bookingId: doc.id,
+      machine: machine,
+      slotLabel: slot.label,
+      start: start,
+      end: end,
+    );
   }
 
   Future<void> _cancel(String id) async {
+    await NotificationService.instance.cancelBookingReminders(id);
     await FirebaseFirestore.instance.collection('bookings').doc(id).delete();
   }
 
@@ -182,11 +204,14 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
 
               return CustomScrollView(
                 slivers: [
-                  const SliverAppBar(
+                  SliverAppBar(
                     floating: true,
                     automaticallyImplyLeading: false,
-                    title: Text('Lavaplan'),
-                    centerTitle: false,
+                    titleSpacing: 16,
+                    title: _GreetingHeader(
+                      greeting: _greeting(),
+                      name: _displayName,
+                    ),
                   ),
 
                   // Date navigation
@@ -258,6 +283,49 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
   }
 }
 
+// ─── Greeting header ──────────────────────────────────────────────────────────
+
+class _GreetingHeader extends StatelessWidget {
+  final String greeting;
+  final String? name;
+
+  const _GreetingHeader({required this.greeting, this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Container(
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(LucideIcons.washingMachine,
+              color: theme.colorScheme.primary, size: 18),
+        ),
+        const SizedBox(width: 10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(greeting,
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: Colors.grey.shade500, fontSize: 11)),
+            Text(
+              (name != null && name!.isNotEmpty) ? name! : 'Lavaplan',
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 // ─── Date navigation bar ──────────────────────────────────────────────────────
 
 class _DateNav extends StatelessWidget {
@@ -285,24 +353,28 @@ class _DateNav extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-              icon: const Icon(Icons.chevron_left), onPressed: onPrev),
+              icon: const Icon(LucideIcons.chevronLeft), onPressed: onPrev),
           Expanded(
             child: Center(
               child: InkWell(
                 onTap: onTapDate,
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 6),
+                      horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.secondary,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(label,
                           style: theme.textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w600)),
-                      const SizedBox(width: 4),
-                      Icon(Icons.calendar_month_outlined,
-                          size: 18,
+                      const SizedBox(width: 6),
+                      Icon(LucideIcons.calendar,
+                          size: 16,
                           color: theme.colorScheme.primary),
                     ],
                   ),
@@ -315,7 +387,7 @@ class _DateNav extends StatelessWidget {
           else
             const SizedBox(width: 64),
           IconButton(
-              icon: const Icon(Icons.chevron_right), onPressed: onNext),
+              icon: const Icon(LucideIcons.chevronRight), onPressed: onNext),
         ],
       ),
     );
@@ -336,16 +408,50 @@ class _BookingBanner extends StatelessWidget {
     final timeRange = slot == 'morning' ? '08:00 – 12:00' : '12:00 – 22:00';
     final slotLabel = '${slot[0].toUpperCase()}${slot.substring(1)}';
 
-    return Card(
-      elevation: 0,
-      color: theme.colorScheme.primary,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF22C6C6), Color(0xFF0C7378)],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF12A3A8).withValues(alpha: 0.35),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
-            const Icon(Icons.local_laundry_service,
-                color: Colors.white, size: 32),
+            Container(
+              width: 46,
+              height: 46,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: SweepGradient(
+                  colors: [
+                    Colors.white,
+                    Colors.white,
+                    Colors.white.withValues(alpha: 0.28),
+                  ],
+                  stops: const [0, 0.7, 0.7],
+                ),
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFF12A3A8),
+                ),
+                child: const Icon(LucideIcons.washingMachine,
+                    color: Colors.white, size: 20),
+              ),
+            ),
             const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -392,55 +498,74 @@ class _MachineCard extends StatelessWidget {
   Map<String, dynamic>? _bookingFor(_Slot slot) =>
       bookings.where((b) => b['slot'] == slot.name).firstOrNull;
 
+  (Color, String) get _status {
+    if (inMaintenance) return (Colors.grey.shade400, 'Maintenance');
+    if (bookings.isEmpty) return (const Color(0xFF34A853), 'Open');
+    if (bookings.length >= _Slot.values.length) {
+      return (const Color(0xFFE15B5B), 'Full');
+    }
+    return (const Color(0xFFE8963C), 'Partly booked');
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final (statusColor, statusLabel) = _status;
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.secondary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(
+            color: isDark ? const Color(0xFF2B3542) : const Color(0xFFE7EEEE)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
+            padding: const EdgeInsets.fromLTRB(14, 14, 16, 8),
             child: Row(
               children: [
-                Icon(Icons.local_laundry_service,
-                    color: inMaintenance
-                        ? Colors.orange
-                        : theme.colorScheme.primary,
-                    size: 20),
-                const SizedBox(width: 8),
+                Container(
+                  width: 32,
+                  height: 32,
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle, color: statusColor),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: theme.colorScheme.secondary,
+                    ),
+                    child: Icon(LucideIcons.washingMachine,
+                        color: theme.colorScheme.onSurface, size: 15),
+                  ),
+                ),
+                const SizedBox(width: 10),
                 Text('Machine $machine',
                     style: theme.textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.bold)),
-                if (inMaintenance) ...[
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.warning_amber_rounded,
-                            size: 12, color: Colors.orange.shade700),
-                        const SizedBox(width: 4),
-                        Text('Maintenance',
-                            style: TextStyle(
-                                fontSize: 11,
-                                color: Colors.orange.shade700,
-                                fontWeight: FontWeight.w500)),
-                      ],
-                    ),
+                const Spacer(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: statusColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ],
+                  child: Text(statusLabel,
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: statusColor,
+                          fontWeight: FontWeight.w700)),
+                ),
               ],
             ),
           ),
@@ -451,13 +576,13 @@ class _MachineCard extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Row(
                 children: [
-                  Icon(Icons.build_outlined,
-                      size: 18, color: Colors.orange.shade400),
+                  Icon(LucideIcons.wrench,
+                      size: 18, color: Colors.grey.shade500),
                   const SizedBox(width: 10),
                   Text(
                     'This machine is temporarily out of service.',
                     style: theme.textTheme.bodySmall
-                        ?.copyWith(color: Colors.orange.shade700),
+                        ?.copyWith(color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -540,7 +665,11 @@ class _SlotRow extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.circle, color: dotColor, size: 8),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor),
+              ),
               const SizedBox(width: 4),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 84),
@@ -721,7 +850,7 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                       child: Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.chevron_left),
+                            icon: const Icon(LucideIcons.chevronLeft),
                             onPressed: _prevMonth,
                           ),
                           Expanded(
@@ -734,7 +863,7 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.chevron_right),
+                            icon: const Icon(LucideIcons.chevronRight),
                             onPressed: _nextMonth,
                           ),
                         ],

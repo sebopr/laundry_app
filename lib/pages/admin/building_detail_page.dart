@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/pages/generate_qr_page.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class BuildingDetailPage extends StatelessWidget {
   final String buildingUuid;
@@ -22,7 +23,7 @@ class BuildingDetailPage extends StatelessWidget {
           title: Text(buildingName),
           actions: [
             IconButton(
-              icon: const Icon(Icons.qr_code),
+              icon: const Icon(LucideIcons.qrCode),
               tooltip: 'Building QR',
               onPressed: () => Navigator.push(
                 context,
@@ -34,9 +35,9 @@ class BuildingDetailPage extends StatelessWidget {
           ],
           bottom: const TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.people_outline), text: 'Residents'),
+              Tab(icon: Icon(LucideIcons.users), text: 'Residents'),
               Tab(
-                  icon: Icon(Icons.local_laundry_service_outlined),
+                  icon: Icon(LucideIcons.washingMachine),
                   text: 'Machines'),
             ],
           ),
@@ -182,7 +183,10 @@ class _HouseholdGroup extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.colorScheme.secondary,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade200),
+              border: Border.all(
+                  color: theme.brightness == Brightness.dark
+                      ? const Color(0xFF2B3542)
+                      : const Color(0xFFE7EEEE)),
             ),
             child: Column(
               children: members.asMap().entries.map((entry) {
@@ -237,7 +241,7 @@ class _HouseholdGroup extends StatelessWidget {
                           if (!isSelf) ...[
                             const SizedBox(width: 8),
                             IconButton(
-                              icon: const Icon(Icons.person_remove_outlined,
+                              icon: const Icon(LucideIcons.userMinus2,
                                   size: 18, color: Colors.redAccent),
                               onPressed: () => onRemove(uid),
                               tooltip: 'Remove from building',
@@ -354,7 +358,7 @@ class _MachinesTab extends StatelessWidget {
             const SizedBox(height: 4),
             OutlinedButton.icon(
               onPressed: () => _addMachine(machines),
-              icon: const Icon(Icons.add),
+              icon: const Icon(LucideIcons.plus),
               label: const Text('Add machine'),
             ),
           ],
@@ -402,7 +406,7 @@ class _MachineToggleCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.local_laundry_service, color: dotColor),
+          Icon(LucideIcons.washingMachine, color: dotColor),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -413,7 +417,12 @@ class _MachineToggleCard extends StatelessWidget {
                         ?.copyWith(fontWeight: FontWeight.w600)),
                 Row(
                   children: [
-                    Icon(Icons.circle, color: dotColor, size: 8),
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration:
+                          BoxDecoration(shape: BoxShape.circle, color: dotColor),
+                    ),
                     const SizedBox(width: 4),
                     Text(label,
                         style: theme.textTheme.bodySmall
@@ -424,7 +433,7 @@ class _MachineToggleCard extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, size: 18),
+            icon: const Icon(LucideIcons.trash2, size: 18),
             color: Colors.red.shade300,
             onPressed: onRemove,
             tooltip: 'Remove machine',

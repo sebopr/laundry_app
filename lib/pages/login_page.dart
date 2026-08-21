@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 // ─── Login page ───────────────────────────────────────────────────────────────
 
@@ -79,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
               _InputField(
                 controller: _emailController,
                 label: 'Email',
-                icon: Icons.email_outlined,
+                icon: LucideIcons.mail,
                 keyboardType: TextInputType.emailAddress,
                 autocorrect: false,
               ),
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
               _InputField(
                 controller: _pwController,
                 label: 'Password',
-                icon: Icons.lock_outline,
+                icon: LucideIcons.lock,
                 obscureText: _obscurePw,
                 onToggleObscure: () =>
                     setState(() => _obscurePw = !_obscurePw),
@@ -221,7 +222,7 @@ class _RegisterPageState extends State<RegisterPage> {
               _InputField(
                 controller: _emailController,
                 label: 'Email',
-                icon: Icons.email_outlined,
+                icon: LucideIcons.mail,
                 keyboardType: TextInputType.emailAddress,
                 autocorrect: false,
               ),
@@ -229,7 +230,7 @@ class _RegisterPageState extends State<RegisterPage> {
               _InputField(
                 controller: _pwController,
                 label: 'Password',
-                icon: Icons.lock_outline,
+                icon: LucideIcons.lock,
                 obscureText: _obscurePw,
                 onToggleObscure: () =>
                     setState(() => _obscurePw = !_obscurePw),
@@ -238,7 +239,7 @@ class _RegisterPageState extends State<RegisterPage> {
               _InputField(
                 controller: _confirmPwController,
                 label: 'Confirm password',
-                icon: Icons.lock_outline,
+                icon: LucideIcons.lock,
                 obscureText: _obscureConfirm,
                 onToggleObscure: () =>
                     setState(() => _obscureConfirm = !_obscureConfirm),
@@ -350,8 +351,8 @@ class _InputField extends StatelessWidget {
         suffixIcon: onToggleObscure != null
             ? IconButton(
                 icon: Icon(obscureText
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined),
+                    ? LucideIcons.eye
+                    : LucideIcons.eyeOff),
                 onPressed: onToggleObscure,
               )
             : null,

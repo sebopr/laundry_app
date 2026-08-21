@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/components/avatar_photo_picker.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/onboarding_page.dart';
 import 'package:lavaplan/pages/profile_page.dart';
@@ -8,6 +9,7 @@ import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/household/household_service.dart';
 import 'package:lavaplan/services/locale/locale_provider.dart';
 import 'package:lavaplan/themes/theme_provider.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -60,13 +62,13 @@ class SettingsPage extends StatelessWidget {
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(l10n.darkMode),
-                secondary: const Icon(Icons.dark_mode_outlined),
+                secondary: const _RowIcon(LucideIcons.moon),
                 value: themeProvider.isDarkMode,
                 onChanged: (_) => themeProvider.toggleTheme(),
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.language),
+                leading: const _RowIcon(LucideIcons.languages),
                 title: Text(l10n.language),
                 trailing: DropdownButton<String>(
                   value: localeProvider.languageName,
@@ -91,26 +93,26 @@ class SettingsPage extends StatelessWidget {
               if (householdId != null) ...[
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.home_outlined),
+                  leading: const _RowIcon(LucideIcons.house),
                   title: Text(householdName ?? l10n.myHousehold),
                   subtitle: isHead
                       ? Text(l10n.youManageHousehold)
                       : Text(l10n.memberLabel),
-                  trailing: const Icon(Icons.chevron_right),
+                  trailing: const Icon(LucideIcons.chevronRight),
                   onTap: () => _showHouseholdSheet(
                       context, householdId, householdName ?? '', isHead),
                 ),
               ] else ...[
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.group_add_outlined),
+                  leading: const _RowIcon(LucideIcons.userPlus2),
                   title: Text(l10n.setupHousehold),
-                  trailing: const Icon(Icons.chevron_right),
+                  trailing: const Icon(LucideIcons.chevronRight),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (_) =>
-                            const OnboardingPage(initialStep: 2)),
+                            const OnboardingPage(initialStep: 3)),
                   ),
                 ),
               ],
@@ -120,8 +122,8 @@ class SettingsPage extends StatelessWidget {
               _SectionLabel(l10n.sectionAccount),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading:
-                    const Icon(Icons.logout, color: Colors.redAccent),
+                leading: const _RowIcon(LucideIcons.logOut,
+                    color: Colors.redAccent, tint: Color(0x1AE15B5B)),
                 title: Text(l10n.signOut,
                     style: const TextStyle(color: Colors.redAccent)),
                 onTap: () => AuthService().signOut(),
@@ -186,17 +188,7 @@ class _ProfileCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: theme.colorScheme.primary,
-            child: Text(
-              _initials(name),
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
+          AvatarPhotoPicker(initials: _initials(name), radius: 28),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -216,7 +208,7 @@ class _ProfileCard extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.edit_outlined, size: 20),
+            icon: const Icon(LucideIcons.squarePen, size: 20),
             onPressed: onEdit,
             tooltip: l10n.editProfile,
           ),
@@ -273,7 +265,7 @@ class _HouseholdSheet extends StatelessWidget {
               const SizedBox(height: 20),
               Row(
                 children: [
-                  Icon(Icons.home_outlined,
+                  Icon(LucideIcons.house,
                       color: theme.colorScheme.primary),
                   const SizedBox(width: 10),
                   Text(householdName,
@@ -380,6 +372,30 @@ class _MembersList extends StatelessWidget {
           }).toList(),
         );
       },
+    );
+  }
+}
+
+// ─── Row icon chip ────────────────────────────────────────────────────────────
+
+class _RowIcon extends StatelessWidget {
+  final IconData icon;
+  final Color? color;
+  final Color? tint;
+
+  const _RowIcon(this.icon, {this.color, this.tint});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: 34,
+      height: 34,
+      decoration: BoxDecoration(
+        color: tint ?? theme.colorScheme.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(icon, size: 17, color: color ?? theme.colorScheme.primary),
     );
   }
 }

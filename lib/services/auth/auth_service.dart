@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lavaplan/services/notifications/notification_service.dart';
+import 'package:lavaplan/services/notifications/push_notification_service.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService {
@@ -28,6 +30,8 @@ class AuthService {
           email: email, password: password);
       await _saveUserDoc(cred);
       await _sendVerification(cred.user!);
+      await NotificationService.instance
+          .scheduleEmailVerificationReminder(cred.user!.uid);
       return cred;
     } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
@@ -93,6 +97,7 @@ class AuthService {
       'email': cred.user!.email,
       'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
+    await PushNotificationService.instance.registerToken(cred.user!.uid);
   }
 
   // ── Email confirmation ────────────────────────────────────────────────────
@@ -144,6 +149,8 @@ class AuthService {
     final refreshed = _auth.currentUser;
     if (refreshed == null || !refreshed.emailVerified) return false;
     await refreshed.getIdToken(true);
+    await NotificationService.instance
+        .cancelEmailVerificationReminder(refreshed.uid);
     return true;
   }
 

@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/admin/admin_page.dart';
 import 'package:lavaplan/pages/calendar_page.dart';
 import 'package:lavaplan/pages/chat_page.dart';
 import 'package:lavaplan/pages/settings_page.dart';
 import 'package:lavaplan/services/chat/chat_service.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,8 +32,9 @@ class _HomePageState extends State<HomePage> {
         final role = d['role'] as String? ?? 'resident';
         final isResidentAdmin = d['isResidentAdmin'] as bool? ?? false;
 
+        final l10n = AppLocalizations.of(context)!;
         final pages = _buildPages(role, isResidentAdmin);
-        final destinations = _buildDestinations(role, isResidentAdmin);
+        final destinations = _buildDestinations(l10n, role, isResidentAdmin);
         final safeIndex = _currentIndex.clamp(0, pages.length - 1);
 
         return Scaffold(
@@ -65,60 +68,60 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<NavigationDestination> _buildDestinations(
-      String role, bool isResidentAdmin) {
+      AppLocalizations l10n, String role, bool isResidentAdmin) {
     if (role == 'admin' && !isResidentAdmin) {
-      return const [
+      return [
         NavigationDestination(
-          icon: Icon(Icons.business_outlined),
-          selectedIcon: Icon(Icons.business),
-          label: 'Admin',
+          icon: const Icon(LucideIcons.building2),
+          selectedIcon: const Icon(LucideIcons.building2),
+          label: l10n.navAdmin,
         ),
         NavigationDestination(
-          icon: Icon(Icons.settings_outlined),
-          selectedIcon: Icon(Icons.settings),
-          label: 'Settings',
+          icon: const Icon(LucideIcons.settings),
+          selectedIcon: const Icon(LucideIcons.settings),
+          label: l10n.navSettings,
         ),
       ];
     }
     if (role == 'admin' && isResidentAdmin) {
-      return const [
+      return [
         NavigationDestination(
-          icon: Icon(Icons.local_laundry_service_outlined),
-          selectedIcon: Icon(Icons.local_laundry_service),
-          label: 'Bookings',
+          icon: const Icon(LucideIcons.washingMachine),
+          selectedIcon: const Icon(LucideIcons.washingMachine),
+          label: l10n.navBookings,
         ),
         NavigationDestination(
-          icon: Icon(Icons.people_outline),
-          selectedIcon: Icon(Icons.people),
-          label: 'Neighbours',
+          icon: const Icon(LucideIcons.users),
+          selectedIcon: const Icon(LucideIcons.users),
+          label: l10n.navNeighbours,
         ),
         NavigationDestination(
-          icon: Icon(Icons.business_outlined),
-          selectedIcon: Icon(Icons.business),
-          label: 'Admin',
+          icon: const Icon(LucideIcons.building2),
+          selectedIcon: const Icon(LucideIcons.building2),
+          label: l10n.navAdmin,
         ),
         NavigationDestination(
-          icon: Icon(Icons.settings_outlined),
-          selectedIcon: Icon(Icons.settings),
-          label: 'Settings',
+          icon: const Icon(LucideIcons.settings),
+          selectedIcon: const Icon(LucideIcons.settings),
+          label: l10n.navSettings,
         ),
       ];
     }
-    return const [
+    return [
       NavigationDestination(
-        icon: Icon(Icons.local_laundry_service_outlined),
-        selectedIcon: Icon(Icons.local_laundry_service),
-        label: 'Bookings',
+        icon: const Icon(LucideIcons.washingMachine),
+        selectedIcon: const Icon(LucideIcons.washingMachine),
+        label: l10n.navBookings,
       ),
       NavigationDestination(
-        icon: Icon(Icons.people_outline),
-        selectedIcon: Icon(Icons.people),
-        label: 'Neighbours',
+        icon: const Icon(LucideIcons.users),
+        selectedIcon: const Icon(LucideIcons.users),
+        label: l10n.navNeighbours,
       ),
       NavigationDestination(
-        icon: Icon(Icons.settings_outlined),
-        selectedIcon: Icon(Icons.settings),
-        label: 'Settings',
+        icon: const Icon(LucideIcons.settings),
+        selectedIcon: const Icon(LucideIcons.settings),
+        label: l10n.navSettings,
       ),
     ];
   }
@@ -133,10 +136,11 @@ class _NeighboursTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser!;
     final chatService = ChatService();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Neighbours'),
+        title: Text(l10n.neighboursTitle),
         centerTitle: false,
         automaticallyImplyLeading: false,
       ),
@@ -144,7 +148,7 @@ class _NeighboursTab extends StatelessWidget {
         stream: chatService.getUsersStream(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong'));
+            return Center(child: Text(l10n.somethingWentWrong));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -155,7 +159,7 @@ class _NeighboursTab extends StatelessWidget {
               .toList();
 
           if (users.isEmpty) {
-            return const Center(child: Text('No neighbours yet'));
+            return Center(child: Text(l10n.noNeighboursYet));
           }
 
           return ListView.builder(
@@ -175,6 +179,7 @@ class _NeighboursTab extends StatelessWidget {
                         builder: (_) => ChatPage(
                           receiverEmail: userData['email'],
                           receiverId: userData['uid'],
+                          receiverName: userData['displayName'] as String?,
                         ),
                       ),
                     ),

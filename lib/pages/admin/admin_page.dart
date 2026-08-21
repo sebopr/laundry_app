@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/admin/building_detail_page.dart';
 import 'package:lavaplan/pages/admin/create_building_page.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -10,10 +12,11 @@ class AdminPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser!.uid;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin'),
+        title: Text(l10n.adminTitle),
         centerTitle: false,
         automaticallyImplyLeading: false,
       ),
@@ -22,7 +25,7 @@ class AdminPage extends StatelessWidget {
           context,
           MaterialPageRoute(builder: (_) => const CreateBuildingPage()),
         ),
-        icon: const Icon(Icons.add_business_outlined),
+        icon: const Icon(LucideIcons.building2),
         label: const Text('Add building'),
       ),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -43,7 +46,7 @@ class AdminPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.business_outlined,
+                  Icon(LucideIcons.building2,
                       size: 64, color: Colors.grey.shade400),
                   const SizedBox(height: 16),
                   Text('No buildings yet',
@@ -111,14 +114,17 @@ class _BuildingCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: theme.colorScheme.secondary,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.grey.shade200),
+              border: Border.all(
+                  color: theme.brightness == Brightness.dark
+                      ? const Color(0xFF2B3542)
+                      : const Color(0xFFE7EEEE)),
             ),
             child: Row(
               children: [
                 CircleAvatar(
                   backgroundColor:
                       theme.colorScheme.primary.withValues(alpha: 0.1),
-                  child: Icon(Icons.business_outlined,
+                  child: Icon(LucideIcons.building2,
                       color: theme.colorScheme.primary),
                 ),
                 const SizedBox(width: 16),
@@ -135,7 +141,7 @@ class _BuildingCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 2),
                           child: Row(
                             children: [
-                              const Icon(Icons.warning_amber_rounded,
+                              const Icon(LucideIcons.triangleAlert,
                                   size: 12, color: Colors.orange),
                               const SizedBox(width: 4),
                               Text(
@@ -149,7 +155,7 @@ class _BuildingCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right, color: Colors.grey),
+                const Icon(LucideIcons.chevronRight, color: Colors.grey),
               ],
             ),
           ),

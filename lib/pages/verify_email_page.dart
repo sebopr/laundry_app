@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 // ─── Email confirmation page ──────────────────────────────────────────────────
 //
@@ -115,7 +116,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(Icons.mark_email_unread_outlined,
+                Icon(LucideIcons.mailWarning,
                     size: 56, color: theme.colorScheme.primary),
                 const SizedBox(height: 20),
                 Text('Confirm your email',

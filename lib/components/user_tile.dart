@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lavaplan/components/chat_icon_badge.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/chat/chat_service.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class UserTile extends StatelessWidget {
   final String text;
@@ -34,7 +35,7 @@ class UserTile extends StatelessWidget {
           children: [
             //Icon
             leading,
-            const Icon(Icons.person),
+            const Icon(LucideIcons.user),
 
             //User name
             Text(text)

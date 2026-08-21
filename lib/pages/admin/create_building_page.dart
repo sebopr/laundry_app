@@ -3,6 +3,7 @@ import 'dart:ui' show ImageByteFormat;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -190,7 +191,7 @@ class _QrView extends StatelessWidget {
         padding: const EdgeInsets.all(32),
         child: Column(
           children: [
-            const Icon(Icons.check_circle,
+            const Icon(LucideIcons.circleCheck,
                 color: Colors.green, size: 48),
             const SizedBox(height: 12),
             Text(buildingName,
@@ -227,7 +228,7 @@ class _QrView extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: onPrint,
-                    icon: const Icon(Icons.print),
+                    icon: const Icon(LucideIcons.printer),
                     label: const Text('Print'),
                   ),
                 ),

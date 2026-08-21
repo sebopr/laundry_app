@@ -3,6 +3,7 @@ import 'dart:ui' show ImageByteFormat;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -147,7 +148,7 @@ class _GenerateQrPageState extends State<GenerateQrPage> {
                     const SizedBox(height: 32),
                     FilledButton.icon(
                       onPressed: _print,
-                      icon: const Icon(Icons.print),
+                      icon: const Icon(LucideIcons.printer),
                       label: const Text('Print QR'),
                     ),
                   ],
