@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '400898242156',
     projectId: 'chatappdb-b4ba4',
     storageBucket: 'chatappdb-b4ba4.firebasestorage.app',
-    iosBundleId: 'com.example.laundryApp',
+    iosBundleId: 'com.example.lavaplan',
   );
 
 }

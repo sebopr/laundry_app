@@ -6,7 +6,7 @@
   "navAdmin": "Admin",
   "navSettings": "Einstellungen",
 
-  "appName": "Wäsche",
+  "appName": "Lavaplan",
   "appTagline": "Waschmaschine buchen",
 
   "loginTitle": "Willkommen zurück",
@@ -154,7 +154,7 @@
   "residentsCanScan": "Bewohner scannen ihn, um dem Buchungssystem beizutreten.",
   "printQr": "QR drucken",
   "laundryRoomScanToJoin": "Waschraum — Scannen zum Beitreten",
-  "scanWithApp": "Mit der Wäsche-App scannen, um Maschinen zu buchen.",
+  "scanWithApp": "Mit der Lavaplan-App scannen, um Maschinen zu buchen.",
   "buildingJoined": "Gebäude erfolgreich beigetreten.",
   "householdJoined": "Haushalt erfolgreich beigetreten.",
   "unrecognisedQr": "Unbekannter QR-Code.",

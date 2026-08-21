@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navSettings => 'Settings';
 
   @override
-  String get appName => 'Laundry';
+  String get appName => 'Lavaplan';
 
   @override
   String get appTagline => 'Book your laundry slot';
@@ -413,7 +413,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get laundryRoomScanToJoin => 'Laundry Room — Scan to join';
 
   @override
-  String get scanWithApp => 'Scan with the Laundry app to book machines.';
+  String get scanWithApp => 'Scan with the Lavaplan app to book machines.';
 
   @override
   String get buildingJoined => 'Building joined successfully.';

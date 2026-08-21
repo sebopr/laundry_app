@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/pages/home_page.dart';
-import 'package:laundry_app/pages/onboarding_page.dart';
-import 'package:laundry_app/pages/verify_email_page.dart';
-import 'package:laundry_app/services/auth/auth_service.dart';
-import 'package:laundry_app/services/auth/login_or_register.dart';
+import 'package:lavaplan/pages/home_page.dart';
+import 'package:lavaplan/pages/onboarding_page.dart';
+import 'package:lavaplan/pages/verify_email_page.dart';
+import 'package:lavaplan/services/auth/auth_service.dart';
+import 'package:lavaplan/services/auth/login_or_register.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});

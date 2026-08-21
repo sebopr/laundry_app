@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:laundry_app/themes/theme_provider.dart';
+import 'package:lavaplan/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class ChatBubble extends StatelessWidget {

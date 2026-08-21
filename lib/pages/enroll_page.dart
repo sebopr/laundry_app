@@ -3,8 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/pages/onboarding_page.dart';
-import 'package:laundry_app/services/household/household_service.dart';
+import 'package:lavaplan/pages/onboarding_page.dart';
+import 'package:lavaplan/services/household/household_service.dart';
 
 // Kept for re-scanning from Settings (e.g. moving buildings).
 // Handles both building: and household: prefixes.

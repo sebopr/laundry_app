@@ -21,7 +21,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navSettings => 'Paramètres';
 
   @override
-  String get appName => 'Laverie';
+  String get appName => 'Lavaplan';
 
   @override
   String get appTagline => 'Réservez votre créneau';

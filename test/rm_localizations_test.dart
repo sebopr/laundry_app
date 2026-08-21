@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:laundry_app/l10n/app_localizations.dart';
-import 'package:laundry_app/l10n/rm_fallback_localizations.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
+import 'package:lavaplan/l10n/rm_fallback_localizations.dart';
 
 // Regression test for "No MaterialLocalizations found." — flutter_localizations
 // has no Romansh, so 'rm' needs the fallback delegates to build Material

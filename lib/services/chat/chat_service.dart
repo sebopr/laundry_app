@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:laundry_app/models/message.dart';
+import 'package:lavaplan/models/message.dart';
 
 class ChatService {
   //get instance

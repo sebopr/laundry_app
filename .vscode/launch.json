@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "laundry_app_l (Flutter Pixel 8 API 35)",
+      "name": "lavaplan (Flutter Pixel 8 API 35)",
       "program": "lib/main.dart",
       "deviceId": "emulator-5556",
       "request": "launch",
@@ -10,7 +10,7 @@
       "flutterMode": "debug"
     },
     {
-      "name": "laundry_app_l (Flutter Pixel 9 API 35)",
+      "name": "lavaplan (Flutter Pixel 9 API 35)",
       "program": "lib/main.dart",
       "deviceId": "emulator-5554",
       "request": "launch",

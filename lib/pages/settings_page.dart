@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/l10n/app_localizations.dart';
-import 'package:laundry_app/pages/onboarding_page.dart';
-import 'package:laundry_app/pages/profile_page.dart';
-import 'package:laundry_app/services/auth/auth_service.dart';
-import 'package:laundry_app/services/household/household_service.dart';
-import 'package:laundry_app/services/locale/locale_provider.dart';
-import 'package:laundry_app/themes/theme_provider.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
+import 'package:lavaplan/pages/onboarding_page.dart';
+import 'package:lavaplan/pages/profile_page.dart';
+import 'package:lavaplan/services/auth/auth_service.dart';
+import 'package:lavaplan/services/household/household_service.dart';
+import 'package:lavaplan/services/locale/locale_provider.dart';
+import 'package:lavaplan/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 

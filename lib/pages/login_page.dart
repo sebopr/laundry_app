@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:laundry_app/services/auth/auth_service.dart';
+import 'package:lavaplan/services/auth/auth_service.dart';
 
 // ─── Login page ───────────────────────────────────────────────────────────────
 
@@ -299,10 +299,9 @@ class _AuthHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(children: [
-      Icon(Icons.local_laundry_service_rounded,
-          size: 56, color: theme.colorScheme.primary),
+      Image.asset('assets/branding/lavaplan_mark.png', height: 56),
       const SizedBox(height: 10),
-      Text('Laundry',
+      Text('Lavaplan',
           textAlign: TextAlign.center,
           style: theme.textTheme.headlineSmall
               ?.copyWith(fontWeight: FontWeight.bold)),

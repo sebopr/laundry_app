@@ -6,7 +6,7 @@
   "navAdmin": "Admin",
   "navSettings": "Settings",
 
-  "appName": "Laundry",
+  "appName": "Lavaplan",
   "appTagline": "Book your laundry slot",
 
   "loginTitle": "Welcome back",
@@ -154,7 +154,7 @@
   "residentsCanScan": "Residents scan it to join the booking system.",
   "printQr": "Print QR",
   "laundryRoomScanToJoin": "Laundry Room — Scan to join",
-  "scanWithApp": "Scan with the Laundry app to book machines.",
+  "scanWithApp": "Scan with the Lavaplan app to book machines.",
   "buildingJoined": "Building joined successfully.",
   "householdJoined": "Household joined successfully.",
   "unrecognisedQr": "Unrecognised QR code.",

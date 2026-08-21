@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:laundry_app/components/chat_icon_badge.dart';
-import 'package:laundry_app/services/auth/auth_service.dart';
-import 'package:laundry_app/services/chat/chat_service.dart';
+import 'package:lavaplan/components/chat_icon_badge.dart';
+import 'package:lavaplan/services/auth/auth_service.dart';
+import 'package:lavaplan/services/chat/chat_service.dart';
 
 class UserTile extends StatelessWidget {
   final String text;

@@ -21,7 +21,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get navSettings => 'Impostazioni';
 
   @override
-  String get appName => 'Lavanderia';
+  String get appName => 'Lavaplan';
 
   @override
   String get appTagline => 'Prenota la tua fascia oraria';

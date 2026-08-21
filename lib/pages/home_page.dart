@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/pages/admin/admin_page.dart';
-import 'package:laundry_app/pages/calendar_page.dart';
-import 'package:laundry_app/pages/chat_page.dart';
-import 'package:laundry_app/pages/settings_page.dart';
-import 'package:laundry_app/services/chat/chat_service.dart';
+import 'package:lavaplan/pages/admin/admin_page.dart';
+import 'package:lavaplan/pages/calendar_page.dart';
+import 'package:lavaplan/pages/chat_page.dart';
+import 'package:lavaplan/pages/settings_page.dart';
+import 'package:lavaplan/services/chat/chat_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

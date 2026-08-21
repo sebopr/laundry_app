@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/components/chat_bubble.dart';
-import 'package:laundry_app/components/my_textfield.dart';
-import 'package:laundry_app/components/typing_indicator.dart';
-import 'package:laundry_app/services/auth/auth_service.dart';
-import 'package:laundry_app/services/chat/chat_service.dart';
+import 'package:lavaplan/components/chat_bubble.dart';
+import 'package:lavaplan/components/my_textfield.dart';
+import 'package:lavaplan/components/typing_indicator.dart';
+import 'package:lavaplan/services/auth/auth_service.dart';
+import 'package:lavaplan/services/chat/chat_service.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverEmail;

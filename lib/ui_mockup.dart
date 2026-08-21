@@ -100,7 +100,7 @@ class BookingsTab extends StatelessWidget {
         slivers: [
           SliverAppBar(
             floating: true,
-            title: const Text('Laundry'),
+            title: const Text('Lavaplan'),
             centerTitle: false,
             actions: [
               IconButton(

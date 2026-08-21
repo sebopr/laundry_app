@@ -185,7 +185,7 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
                   const SliverAppBar(
                     floating: true,
                     automaticallyImplyLeading: false,
-                    title: Text('Laundry'),
+                    title: Text('Lavaplan'),
                     centerTitle: false,
                   ),
 

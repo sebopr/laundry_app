@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/pages/generate_qr_page.dart';
+import 'package:lavaplan/pages/generate_qr_page.dart';
 
 class BuildingDetailPage extends StatelessWidget {
   final String buildingUuid;

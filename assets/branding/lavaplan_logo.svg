@@ -1,0 +1,49 @@
+<svg width="880" height="260" viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lavaplan logo">
+  <defs>
+    <linearGradient id="drum2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22C6C6"/>
+      <stop offset="1" stop-color="#12A3A8"/>
+    </linearGradient>
+    <radialGradient id="glass2" cx="0.38" cy="0.32" r="0.85">
+      <stop offset="0" stop-color="#3B4756"/>
+      <stop offset="1" stop-color="#232C38"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ===== mark ===== -->
+  <g transform="translate(40,20)">
+    <!-- washing machine body -->
+    <rect x="14" y="0" width="172" height="200" rx="26" fill="#3A4552"/>
+    <rect x="14" y="0" width="172" height="200" rx="26" fill="none" stroke="#4C5867" stroke-width="3"/>
+    <rect x="26" y="46" width="148" height="142" rx="18" fill="#2E3742"/>
+
+    <!-- control panel / calendar bar -->
+    <rect x="26" y="14" width="148" height="26" rx="9" fill="#2E3742"/>
+    <rect x="42" y="0" width="12" height="18" rx="6" fill="#5A6675"/>
+    <rect x="146" y="0" width="12" height="18" rx="6" fill="#5A6675"/>
+    <rect x="38" y="21" width="74" height="12" rx="6" fill="#3E4956"/>
+    <rect x="38" y="21" width="32" height="12" rx="6" fill="#22C6C6" opacity="0.9"/>
+    <circle cx="156" cy="27" r="8" fill="#22C6C6"/>
+    <circle cx="156" cy="27" r="8" fill="none" stroke="#1E2530" stroke-width="2"/>
+
+    <!-- door + drum -->
+    <circle cx="100" cy="122" r="68" fill="#38424F"/>
+    <circle cx="100" cy="122" r="68" fill="none" stroke="#4C5867" stroke-width="4"/>
+    <circle cx="100" cy="122" r="60" fill="url(#glass2)"/>
+    <circle cx="100" cy="122" r="60" fill="none" stroke="url(#drum2)" stroke-width="7"/>
+    <g fill="none" stroke="#22C6C6" stroke-width="6" stroke-linecap="round">
+      <path d="M100 77 A45 45 0 0 1 140 101"/>
+      <path d="M145 122 A45 45 0 0 1 121 162"/>
+      <path d="M79 167 A45 45 0 0 1 55 127"/>
+      <path d="M55 122 A45 45 0 0 1 79 82"/>
+    </g>
+    <circle cx="100" cy="122" r="11" fill="#22C6C6"/>
+    <path d="M67 95 A42 42 0 0 1 96 81" fill="none" stroke="#7FE9EC" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  </g>
+
+  <!-- ===== wordmark ===== -->
+  <g transform="translate(288,158)" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+    <text x="0" y="0" font-size="92" font-weight="700" letter-spacing="-2" fill="#2B3440">Lava<tspan fill="#12A3A8">plan</tspan></text>
+    <text x="4" y="42" font-size="24" font-weight="500" letter-spacing="6" fill="#7A8794">WASCHRAUM &#183; GEPLANT</text>
+  </g>
+</svg>

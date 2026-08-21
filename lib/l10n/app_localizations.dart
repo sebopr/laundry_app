@@ -131,7 +131,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Laundry'**
+  /// **'Lavaplan'**
   String get appName;
 
   /// No description provided for @appTagline.
@@ -833,7 +833,7 @@ abstract class AppLocalizations {
   /// No description provided for @scanWithApp.
   ///
   /// In en, this message translates to:
-  /// **'Scan with the Laundry app to book machines.'**
+  /// **'Scan with the Lavaplan app to book machines.'**
   String get scanWithApp;
 
   /// No description provided for @buildingJoined.

@@ -1,0 +1,68 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lavaplan app icon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B3440"/>
+      <stop offset="1" stop-color="#1E2530"/>
+    </linearGradient>
+    <linearGradient id="drum" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22C6C6"/>
+      <stop offset="1" stop-color="#12A3A8"/>
+    </linearGradient>
+    <radialGradient id="glass" cx="0.38" cy="0.32" r="0.85">
+      <stop offset="0" stop-color="#3B4756"/>
+      <stop offset="1" stop-color="#232C38"/>
+    </radialGradient>
+    <clipPath id="round"><rect x="0" y="0" width="512" height="512" rx="112"/></clipPath>
+  </defs>
+
+  <!-- rounded app-icon plate -->
+  <g clip-path="url(#round)">
+    <rect x="0" y="0" width="512" height="512" fill="url(#bg)"/>
+
+    <!-- subtle calendar grid watermark across the plate -->
+    <g stroke="#3A4552" stroke-width="2" opacity="0.55">
+      <line x1="96" y1="150" x2="416" y2="150"/>
+      <line x1="96" y1="256" x2="416" y2="256"/>
+      <line x1="96" y1="362" x2="416" y2="362"/>
+      <line x1="150" y1="96" x2="150" y2="416"/>
+      <line x1="256" y1="96" x2="256" y2="416"/>
+      <line x1="362" y1="96" x2="362" y2="416"/>
+    </g>
+
+    <!-- ===== washing machine body / frame ===== -->
+    <rect x="120" y="108" width="272" height="316" rx="40" fill="#3A4552"/>
+    <rect x="120" y="108" width="272" height="316" rx="40" fill="none" stroke="#4C5867" stroke-width="5"/>
+    <!-- inner face panel -->
+    <rect x="140" y="180" width="232" height="224" rx="28" fill="#2E3742"/>
+
+    <!-- control panel across the top, doubling as the calendar bar -->
+    <rect x="140" y="128" width="232" height="42" rx="14" fill="#2E3742"/>
+    <!-- binder tabs / feet-like nubs above -->
+    <rect x="170" y="112" width="16" height="26" rx="8" fill="#5A6675"/>
+    <rect x="326" y="112" width="16" height="26" rx="8" fill="#5A6675"/>
+    <!-- booked-slot pill + dial knob -->
+    <rect x="156" y="140" width="120" height="18" rx="9" fill="#3E4956"/>
+    <rect x="156" y="140" width="52" height="18" rx="9" fill="#22C6C6" opacity="0.9"/>
+    <circle cx="348" cy="149" r="12" fill="#22C6C6"/>
+    <circle cx="348" cy="149" r="12" fill="none" stroke="#1E2530" stroke-width="3"/>
+    <line x1="348" y1="149" x2="348" y2="141" stroke="#1E2530" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- washing-machine door + drum as the hero -->
+    <circle cx="256" cy="300" r="104" fill="#38424F"/>
+    <circle cx="256" cy="300" r="104" fill="none" stroke="#4C5867" stroke-width="6"/>
+    <circle cx="256" cy="300" r="92" fill="url(#glass)"/>
+    <circle cx="256" cy="300" r="92" fill="none" stroke="url(#drum)" stroke-width="10"/>
+
+    <!-- drum paddles / tumble marks -->
+    <g fill="none" stroke="#22C6C6" stroke-width="8" stroke-linecap="round" opacity="0.95">
+      <path d="M256 232 A68 68 0 0 1 316 268"/>
+      <path d="M324 300 A68 68 0 0 1 288 360"/>
+      <path d="M224 368 A68 68 0 0 1 188 308"/>
+      <path d="M196 300 A68 68 0 0 1 232 240"/>
+    </g>
+    <circle cx="256" cy="300" r="16" fill="#22C6C6"/>
+
+    <!-- highlight glint on the glass -->
+    <path d="M206 258 A64 64 0 0 1 250 236" fill="none" stroke="#7FE9EC" stroke-width="7" stroke-linecap="round" opacity="0.7"/>
+  </g>
+</svg>

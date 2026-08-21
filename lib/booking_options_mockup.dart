@@ -405,10 +405,10 @@ class OptionA extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
+        const SliverAppBar(
           floating: true,
           automaticallyImplyLeading: false,
-          title: const Text('Laundry'),
+          title: Text('Lavaplan'),
           centerTitle: false,
         ),
         SliverPadding(
@@ -453,7 +453,7 @@ class _OptionBState extends State<OptionB> {
         SliverAppBar(
           floating: true,
           automaticallyImplyLeading: false,
-          title: const Text('Laundry'),
+          title: const Text('Lavaplan'),
           centerTitle: false,
           actions: [
             IconButton(
@@ -522,10 +522,10 @@ class OptionC extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
+        const SliverAppBar(
           floating: true,
           automaticallyImplyLeading: false,
-          title: const Text('Laundry'),
+          title: Text('Lavaplan'),
           centerTitle: false,
         ),
         SliverPadding(

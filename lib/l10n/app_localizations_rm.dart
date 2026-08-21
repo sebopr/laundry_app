@@ -21,7 +21,7 @@ class AppLocalizationsRm extends AppLocalizations {
   String get navSettings => 'Parameters';
 
   @override
-  String get appName => 'Lavandaria';
+  String get appName => 'Lavaplan';
 
   @override
   String get appTagline => 'Reservar in slot per la lavandaria';

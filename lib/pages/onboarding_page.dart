@@ -3,9 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/components/custom_cam_painter.dart';
-import 'package:laundry_app/pages/admin/create_building_page.dart';
-import 'package:laundry_app/services/household/household_service.dart';
+import 'package:lavaplan/components/custom_cam_painter.dart';
+import 'package:lavaplan/pages/admin/create_building_page.dart';
+import 'package:lavaplan/services/household/household_service.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -55,10 +55,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.local_laundry_service,
-                    color: theme.colorScheme.primary, size: 28),
+                Image.asset('assets/branding/lavaplan_mark.png', height: 28),
                 const SizedBox(width: 10),
-                Text('Laundry',
+                Text('Lavaplan',
                     style: theme.textTheme.titleLarge
                         ?.copyWith(fontWeight: FontWeight.bold)),
               ],

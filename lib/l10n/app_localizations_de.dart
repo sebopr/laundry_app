@@ -21,7 +21,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get navSettings => 'Einstellungen';
 
   @override
-  String get appName => 'Wäsche';
+  String get appName => 'Lavaplan';
 
   @override
   String get appTagline => 'Waschmaschine buchen';
@@ -423,7 +423,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get scanWithApp =>
-      'Mit der Wäsche-App scannen, um Maschinen zu buchen.';
+      'Mit der Lavaplan-App scannen, um Maschinen zu buchen.';
 
   @override
   String get buildingJoined => 'Gebäude erfolgreich beigetreten.';

@@ -1,4 +1,4 @@
-name: laundry_app
+name: lavaplan
 description: "The future of swiss washing"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -77,6 +77,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/branding/lavaplan_mark.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

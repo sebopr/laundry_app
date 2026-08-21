@@ -1,6 +1,6 @@
 // lib/widgets/global_overlay_wrapper.dart
 import 'package:flutter/material.dart';
-import 'package:laundry_app/services/conectivity/conectivity_service.dart';
+import 'package:lavaplan/services/conectivity/conectivity_service.dart';
 
 class GlobalOverlayWrapper extends StatefulWidget {
   final Widget child;

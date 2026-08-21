@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/pages/admin/building_detail_page.dart';
-import 'package:laundry_app/pages/admin/create_building_page.dart';
+import 'package:lavaplan/pages/admin/building_detail_page.dart';
+import 'package:lavaplan/pages/admin/create_building_page.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
