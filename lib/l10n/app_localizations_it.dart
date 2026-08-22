@@ -586,4 +586,21 @@ class AppLocalizationsIt extends AppLocalizations {
   String messageHint(String name) {
     return 'Messaggio a $name';
   }
+
+  @override
+  String get nudgeButtonTooltip => 'Promemoria rapido';
+
+  @override
+  String get nudgeForgotLaundryLabel => 'Bucato dimenticato';
+
+  @override
+  String get nudgeForgotLaundryMessage =>
+      '🧺 Ciao, sembra che tu abbia dimenticato il bucato in lavatrice!';
+
+  @override
+  String get nudgeCleanDetergentLabel => 'Pulisci la vaschetta del detersivo';
+
+  @override
+  String get nudgeCleanDetergentMessage =>
+      '🧴 Ciao, potresti pulire la vaschetta del detersivo dopo l\'uso?';
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/auth/session_service.dart';
@@ -50,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await AuthService().signInWithEmailPassword(
           _emailController.text.trim(), _pwController.text);
+      TextInput.finishAutofillContext();
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -110,22 +112,28 @@ class _LoginPageState extends State<LoginPage> {
                   style: theme.textTheme.bodyMedium
                       ?.copyWith(color: Colors.grey.shade500)),
               const SizedBox(height: 24),
-              _InputField(
-                controller: _emailController,
-                label: l10n.fieldEmail,
-                icon: LucideIcons.mail,
-                keyboardType: TextInputType.emailAddress,
-                autocorrect: false,
-              ),
-              const SizedBox(height: 12),
-              _InputField(
-                controller: _pwController,
-                label: l10n.fieldPassword,
-                icon: LucideIcons.lock,
-                obscureText: _obscurePw,
-                onToggleObscure: () =>
-                    setState(() => _obscurePw = !_obscurePw),
-                onSubmitted: (_) => _signIn(),
+              AutofillGroup(
+                child: Column(children: [
+                  _InputField(
+                    controller: _emailController,
+                    label: l10n.fieldEmail,
+                    icon: LucideIcons.mail,
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    autofillHints: const [AutofillHints.email],
+                  ),
+                  const SizedBox(height: 12),
+                  _InputField(
+                    controller: _pwController,
+                    label: l10n.fieldPassword,
+                    icon: LucideIcons.lock,
+                    obscureText: _obscurePw,
+                    onToggleObscure: () =>
+                        setState(() => _obscurePw = !_obscurePw),
+                    onSubmitted: (_) => _signIn(),
+                    autofillHints: const [AutofillHints.password],
+                  ),
+                ]),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 10),
@@ -209,6 +217,7 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       await AuthService().signUpWithEmailPassword(
           _emailController.text.trim(), _pwController.text);
+      TextInput.finishAutofillContext();
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -269,31 +278,38 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: theme.textTheme.bodyMedium
                       ?.copyWith(color: Colors.grey.shade500)),
               const SizedBox(height: 24),
-              _InputField(
-                controller: _emailController,
-                label: l10n.fieldEmail,
-                icon: LucideIcons.mail,
-                keyboardType: TextInputType.emailAddress,
-                autocorrect: false,
-              ),
-              const SizedBox(height: 12),
-              _InputField(
-                controller: _pwController,
-                label: l10n.fieldPassword,
-                icon: LucideIcons.lock,
-                obscureText: _obscurePw,
-                onToggleObscure: () =>
-                    setState(() => _obscurePw = !_obscurePw),
-              ),
-              const SizedBox(height: 12),
-              _InputField(
-                controller: _confirmPwController,
-                label: l10n.fieldConfirmPassword,
-                icon: LucideIcons.lock,
-                obscureText: _obscureConfirm,
-                onToggleObscure: () =>
-                    setState(() => _obscureConfirm = !_obscureConfirm),
-                onSubmitted: (_) => _register(),
+              AutofillGroup(
+                child: Column(children: [
+                  _InputField(
+                    controller: _emailController,
+                    label: l10n.fieldEmail,
+                    icon: LucideIcons.mail,
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    autofillHints: const [AutofillHints.newUsername],
+                  ),
+                  const SizedBox(height: 12),
+                  _InputField(
+                    controller: _pwController,
+                    label: l10n.fieldPassword,
+                    icon: LucideIcons.lock,
+                    obscureText: _obscurePw,
+                    onToggleObscure: () =>
+                        setState(() => _obscurePw = !_obscurePw),
+                    autofillHints: const [AutofillHints.newPassword],
+                  ),
+                  const SizedBox(height: 12),
+                  _InputField(
+                    controller: _confirmPwController,
+                    label: l10n.fieldConfirmPassword,
+                    icon: LucideIcons.lock,
+                    obscureText: _obscureConfirm,
+                    onToggleObscure: () =>
+                        setState(() => _obscureConfirm = !_obscureConfirm),
+                    onSubmitted: (_) => _register(),
+                    autofillHints: const [AutofillHints.newPassword],
+                  ),
+                ]),
               ),
               if (_error != null) ...[
                 const SizedBox(height: 10),
@@ -374,6 +390,7 @@ class _InputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool autocorrect;
   final ValueChanged<String>? onSubmitted;
+  final Iterable<String>? autofillHints;
 
   const _InputField({
     required this.controller,
@@ -384,6 +401,7 @@ class _InputField extends StatelessWidget {
     this.keyboardType,
     this.autocorrect = true,
     this.onSubmitted,
+    this.autofillHints,
   });
 
   @override
@@ -395,6 +413,7 @@ class _InputField extends StatelessWidget {
       keyboardType: keyboardType,
       autocorrect: autocorrect,
       onSubmitted: onSubmitted,
+      autofillHints: autofillHints,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),

@@ -7,6 +7,7 @@ class Message {
   final String message;
   final Timestamp timestamp;
   final bool isRead;
+  final String? nudgeId;
 
   Message({
     required this.senderId,
@@ -15,6 +16,7 @@ class Message {
     required this.message,
     required this.timestamp,
     required this.isRead,
+    this.nudgeId,
   });
 //convert to map
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class Message {
       'message': message,
       'timestamp': timestamp,
       'isRead': isRead,
+      if (nudgeId != null) 'nudgeId': nudgeId,
     };
   }
 }

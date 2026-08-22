@@ -233,5 +233,10 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "nudgeButtonTooltip": "Quick nudge",
+  "nudgeForgotLaundryLabel": "Forgot laundry",
+  "nudgeForgotLaundryMessage": "🧺 Hey, looks like you left your laundry in the machine!",
+  "nudgeCleanDetergentLabel": "Clean detergent bay",
+  "nudgeCleanDetergentMessage": "🧴 Hey, could you clean the detergent bay after use?"
 }

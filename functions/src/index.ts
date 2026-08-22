@@ -10,6 +10,7 @@ import * as logger from "firebase-functions/logger";
 initializeApp();
 
 export { sendVerificationCode, verifyEmailCode } from "./emailVerification";
+export { appleSignInCallback } from "./appleSignIn";
 
 const db = getFirestore();
 const messaging = getMessaging();

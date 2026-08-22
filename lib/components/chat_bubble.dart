@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
+import 'package:lavaplan/models/nudge.dart';
 import 'package:lavaplan/themes/theme_provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,7 @@ class ChatBubble extends StatelessWidget {
   final DateTime time;
   final bool isRead;
   final bool isLastInGroup;
+  final String? nudgeId;
 
   const ChatBubble({
     super.key,
@@ -18,6 +21,7 @@ class ChatBubble extends StatelessWidget {
     required this.time,
     this.isRead = false,
     this.isLastInGroup = true,
+    this.nudgeId,
   });
 
   @override
@@ -25,6 +29,7 @@ class ChatBubble extends StatelessWidget {
     final theme = Theme.of(context);
     final isDarkmode =
         Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+    final nudge = nudgeById(nudgeId);
 
     const fullRadius = Radius.circular(18);
     const tailRadius = Radius.circular(4);
@@ -62,16 +67,43 @@ class ChatBubble extends StatelessWidget {
             ],
           ),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Text(
-            message,
-            style: TextStyle(
-              color: isCurrentUser
-                  ? Colors.white
-                  : (isDarkmode ? Colors.white : Colors.black87),
-              fontSize: 15.5,
-              height: 1.3,
-            ),
-          ),
+          child: nudge != null
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      nudge.icon,
+                      size: 18,
+                      color: isCurrentUser
+                          ? Colors.white
+                          : theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        nudge.label(AppLocalizations.of(context)!),
+                        style: TextStyle(
+                          color: isCurrentUser
+                              ? Colors.white
+                              : (isDarkmode ? Colors.white : Colors.black87),
+                          fontSize: 15.5,
+                          fontWeight: FontWeight.w600,
+                          height: 1.3,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  message,
+                  style: TextStyle(
+                    color: isCurrentUser
+                        ? Colors.white
+                        : (isDarkmode ? Colors.white : Colors.black87),
+                    fontSize: 15.5,
+                    height: 1.3,
+                  ),
+                ),
         ),
         if (isLastInGroup)
           Padding(

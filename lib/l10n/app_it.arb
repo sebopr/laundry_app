@@ -233,5 +233,10 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "nudgeButtonTooltip": "Promemoria rapido",
+  "nudgeForgotLaundryLabel": "Bucato dimenticato",
+  "nudgeForgotLaundryMessage": "🧺 Ciao, sembra che tu abbia dimenticato il bucato in lavatrice!",
+  "nudgeCleanDetergentLabel": "Pulisci la vaschetta del detersivo",
+  "nudgeCleanDetergentMessage": "🧴 Ciao, potresti pulire la vaschetta del detersivo dopo l'uso?"
 }

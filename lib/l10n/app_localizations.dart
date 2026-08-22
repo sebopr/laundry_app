@@ -1147,6 +1147,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Message {name}'**
   String messageHint(String name);
+
+  /// No description provided for @nudgeButtonTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick nudge'**
+  String get nudgeButtonTooltip;
+
+  /// No description provided for @nudgeForgotLaundryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot laundry'**
+  String get nudgeForgotLaundryLabel;
+
+  /// No description provided for @nudgeForgotLaundryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'🧺 Hey, looks like you left your laundry in the machine!'**
+  String get nudgeForgotLaundryMessage;
+
+  /// No description provided for @nudgeCleanDetergentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean detergent bay'**
+  String get nudgeCleanDetergentLabel;
+
+  /// No description provided for @nudgeCleanDetergentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'🧴 Hey, could you clean the detergent bay after use?'**
+  String get nudgeCleanDetergentMessage;
 }
 
 class _AppLocalizationsDelegate

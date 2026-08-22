@@ -233,5 +233,10 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "nudgeButtonTooltip": "Rappel rapide",
+  "nudgeForgotLaundryLabel": "Linge oublié",
+  "nudgeForgotLaundryMessage": "🧺 Salut, on dirait que tu as oublié ton linge dans la machine !",
+  "nudgeCleanDetergentLabel": "Nettoyer le bac à lessive",
+  "nudgeCleanDetergentMessage": "🧴 Salut, tu pourrais nettoyer le bac à lessive après utilisation ?"
 }

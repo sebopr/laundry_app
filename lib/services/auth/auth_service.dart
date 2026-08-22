@@ -57,8 +57,11 @@ class AuthService {
   }
 
   // ── Apple ─────────────────────────────────────────────────────────────────
-  // Android requires a Service URL configured in Firebase Console under
-  // Authentication → Sign-in method → Apple → Service URL.
+  // Android has no native Apple ID API, so it goes through the Services ID's
+  // web login flow; the redirect lands on the appleSignInCallback Cloud
+  // Function (functions/src/appleSignIn.ts), which bridges it back into the
+  // app. Configured to match Firebase Console → Authentication → Sign-in
+  // method → Apple.
 
   Future<UserCredential?> signInWithApple() async {
     try {
@@ -67,6 +70,16 @@ class AuthService {
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+        // Ignored on iOS/macOS (native Apple ID API is used there instead).
+        // Android has no native API, so it opens this Services ID's web
+        // login flow and relies on the Cloud Function below to bridge
+        // Apple's callback back into the app.
+        webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: 'com.example.lavaplan.signin',
+          redirectUri: Uri.parse(
+            'https://europe-west6-chatappdb-b4ba4.cloudfunctions.net/appleSignInCallback',
+          ),
+        ),
       );
       final oauthCredential = OAuthProvider('apple.com').credential(
         idToken: appleCredential.identityToken,

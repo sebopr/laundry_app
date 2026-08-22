@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lavaplan/components/chat_bubble.dart';
+import 'package:lavaplan/components/nudge_picker.dart';
 import 'package:lavaplan/components/typing_indicator.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
+import 'package:lavaplan/models/nudge.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/chat/chat_service.dart';
 import 'package:lavaplan/services/notifications/active_chat_tracker.dart';
@@ -106,6 +108,13 @@ class _ChatPageState extends State<ChatPage> {
     _messageController.clear();
   }
 
+  void _sendNudge(Nudge nudge) async {
+    final l10n = AppLocalizations.of(context)!;
+    await _chatService.sendNudge(
+        widget.receiverId, nudge.id, nudge.message(l10n));
+    _scrollDown();
+  }
+
   Stream<QuerySnapshot> receiveMessages() {
     return _chatService.getMessages(
         _authService.getCurrentUser()!.uid, widget.receiverId);
@@ -151,7 +160,18 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           // 👇 Messages List
-          Expanded(child: _buildMessagesList()),
+          Expanded(
+            child: Stack(
+              children: [
+                _buildMessagesList(),
+                Positioned(
+                  right: 12,
+                  bottom: 12,
+                  child: NudgePicker(onSelected: _sendNudge),
+                ),
+              ],
+            ),
+          ),
 
           // 👇 Typing Indicator
           StreamBuilder<bool>(
@@ -351,6 +371,7 @@ class _ChatPageState extends State<ChatPage> {
             time: timestamp,
             isRead: data["isRead"] as bool? ?? false,
             isLastInGroup: isLastInGroup,
+            nudgeId: data["nudgeId"] as String?,
           ),
         ),
       );

@@ -1,3 +1,4 @@
 {
-    "dart.flutterSdkPath": "/Users/sebastianoprea/development/flutter"
+    "dart.flutterSdkPath": "/opt/homebrew/share/flutter",
+    "java.import.gradle.java.home": "/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 }

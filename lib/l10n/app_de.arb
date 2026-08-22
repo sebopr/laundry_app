@@ -233,5 +233,10 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "nudgeButtonTooltip": "Kurzer Hinweis",
+  "nudgeForgotLaundryLabel": "Wäsche vergessen",
+  "nudgeForgotLaundryMessage": "🧺 Hey, du hast wohl deine Wäsche in der Maschine vergessen!",
+  "nudgeCleanDetergentLabel": "Waschmittelfach reinigen",
+  "nudgeCleanDetergentMessage": "🧴 Hey, könntest du das Waschmittelfach nach der Benutzung reinigen?"
 }

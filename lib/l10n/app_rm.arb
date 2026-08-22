@@ -233,5 +233,10 @@
     "placeholders": {
       "name": { "type": "String" }
     }
-  }
+  },
+  "nudgeButtonTooltip": "Impuls rapid",
+  "nudgeForgotLaundryLabel": "Bugada emblidada",
+  "nudgeForgotLaundryMessage": "🧺 Tgau, para che ti hajas emblidà tia bugada en la maschina!",
+  "nudgeCleanDetergentLabel": "Nettegiar il quader da detersiv",
+  "nudgeCleanDetergentMessage": "🧴 Tgau, pudessas ti nettegiar il quader da detersiv suenter l'utilisaziun?"
 }

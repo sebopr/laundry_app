@@ -75,7 +75,7 @@ class ChatService {
 
   //send message
 
-  Future<void> sendMessage(String receiverId, message) async {
+  Future<void> sendMessage(String receiverId, message, {String? nudgeId}) async {
     //get current user info
     final String currentUserId = _auth.currentUser!.uid;
     final String currentUserEmail = _auth.currentUser!.email!;
@@ -89,6 +89,7 @@ class ChatService {
       message: message,
       timestamp: timestamp,
       isRead: false,
+      nudgeId: nudgeId,
     );
 
 //add chatroom id for the users who chat together
@@ -112,6 +113,13 @@ class ChatService {
         receiverId: {"unreadCount": FieldValue.increment(1)}
       },
     }, SetOptions(merge: true));
+  }
+
+  /// Sends a preset [Nudge] (e.g. "you forgot your laundry") as its own
+  /// chat message, using the nudge's fallback text so it still reads fine
+  /// in the message list and push notification preview.
+  Future<void> sendNudge(String receiverId, String nudgeId, String fallbackMessage) {
+    return sendMessage(receiverId, fallbackMessage, nudgeId: nudgeId);
   }
 
   //receive message

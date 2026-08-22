@@ -583,4 +583,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String messageHint(String name) {
     return 'Message $name';
   }
+
+  @override
+  String get nudgeButtonTooltip => 'Quick nudge';
+
+  @override
+  String get nudgeForgotLaundryLabel => 'Forgot laundry';
+
+  @override
+  String get nudgeForgotLaundryMessage =>
+      '🧺 Hey, looks like you left your laundry in the machine!';
+
+  @override
+  String get nudgeCleanDetergentLabel => 'Clean detergent bay';
+
+  @override
+  String get nudgeCleanDetergentMessage =>
+      '🧴 Hey, could you clean the detergent bay after use?';
 }

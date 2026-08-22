@@ -586,4 +586,21 @@ class AppLocalizationsRm extends AppLocalizations {
   String messageHint(String name) {
     return 'Messadi a $name';
   }
+
+  @override
+  String get nudgeButtonTooltip => 'Impuls rapid';
+
+  @override
+  String get nudgeForgotLaundryLabel => 'Bugada emblidada';
+
+  @override
+  String get nudgeForgotLaundryMessage =>
+      '🧺 Tgau, para che ti hajas emblidà tia bugada en la maschina!';
+
+  @override
+  String get nudgeCleanDetergentLabel => 'Nettegiar il quader da detersiv';
+
+  @override
+  String get nudgeCleanDetergentMessage =>
+      '🧴 Tgau, pudessas ti nettegiar il quader da detersiv suenter l\'utilisaziun?';
 }
