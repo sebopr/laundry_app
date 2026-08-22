@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/generate_qr_page.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -16,6 +17,7 @@ class BuildingDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -24,7 +26,7 @@ class BuildingDetailPage extends StatelessWidget {
           actions: [
             IconButton(
               icon: const Icon(LucideIcons.qrCode),
-              tooltip: 'Building QR',
+              tooltip: l10n.buildingQrTooltip,
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -33,12 +35,12 @@ class BuildingDetailPage extends StatelessWidget {
               ),
             ),
           ],
-          bottom: const TabBar(
+          bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(LucideIcons.users), text: 'Residents'),
+              Tab(icon: const Icon(LucideIcons.users), text: l10n.residentsTab),
               Tab(
-                  icon: Icon(LucideIcons.washingMachine),
-                  text: 'Machines'),
+                  icon: const Icon(LucideIcons.washingMachine),
+                  text: l10n.machinesTab),
             ],
           ),
         ),
@@ -76,7 +78,8 @@ class _ResidentsTab extends StatelessWidget {
             .toList();
 
         if (users.isEmpty) {
-          return const Center(child: Text('No residents yet'));
+          return Center(
+              child: Text(AppLocalizations.of(context)!.noResidentsYet));
         }
 
         // Group by household_id
@@ -100,7 +103,7 @@ class _ResidentsTab extends StatelessWidget {
           itemBuilder: (context, i) {
             if (i == householdIds.length) {
               return _HouseholdGroup(
-                name: 'No household',
+                name: AppLocalizations.of(context)!.noHousehold,
                 members: noHousehold,
                 onRemove: (uid) => _removeResident(context, uid),
               );
@@ -121,20 +124,20 @@ class _ResidentsTab extends StatelessWidget {
   }
 
   Future<void> _removeResident(BuildContext context, String uid) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Remove resident'),
-        content: const Text(
-            'This will remove the resident from the building. They will need to re-scan the QR to rejoin.'),
+        title: Text(l10n.removeResident),
+        content: Text(l10n.removeResidentContent),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+              child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Remove'),
+            child: Text(l10n.btnRemove),
           ),
         ],
       ),
@@ -164,6 +167,7 @@ class _HouseholdGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final currentUid = FirebaseAuth.instance.currentUser!.uid;
 
     return Padding(
@@ -233,7 +237,7 @@ class _HouseholdGroup extends StatelessWidget {
                                     .withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Text('Head',
+                              child: Text(l10n.headLabel,
                                   style: TextStyle(
                                       fontSize: 11,
                                       color: theme.colorScheme.primary)),
@@ -244,7 +248,7 @@ class _HouseholdGroup extends StatelessWidget {
                               icon: const Icon(LucideIcons.userMinus2,
                                   size: 18, color: Colors.redAccent),
                               onPressed: () => onRemove(uid),
-                              tooltip: 'Remove from building',
+                              tooltip: l10n.removeFromBuilding,
                             ),
                           ],
                         ],
@@ -284,20 +288,20 @@ class _MachinesTab extends StatelessWidget {
   }
 
   Future<void> _removeMachine(BuildContext context, int number) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Remove machine?'),
-        content: Text(
-            'Machine $number will be removed. Existing bookings for this machine are not automatically cancelled.'),
+        title: Text(l10n.removeMachineTitle),
+        content: Text(l10n.removeMachineContent(number)),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+              child: Text(l10n.btnCancel)),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Remove'),
+            child: Text(l10n.btnRemove),
           ),
         ],
       ),
@@ -338,7 +342,7 @@ class _MachinesTab extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           children: [
             Text(
-              'Toggle machines in or out of service, or add/remove machines.',
+              AppLocalizations.of(context)!.machinesDescription,
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
@@ -359,7 +363,7 @@ class _MachinesTab extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: () => _addMachine(machines),
               icon: const Icon(LucideIcons.plus),
-              label: const Text('Add machine'),
+              label: Text(AppLocalizations.of(context)!.addMachine),
             ),
           ],
         );
@@ -394,15 +398,19 @@ class _MachineToggleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final (bgColor, dotColor, label) = _isActive
-        ? (Colors.green.shade50, Colors.green, 'Active')
-        : (Colors.orange.shade50, Colors.orange, 'Maintenance');
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = theme.brightness == Brightness.dark;
+    final (dotColor, label) = _isActive
+        ? (const Color(0xFF34A853), l10n.activeStatus)
+        : (const Color(0xFFE8963C), l10n.maintenanceStatus);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: theme.colorScheme.secondary,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+            color: isDark ? const Color(0xFF2B3542) : const Color(0xFFE7EEEE)),
       ),
       child: Row(
         children: [
@@ -412,7 +420,7 @@ class _MachineToggleCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Machine $number',
+                Text(l10n.machineN(number),
                     style: theme.textTheme.bodyMedium
                         ?.copyWith(fontWeight: FontWeight.w600)),
                 Row(
@@ -436,13 +444,12 @@ class _MachineToggleCard extends StatelessWidget {
             icon: const Icon(LucideIcons.trash2, size: 18),
             color: Colors.red.shade300,
             onPressed: onRemove,
-            tooltip: 'Remove machine',
+            tooltip: l10n.removeMachineTooltip,
             visualDensity: VisualDensity.compact,
           ),
           Switch(
             value: _isActive,
             onChanged: (_) => _toggle(),
-            activeThumbColor: Colors.green,
           ),
         ],
       ),

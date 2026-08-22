@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/firebase_options.dart';
 import 'package:lavaplan/pages/chat_page.dart';
+import 'package:lavaplan/services/notifications/active_chat_tracker.dart';
 import 'package:lavaplan/services/notifications/notification_service.dart';
 
 /// Must be a top-level (or static) function — the platform runs it in a
@@ -44,12 +45,23 @@ class PushNotificationService {
     _registeredUid = uid;
 
     final messaging = FirebaseMessaging.instance;
-    await messaging.requestPermission();
-    final token = await messaging.getToken();
-    if (token != null) {
-      await _saveToken(uid, token);
+    final settings = await messaging.requestPermission();
+    debugPrint(
+        '[push] permission status: ${settings.authorizationStatus}');
+    try {
+      final token = await messaging.getToken();
+      debugPrint('[push] fcm token: $token');
+      if (token != null) {
+        await _saveToken(uid, token);
+        debugPrint('[push] token saved to Firestore for $uid');
+      }
+    } catch (e, st) {
+      debugPrint('[push] getToken() failed: $e\n$st');
     }
-    messaging.onTokenRefresh.listen((t) => _saveToken(uid, t));
+    messaging.onTokenRefresh.listen((t) {
+      debugPrint('[push] token refreshed: $t');
+      _saveToken(uid, t);
+    });
   }
 
   Future<void> _saveToken(String uid, String token) async {
@@ -73,14 +85,20 @@ class PushNotificationService {
     };
 
     // App is open and in the foreground — FCM doesn't display these on its
-    // own, so show it as a local notification instead.
+    // own, so show it as a local notification instead. Skip it if the
+    // sender's conversation is the one already open on screen; the message
+    // is already visible live there, so a popup would just be noise.
     FirebaseMessaging.onMessage.listen((message) {
       final data = message.data;
+      if (data['senderId'] != null &&
+          data['senderId'] == ActiveChatTracker.currentPeerId) {
+        return;
+      }
       final title =
           message.notification?.title ?? data['senderName'] ?? 'New message';
       final body = message.notification?.body ?? data['message'] ?? '';
       NotificationService.instance.showNow(
-        id: (data['senderId'] as String?)?.hashCode ?? title.hashCode,
+        id: (data['senderId'] as String?)?.hashCode ?? body.hashCode,
         title: title,
         body: body,
         payload: jsonEncode(data),

@@ -178,11 +178,60 @@
   "calShortDays": "Gli,Mar,Me,Gie,Ve,Sa,Du",
   "calDayLabels": "G,M,M,G,V,S,D",
 
+  "profilePhotosComingSoon": "Fotografias da profil vegnan bainbref.",
+  "orDivider": "u",
+
+  "verifyEmailTitle": "Conferma tia e-mail",
+  "verifyEmailBodyPrefix": "Nus avain tramess in code da 6 cifras a ",
+  "verifyEmailBodySuffix": ". Endatescha el sutvart.",
+  "btnVerify": "Verifitgar",
+  "btnResendCode": "Trametter danov il code",
+  "btnResendCodeCooldown": "Trametter danov il code ({seconds}s)",
+  "@btnResendCodeCooldown": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "useDifferentAccount": "Utilisar in auter conto",
+  "checkSpamFolder": "Controlla tia dossier spam sche el n'è betg arrivà.",
+  "codeSentSnackbar": "Code da verificaziun tramess.",
+  "sessionExpired": "Tia sessiun è scadida. Anfin danov.",
+  "signedOutElsewhere": "Ti es vegnì deconnectà perquai che quest conto è vegnì avert sin in auter apparat.",
+
+  "addressLabel": "Adressa",
+  "onbContactDetailsTitle": "Tias datas da contact",
+  "onbContactDetailsSubtitle": "Cundivì cun tes vischinauncas per ch'els ta possian cuntanscher.",
+  "fieldStreet": "Via",
+  "fieldHouseNumber": "Nr.",
+  "fieldPostalCode": "NPA",
+  "fieldCity": "Lieu",
+  "fieldCanton": "Chantun",
+  "fieldPhoneNumber": "Numer da telefon",
+
+  "greetingMorning": "Bun di",
+  "greetingAfternoon": "Bun di",
+  "greetingEvening": "Buna saira",
+  "machineOpenStatus": "Disponibel",
+
   "isTypingText": "{name} scriva...",
   "@isTypingText": {
     "placeholders": {
       "name": { "type": "String" }
     }
   },
-  "typeYourMessage": "Scriver in messadi"
+  "typeYourMessage": "Scriver in messadi",
+
+  "yesterdayLabel": "Ier",
+  "sayHelloTo": "Salida {name}",
+  "@sayHelloTo": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "messageHint": "Messadi a {name}",
+  "@messageHint": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

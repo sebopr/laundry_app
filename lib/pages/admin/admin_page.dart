@@ -26,7 +26,7 @@ class AdminPage extends StatelessWidget {
           MaterialPageRoute(builder: (_) => const CreateBuildingPage()),
         ),
         icon: const Icon(LucideIcons.building2),
-        label: const Text('Add building'),
+        label: Text(l10n.addBuilding),
       ),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance
@@ -49,10 +49,10 @@ class AdminPage extends StatelessWidget {
                   Icon(LucideIcons.building2,
                       size: 64, color: Colors.grey.shade400),
                   const SizedBox(height: 16),
-                  Text('No buildings yet',
+                  Text(l10n.noBuildingsYet,
                       style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 8),
-                  Text('Tap + Add building to get started.',
+                  Text(l10n.tapToAddBuilding,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
@@ -84,6 +84,7 @@ class _BuildingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
@@ -145,7 +146,7 @@ class _BuildingCard extends StatelessWidget {
                                   size: 12, color: Colors.orange),
                               const SizedBox(width: 4),
                               Text(
-                                '$maintenanceCount machine${maintenanceCount > 1 ? 's' : ''} in maintenance',
+                                l10n.maintenanceCount(maintenanceCount),
                                 style: theme.textTheme.bodySmall
                                     ?.copyWith(color: Colors.orange),
                               ),
@@ -179,7 +180,7 @@ class _ResidentCount extends StatelessWidget {
       builder: (context, snap) {
         final count = snap.data?.docs.length ?? 0;
         return Text(
-          '$count resident${count != 1 ? 's' : ''}',
+          AppLocalizations.of(context)!.residentsCount(count),
           style: Theme.of(context)
               .textTheme
               .bodySmall

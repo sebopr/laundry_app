@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/components/avatar_photo_picker.dart';
 import 'package:lavaplan/constants/swiss_cantons.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -112,9 +113,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit profile'),
+        title: Text(l10n.editProfile),
         actions: [
           TextButton(
             onPressed: _loading ? null : _save,
@@ -124,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 16,
                     child:
                         CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Save'),
+                : Text(l10n.btnSave),
           ),
         ],
       ),
@@ -137,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: AvatarPhotoPicker(initials: _initials, radius: 40),
                 ),
                 const SizedBox(height: 32),
-                Text('Display name',
+                Text(l10n.displayNameLabel,
                     style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.grey.shade600,
                         letterSpacing: 1.2)),
@@ -147,16 +149,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   autofocus: true,
                   textCapitalization: TextCapitalization.words,
                   onChanged: (_) => setState(() {}),
-                  decoration: _fieldDecoration(context, 'Your first name'),
+                  decoration: _fieldDecoration(context, l10n.yourFirstName),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'This is shown to your neighbours in the app.',
+                  l10n.shownToNeighbours,
                   style: theme.textTheme.bodySmall
                       ?.copyWith(color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 24),
-                Text('Address',
+                Text(l10n.addressLabel,
                     style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.grey.shade600,
                         letterSpacing: 1.2)),
@@ -169,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextField(
                         controller: _streetController,
                         textCapitalization: TextCapitalization.words,
-                        decoration: _fieldDecoration(context, 'Street'),
+                        decoration: _fieldDecoration(context, l10n.fieldStreet),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -177,7 +179,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       flex: 1,
                       child: TextField(
                         controller: _houseNumberController,
-                        decoration: _fieldDecoration(context, 'No.'),
+                        decoration:
+                            _fieldDecoration(context, l10n.fieldHouseNumber),
                       ),
                     ),
                   ],
@@ -191,7 +194,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextField(
                         controller: _postalCodeController,
                         keyboardType: TextInputType.number,
-                        decoration: _fieldDecoration(context, 'PLZ'),
+                        decoration:
+                            _fieldDecoration(context, l10n.fieldPostalCode),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -200,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextField(
                         controller: _cityController,
                         textCapitalization: TextCapitalization.words,
-                        decoration: _fieldDecoration(context, 'City'),
+                        decoration: _fieldDecoration(context, l10n.fieldCity),
                       ),
                     ),
                   ],
@@ -208,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: _canton,
-                  decoration: _fieldDecoration(context, 'Canton'),
+                  decoration: _fieldDecoration(context, l10n.fieldCanton),
                   icon: const Icon(LucideIcons.chevronDown),
                   items: swissCantons
                       .map((c) => DropdownMenuItem(
@@ -219,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onChanged: (v) => setState(() => _canton = v),
                 ),
                 const SizedBox(height: 24),
-                Text('Phone number',
+                Text(l10n.fieldPhoneNumber,
                     style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.grey.shade600,
                         letterSpacing: 1.2)),
@@ -227,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 TextField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  decoration: _fieldDecoration(context, 'Phone number'),
+                  decoration: _fieldDecoration(context, l10n.fieldPhoneNumber),
                 ),
               ],
             ),

@@ -6,6 +6,7 @@ import 'package:lavaplan/pages/onboarding_page.dart';
 import 'package:lavaplan/pages/verify_email_page.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/auth/login_or_register.dart';
+import 'package:lavaplan/services/auth/session_service.dart';
 import 'package:lavaplan/services/notifications/push_notification_service.dart';
 
 class AuthGate extends StatelessWidget {
@@ -24,7 +25,12 @@ class AuthGate extends StatelessWidget {
         }
 
         final user = authSnap.data;
-        if (user == null) return const LoginOrRegister();
+        if (user == null) {
+          // Ready for a fresh claim next time someone signs in on this app
+          // run — covers both a normal sign-out and a forced one below.
+          SessionService.instance.reset();
+          return const LoginOrRegister();
+        }
 
         // Email + password accounts wait here until the address is confirmed.
         // Google and Apple users arrive already confirmed and pass straight
@@ -38,6 +44,12 @@ class AuthGate extends StatelessWidget {
         // its push token saved.
         PushNotificationService.instance.registerToken(user.uid);
 
+        // A no-op if a sign-in on this app run already claimed the session.
+        // Covers a cold start with an already-persisted login: this device
+        // becomes the account's active session, and any other device still
+        // signed in gets kicked out below once its own listener notices.
+        SessionService.instance.claimSession(user.uid);
+
         return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection('users')
@@ -50,6 +62,11 @@ class AuthGate extends StatelessWidget {
             }
 
             final d = userSnap.data!.data() ?? {};
+
+            // Another device has since claimed this account's session —
+            // sign this one out. AuthGate will rebuild with user == null
+            // above once FirebaseAuth catches up.
+            SessionService.instance.handleUserDoc(d);
 
             // Step 0: name
             if ((d['displayName'] as String? ?? '').isEmpty) {

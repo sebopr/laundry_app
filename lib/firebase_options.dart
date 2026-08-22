@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDf8auNAIh7SlRETZORYVfV2Ocq9kHCsmk',
-    appId: '1:400898242156:ios:fc7b21b6fd77bf502e0a49',
+    appId: '1:400898242156:ios:f267f29de19102202e0a49',
     messagingSenderId: '400898242156',
     projectId: 'chatappdb-b4ba4',
     storageBucket: 'chatappdb-b4ba4.firebasestorage.app',

@@ -3,6 +3,7 @@ import 'dart:ui' show ImageByteFormat;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -73,6 +74,7 @@ class _GenerateQrPageState extends State<GenerateQrPage> {
   String get _qrData => 'building:$_linkedUuid';
 
   Future<void> _print() async {
+    final l10n = AppLocalizations.of(context)!;
     final doc = pw.Document();
     final qrWidget = await _buildPdfQr(_qrData);
     doc.addPage(pw.Page(
@@ -80,12 +82,12 @@ class _GenerateQrPageState extends State<GenerateQrPage> {
         mainAxisAlignment: pw.MainAxisAlignment.center,
         crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
-          pw.Text('Laundry Room — Scan to join',
+          pw.Text(l10n.laundryRoomScanToJoin,
               style: const pw.TextStyle(fontSize: 18)),
           pw.SizedBox(height: 24),
           pw.Center(child: qrWidget),
           pw.SizedBox(height: 12),
-          pw.Text('Scan with the Laundry app to book machines.',
+          pw.Text(l10n.scanWithApp,
               style: const pw.TextStyle(fontSize: 12)),
         ],
       ),
@@ -107,8 +109,9 @@ class _GenerateQrPageState extends State<GenerateQrPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Building QR Code')),
+      appBar: AppBar(title: Text(l10n.buildingQrCode)),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : Center(
@@ -116,12 +119,12 @@ class _GenerateQrPageState extends State<GenerateQrPage> {
                 padding: const EdgeInsets.all(32),
                 child: Column(
                   children: [
-                    Text('Post this in your laundry room',
+                    Text(l10n.postInLaundryRoom,
                         style: theme.textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     Text(
-                      'Residents scan it to join the booking system.',
+                      l10n.residentsCanScan,
                       style: theme.textTheme.bodyMedium
                           ?.copyWith(color: Colors.grey.shade600),
                       textAlign: TextAlign.center,
@@ -149,7 +152,7 @@ class _GenerateQrPageState extends State<GenerateQrPage> {
                     FilledButton.icon(
                       onPressed: _print,
                       icon: const Icon(LucideIcons.printer),
-                      label: const Text('Print QR'),
+                      label: Text(l10n.printQr),
                     ),
                   ],
                 ),

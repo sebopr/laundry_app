@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/services/notifications/notification_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -11,7 +12,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 enum _Slot { morning, afternoon }
 
 extension _SlotExt on _Slot {
-  String get label => this == _Slot.morning ? 'Morning' : 'Afternoon';
+  String label(AppLocalizations l10n) =>
+      this == _Slot.morning ? l10n.slotMorning : l10n.slotAfternoon;
   String get timeRange =>
       this == _Slot.morning ? '08:00 – 12:00' : '12:00 – 22:00';
   int get startHour => this == _Slot.morning ? 8 : 12;
@@ -41,11 +43,11 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
   static String _dateKey(DateTime d) =>
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
-  static String _greeting() {
+  static String _greeting(AppLocalizations l10n) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return l10n.greetingMorning;
+    if (hour < 18) return l10n.greetingAfternoon;
+    return l10n.greetingEvening;
   }
 
   @override
@@ -107,6 +109,7 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
 
   Future<void> _book(int machine, _Slot slot) async {
     if (_linkedUuid == null) return;
+    final l10n = AppLocalizations.of(context)!;
     final d = _selectedDate;
     final start = DateTime(d.year, d.month, d.day, slot.startHour);
     final end = DateTime(d.year, d.month, d.day, slot.endHour);
@@ -123,7 +126,7 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
     await NotificationService.instance.scheduleBookingReminders(
       bookingId: doc.id,
       machine: machine,
-      slotLabel: slot.label,
+      slotLabel: slot.label(l10n),
       start: start,
       end: end,
     );
@@ -143,16 +146,13 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
     return DateTime.now().isAfter(slotEnd);
   }
 
-  String _formatDate(DateTime d) {
-    const wd = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const mo = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
+  String _formatDate(AppLocalizations l10n, DateTime d) {
+    final wd = l10n.calShortDays.split(',');
+    final mo = l10n.calShortMonths.split(',');
     final today = _today();
-    if (d == today) return 'Today, ${d.day} ${mo[d.month - 1]}';
+    if (d == today) return '${l10n.todayBtn}, ${d.day} ${mo[d.month - 1]}';
     if (d == today.add(const Duration(days: 1))) {
-      return 'Tomorrow, ${d.day} ${mo[d.month - 1]}';
+      return '${l10n.tomorrowBtn}, ${d.day} ${mo[d.month - 1]}';
     }
     return '${wd[d.weekday - 1]}, ${d.day} ${mo[d.month - 1]}';
   }
@@ -180,6 +180,7 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l10n = AppLocalizations.of(context)!;
     final isToday = _selectedDate == _today();
 
     return Scaffold(
@@ -209,7 +210,7 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
                     automaticallyImplyLeading: false,
                     titleSpacing: 16,
                     title: _GreetingHeader(
-                      greeting: _greeting(),
+                      greeting: _greeting(l10n),
                       name: _displayName,
                     ),
                   ),
@@ -217,7 +218,7 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
                   // Date navigation
                   SliverToBoxAdapter(
                     child: _DateNav(
-                      label: _formatDate(_selectedDate),
+                      label: _formatDate(l10n, _selectedDate),
                       isToday: isToday,
                       onPrev: () => setState(() => _selectedDate =
                           _selectedDate.subtract(const Duration(days: 1))),
@@ -383,7 +384,9 @@ class _DateNav extends StatelessWidget {
             ),
           ),
           if (!isToday)
-            TextButton(onPressed: onToday, child: const Text('Today'))
+            TextButton(
+                onPressed: onToday,
+                child: Text(AppLocalizations.of(context)!.todayBtn))
           else
             const SizedBox(width: 64),
           IconButton(
@@ -403,10 +406,11 @@ class _BookingBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final slot = booking['slot'] as String;
     final machine = booking['machine'] as int;
     final timeRange = slot == 'morning' ? '08:00 – 12:00' : '12:00 – 22:00';
-    final slotLabel = '${slot[0].toUpperCase()}${slot.substring(1)}';
+    final slotLabel = slot == 'morning' ? l10n.slotMorning : l10n.slotAfternoon;
 
     return Container(
       decoration: BoxDecoration(
@@ -456,10 +460,10 @@ class _BookingBanner extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Your booking today',
+                Text(l10n.yourBookingToday,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: Colors.white70)),
-                Text('Machine $machine · $slotLabel',
+                Text('${l10n.machineN(machine)} · $slotLabel',
                     style: theme.textTheme.titleMedium?.copyWith(
                         color: Colors.white, fontWeight: FontWeight.bold)),
                 Text(timeRange,
@@ -498,20 +502,21 @@ class _MachineCard extends StatelessWidget {
   Map<String, dynamic>? _bookingFor(_Slot slot) =>
       bookings.where((b) => b['slot'] == slot.name).firstOrNull;
 
-  (Color, String) get _status {
-    if (inMaintenance) return (Colors.grey.shade400, 'Maintenance');
-    if (bookings.isEmpty) return (const Color(0xFF34A853), 'Open');
+  (Color, String) _status(AppLocalizations l10n) {
+    if (inMaintenance) return (Colors.grey.shade400, l10n.maintenanceStatus);
+    if (bookings.isEmpty) return (const Color(0xFF34A853), l10n.machineOpenStatus);
     if (bookings.length >= _Slot.values.length) {
-      return (const Color(0xFFE15B5B), 'Full');
+      return (const Color(0xFFE15B5B), l10n.legendFull);
     }
-    return (const Color(0xFFE8963C), 'Partly booked');
+    return (const Color(0xFFE8963C), l10n.legendPartlyBooked);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
-    final (statusColor, statusLabel) = _status;
+    final (statusColor, statusLabel) = _status(l10n);
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.secondary,
@@ -549,7 +554,7 @@ class _MachineCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text('Machine $machine',
+                Text(l10n.machineN(machine),
                     style: theme.textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.bold)),
                 const Spacer(),
@@ -580,7 +585,7 @@ class _MachineCard extends StatelessWidget {
                       size: 18, color: Colors.grey.shade500),
                   const SizedBox(width: 10),
                   Text(
-                    'This machine is temporarily out of service.',
+                    l10n.machineOutOfService,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: Colors.grey.shade600),
                   ),
@@ -635,14 +640,15 @@ class _SlotRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isMine = booking != null && booking!['user_id'] == userId;
     final isTaken = booking != null && !isMine;
 
     final (dotColor, statusText) = switch ((isMine, isTaken, isPast)) {
-      (true, _, _) => (Colors.blue, 'Your booking'),
-      (_, true, _) => (Colors.red, 'Taken'),
-      (_, _, true) => (Colors.grey, 'Passed'),
-      _ => (Colors.green, 'Available'),
+      (true, _, _) => (Colors.blue, l10n.statusYourBooking),
+      (_, true, _) => (Colors.red, l10n.statusTaken),
+      (_, _, true) => (Colors.grey, l10n.statusPassed),
+      _ => (Colors.green, l10n.statusAvailable),
     };
 
     return Padding(
@@ -653,7 +659,7 @@ class _SlotRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(slot.label,
+                Text(slot.label(l10n),
                     style: theme.textTheme.bodyMedium
                         ?.copyWith(fontWeight: FontWeight.w500)),
                 Text(slot.timeRange,
@@ -688,14 +694,17 @@ class _SlotRow extends StatelessWidget {
                     onPressed: () => onCancel(booking!['id']),
                     style: FilledButton.styleFrom(
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: Colors.red.shade50,
+                      backgroundColor: Colors.red.withValues(
+                          alpha: theme.brightness == Brightness.dark
+                              ? 0.18
+                              : 0.08),
                       foregroundColor: Colors.red,
                       minimumSize: const Size(0, 32),
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    child: const Text('Cancel',
-                        style: TextStyle(fontSize: 13)),
+                    child: Text(l10n.btnCancel,
+                        style: const TextStyle(fontSize: 13)),
                   )
                 : (!isTaken && !isPast)
                     ? FilledButton(
@@ -707,7 +716,7 @@ class _SlotRow extends StatelessWidget {
                               const EdgeInsets.symmetric(horizontal: 8),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        child: const Text('Book'),
+                        child: Text(l10n.btnBook),
                       )
                     : const SizedBox.shrink(),
           ),
@@ -741,12 +750,6 @@ class _CalendarSheetState extends State<_CalendarSheet> {
   late DateTime _selected;
   // Single persistent stream — created once, reused across month navigations.
   late final Stream<QuerySnapshot<Map<String, dynamic>>> _bookingsStream;
-
-  static const _monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ];
-  static const _dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   static DateTime _today() {
     final n = DateTime.now();
@@ -783,6 +786,9 @@ class _CalendarSheetState extends State<_CalendarSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final monthNames = l10n.calMonthNames.split(',');
+    final dayLabels = l10n.calDayLabels.split(',');
     final today = _today();
     final daysInMonth = DateTime(_month.year, _month.month + 1, 0).day;
     final startPad = _month.weekday - 1; // Mon=0
@@ -856,7 +862,7 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                           Expanded(
                             child: Center(
                               child: Text(
-                                '${_monthNames[_month.month - 1]} ${_month.year}',
+                                '${monthNames[_month.month - 1]} ${_month.year}',
                                 style: theme.textTheme.titleMedium
                                     ?.copyWith(fontWeight: FontWeight.bold),
                               ),
@@ -874,7 +880,7 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
-                        children: _dayLabels
+                        children: dayLabels
                             .map((d) => Expanded(
                                   child: Center(
                                     child: Text(d,
@@ -995,14 +1001,15 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const _LegendDot(
-                            color: Colors.green, label: 'Available'),
-                        const SizedBox(width: 16),
-                        const _LegendDot(
-                            color: Colors.orange, label: 'Partly booked'),
+                        _LegendDot(
+                            color: Colors.green, label: l10n.legendAvailable),
                         const SizedBox(width: 16),
                         _LegendDot(
-                            color: Colors.red.shade400, label: 'Full'),
+                            color: Colors.orange,
+                            label: l10n.legendPartlyBooked),
+                        const SizedBox(width: 16),
+                        _LegendDot(
+                            color: Colors.red.shade400, label: l10n.legendFull),
                       ],
                     ),
                     const SizedBox(height: 16),

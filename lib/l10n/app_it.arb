@@ -178,11 +178,60 @@
   "calShortDays": "Lun,Mar,Mer,Gio,Ven,Sab,Dom",
   "calDayLabels": "L,M,M,G,V,S,D",
 
+  "profilePhotosComingSoon": "Le foto del profilo arriveranno presto.",
+  "orDivider": "oppure",
+
+  "verifyEmailTitle": "Conferma la tua email",
+  "verifyEmailBodyPrefix": "Abbiamo inviato un codice a 6 cifre a ",
+  "verifyEmailBodySuffix": ". Inseriscilo qui sotto.",
+  "btnVerify": "Verifica",
+  "btnResendCode": "Invia di nuovo il codice",
+  "btnResendCodeCooldown": "Invia di nuovo il codice ({seconds}s)",
+  "@btnResendCodeCooldown": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "useDifferentAccount": "Usa un altro account",
+  "checkSpamFolder": "Controlla la cartella spam se non è arrivato.",
+  "codeSentSnackbar": "Codice di verifica inviato.",
+  "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo.",
+  "signedOutElsewhere": "Sei stato disconnesso perché questo account è stato aperto su un altro dispositivo.",
+
+  "addressLabel": "Indirizzo",
+  "onbContactDetailsTitle": "I tuoi contatti",
+  "onbContactDetailsSubtitle": "Condivisi con i tuoi vicini per poterti contattare.",
+  "fieldStreet": "Via",
+  "fieldHouseNumber": "N.",
+  "fieldPostalCode": "CAP",
+  "fieldCity": "Città",
+  "fieldCanton": "Cantone",
+  "fieldPhoneNumber": "Numero di telefono",
+
+  "greetingMorning": "Buongiorno",
+  "greetingAfternoon": "Buon pomeriggio",
+  "greetingEvening": "Buonasera",
+  "machineOpenStatus": "Libera",
+
   "isTypingText": "{name} sta scrivendo...",
   "@isTypingText": {
     "placeholders": {
       "name": { "type": "String" }
     }
   },
-  "typeYourMessage": "Scrivi un messaggio"
+  "typeYourMessage": "Scrivi un messaggio",
+
+  "yesterdayLabel": "Ieri",
+  "sayHelloTo": "Saluta {name}",
+  "@sayHelloTo": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "messageHint": "Messaggio a {name}",
+  "@messageHint": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

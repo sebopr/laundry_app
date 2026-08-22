@@ -3,6 +3,7 @@ import 'dart:ui' show ImageByteFormat;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -77,6 +78,7 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
   }
 
   Future<void> _print() async {
+    final scanToJoin = AppLocalizations.of(context)!.scanToJoin;
     final qrData = 'building:$_createdUuid';
     final doc = pw.Document();
     final qrImage = await _buildPdfQr(qrData);
@@ -88,7 +90,7 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
           pw.Text(_nameController.text,
               style: const pw.TextStyle(fontSize: 20)),
           pw.SizedBox(height: 8),
-          pw.Text('Scan to join the laundry booking system',
+          pw.Text(scanToJoin,
               style: const pw.TextStyle(fontSize: 12)),
           pw.SizedBox(height: 24),
           pw.Center(child: qrImage),
@@ -112,8 +114,9 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('New building')),
+      appBar: AppBar(title: Text(l10n.newBuilding)),
       body: _createdUuid != null
           ? _QrView(
               buildingName: _nameController.text,
@@ -130,7 +133,7 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
           : ListView(
               padding: const EdgeInsets.all(24),
               children: [
-                Text('Building name or address',
+                Text(l10n.buildingNameOrAddress,
                     style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.grey.shade600,
                         letterSpacing: 1.2)),
@@ -140,7 +143,7 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
                   autofocus: true,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    hintText: 'e.g. Bahnhofstrasse 12',
+                    hintText: l10n.buildingNameHint,
                     filled: true,
                     fillColor: theme.colorScheme.secondary,
                     border: OutlineInputBorder(
@@ -161,7 +164,7 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
                             height: 20,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2))
-                        : const Text('Create building'),
+                        : Text(l10n.createBuilding),
                   ),
                 ),
               ],
@@ -186,6 +189,7 @@ class _QrView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(32),
@@ -199,7 +203,7 @@ class _QrView extends StatelessWidget {
                     ?.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center),
             const SizedBox(height: 4),
-            Text('Building created. Post this QR in the laundry room.',
+            Text(l10n.buildingCreatedMsg,
                 style: theme.textTheme.bodyMedium
                     ?.copyWith(color: Colors.grey.shade600),
                 textAlign: TextAlign.center),
@@ -229,14 +233,14 @@ class _QrView extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onPrint,
                     icon: const Icon(LucideIcons.printer),
-                    label: const Text('Print'),
+                    label: Text(l10n.btnPrint),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: FilledButton(
                     onPressed: onDone,
-                    child: const Text('Continue'),
+                    child: Text(l10n.btnContinue),
                   ),
                 ),
               ],

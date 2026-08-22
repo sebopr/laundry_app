@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lavaplan/components/chat_bubble.dart';
 import 'package:lavaplan/components/typing_indicator.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/chat/chat_service.dart';
+import 'package:lavaplan/services/notifications/active_chat_tracker.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ChatPage extends StatefulWidget {
@@ -54,6 +56,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
+    ActiveChatTracker.currentPeerId = widget.receiverId;
 //add listener to focus node
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
@@ -68,6 +71,9 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
+    if (ActiveChatTracker.currentPeerId == widget.receiverId) {
+      ActiveChatTracker.currentPeerId = null;
+    }
     _focusNode.dispose();
     _messageController.dispose();
     resetUnreadCount();
@@ -119,7 +125,8 @@ class _ChatPageState extends State<ChatPage> {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
+              backgroundColor:
+                  theme.colorScheme.primary.withValues(alpha: 0.15),
               child: Text(
                 _initials,
                 style: TextStyle(
@@ -134,7 +141,8 @@ class _ChatPageState extends State<ChatPage> {
               child: Text(
                 _displayName,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -166,8 +174,8 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             CircleAvatar(
                               radius: 13,
-                              backgroundColor:
-                                  theme.colorScheme.primary.withValues(alpha: 0.15),
+                              backgroundColor: theme.colorScheme.primary
+                                  .withValues(alpha: 0.15),
                               child: Text(
                                 _initials,
                                 style: TextStyle(
@@ -211,9 +219,10 @@ class _ChatPageState extends State<ChatPage> {
     return StreamBuilder(
       stream: receiveMessages(),
       builder: (context, snapshot) {
+        final l10n = AppLocalizations.of(context)!;
         //error
         if (snapshot.hasError) {
-          return const Center(child: Text("Something went wrong"));
+          return Center(child: Text(l10n.somethingWentWrong));
         }
         //loading...
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -224,7 +233,7 @@ class _ChatPageState extends State<ChatPage> {
         if (docs.isEmpty) {
           return Center(
             child: Text(
-              "Say hello to $_displayName",
+              l10n.sayHelloTo(_displayName),
               style: TextStyle(color: Colors.grey.shade500),
             ),
           );
@@ -238,8 +247,7 @@ class _ChatPageState extends State<ChatPage> {
         final currentUserId = _authService.getCurrentUser()!.uid;
         final hasUnread = docs.any((doc) {
           final data = doc.data() as Map<String, dynamic>;
-          return data["receiverId"] == currentUserId &&
-              data["isRead"] == false;
+          return data["receiverId"] == currentUserId && data["isRead"] == false;
         });
         if (hasUnread) resetUnreadCount();
 
@@ -358,76 +366,82 @@ class _ChatPageState extends State<ChatPage> {
   //message input
   Widget _buildMessageInput() {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 6, 12, 24),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 44),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.secondary,
-                borderRadius: BorderRadius.circular(22),
-              ),
-              child: TextField(
-                controller: _messageController,
-                focusNode: _focusNode,
-                minLines: 1,
-                maxLines: 5,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  isCollapsed: true,
-                  hintText: "Message $_displayName",
-                  hintStyle: TextStyle(color: Colors.grey.shade500),
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 44),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.secondary,
+                  borderRadius: BorderRadius.circular(22),
                 ),
-                onChanged: (value) {
-                  _chatService.setTypingStatus(
-                      //set is typing
-                      widget.receiverId,
-                      value.isNotEmpty);
-                  // reset is typing after 1 second of inactivity
-                  _typingTimer?.cancel();
-                  if (value.isNotEmpty) {
-                    _typingTimer = Timer(const Duration(seconds: 2), () {
-                      _chatService.setTypingStatus(widget.receiverId, false);
-                    });
-                  }
-                },
-                onSubmitted: (value) async {
-                  if (value.trim().isEmpty) return;
-                  await _chatService.sendMessage(widget.receiverId, value);
-                  await _chatService.setTypingStatus(
-                      widget.receiverId, false); // stop typing
-                  _messageController.clear();
-                  _scrollDown();
-                },
+                child: TextField(
+                  controller: _messageController,
+                  focusNode: _focusNode,
+                  minLines: 1,
+                  maxLines: 5,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    isCollapsed: true,
+                    hintText: l10n.messageHint(_displayName),
+                    hintStyle: TextStyle(color: Colors.grey.shade500),
+                  ),
+                  onChanged: (value) {
+                    _chatService.setTypingStatus(
+                        //set is typing
+                        widget.receiverId,
+                        value.isNotEmpty);
+                    // reset is typing after 1 second of inactivity
+                    _typingTimer?.cancel();
+                    if (value.isNotEmpty) {
+                      _typingTimer = Timer(const Duration(seconds: 2), () {
+                        _chatService.setTypingStatus(widget.receiverId, false);
+                      });
+                    }
+                  },
+                  onSubmitted: (value) async {
+                    if (value.trim().isEmpty) return;
+                    await _chatService.sendMessage(widget.receiverId, value);
+                    await _chatService.setTypingStatus(
+                        widget.receiverId, false); // stop typing
+                    _messageController.clear();
+                    _scrollDown();
+                  },
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          //send button
-          Container(
-            width: 44,
-            height: 44,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF22C6C6), Color(0xFF12A3A8)],
+            const SizedBox(width: 8),
+            //send button
+            Container(
+              width: 44,
+              height: 44,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF22C6C6), Color(0xFF12A3A8)],
+                ),
+              ),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                onPressed: sendMessage,
+                icon: const Icon(LucideIcons.arrowUp,
+                    color: Colors.white, size: 20),
               ),
             ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: sendMessage,
-              icon: const Icon(LucideIcons.arrowUp, color: Colors.white, size: 20),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -438,14 +452,14 @@ class _DayDivider extends StatelessWidget {
 
   const _DayDivider({required this.date});
 
-  String _label() {
+  String _label(AppLocalizations l10n) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
     final day = DateTime(date.year, date.month, date.day);
 
-    if (day == today) return "Today";
-    if (day == yesterday) return "Yesterday";
+    if (day == today) return l10n.todayBtn;
+    if (day == yesterday) return l10n.yesterdayLabel;
     if (date.year == now.year) return DateFormat('MMMM d').format(date);
     return DateFormat('MMMM d, yyyy').format(date);
   }
@@ -462,7 +476,7 @@ class _DayDivider extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
           child: Text(
-            _label(),
+            _label(AppLocalizations.of(context)!),
             style: TextStyle(
               fontSize: 11.5,
               fontWeight: FontWeight.w600,

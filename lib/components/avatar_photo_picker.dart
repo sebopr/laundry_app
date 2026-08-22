@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A circular initials avatar with a camera badge, standing in for a real
@@ -16,7 +17,9 @@ class AvatarPhotoPicker extends StatelessWidget {
 
   void _showComingSoon(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile photos are coming soon.')),
+      SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.profilePhotosComingSoon)),
     );
   }
 

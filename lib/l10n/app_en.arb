@@ -178,11 +178,60 @@
   "calShortDays": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
   "calDayLabels": "M,T,W,T,F,S,S",
 
+  "profilePhotosComingSoon": "Profile photos are coming soon.",
+  "orDivider": "or",
+
+  "verifyEmailTitle": "Confirm your email",
+  "verifyEmailBodyPrefix": "We sent a 6-digit code to ",
+  "verifyEmailBodySuffix": ". Enter it below.",
+  "btnVerify": "Verify",
+  "btnResendCode": "Resend code",
+  "btnResendCodeCooldown": "Resend code ({seconds}s)",
+  "@btnResendCodeCooldown": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "useDifferentAccount": "Use a different account",
+  "checkSpamFolder": "Check your spam folder if it has not arrived.",
+  "codeSentSnackbar": "Verification code sent.",
+  "sessionExpired": "Your session expired. Please sign in again.",
+  "signedOutElsewhere": "You were signed out because this account was opened on another device.",
+
+  "addressLabel": "Address",
+  "onbContactDetailsTitle": "Your contact details",
+  "onbContactDetailsSubtitle": "Shared with your neighbours so they can reach you.",
+  "fieldStreet": "Street",
+  "fieldHouseNumber": "No.",
+  "fieldPostalCode": "PLZ",
+  "fieldCity": "City",
+  "fieldCanton": "Canton",
+  "fieldPhoneNumber": "Phone number",
+
+  "greetingMorning": "Good morning",
+  "greetingAfternoon": "Good afternoon",
+  "greetingEvening": "Good evening",
+  "machineOpenStatus": "Open",
+
   "isTypingText": "{name} is typing...",
   "@isTypingText": {
     "placeholders": {
       "name": { "type": "String" }
     }
   },
-  "typeYourMessage": "Type your message"
+  "typeYourMessage": "Type your message",
+
+  "yesterdayLabel": "Yesterday",
+  "sayHelloTo": "Say hello to {name}",
+  "@sayHelloTo": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "messageHint": "Message {name}",
+  "@messageHint": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  }
 }

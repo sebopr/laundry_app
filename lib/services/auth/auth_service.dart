@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lavaplan/services/auth/session_service.dart';
 import 'package:lavaplan/services/notifications/notification_service.dart';
 import 'package:lavaplan/services/notifications/push_notification_service.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -29,7 +31,7 @@ class AuthService {
       final cred = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       await _saveUserDoc(cred);
-      await _sendVerification(cred.user!);
+      await sendVerificationCode();
       await NotificationService.instance
           .scheduleEmailVerificationReminder(cred.user!.uid);
       return cred;
@@ -98,9 +100,16 @@ class AuthService {
       'createdAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
     await PushNotificationService.instance.registerToken(cred.user!.uid);
+    // Claims this device as the account's sole active session — any other
+    // device with this account open will be signed out once its listener
+    // sees the id we just wrote.
+    SessionService.instance.claimSession(cred.user!.uid);
   }
 
-  // ── Email confirmation ────────────────────────────────────────────────────
+  // ── Email confirmation (6-digit code) ─────────────────────────────────────
+
+  static final FirebaseFunctions _functions =
+      FirebaseFunctions.instanceFor(region: 'europe-west6');
 
   /// Whether [user] still has to confirm their email address.
   ///
@@ -111,56 +120,52 @@ class AuthService {
       !user.emailVerified &&
       user.providerData.any((p) => p.providerId == 'password');
 
-  /// How long the confirmation email's resend button should stay disabled.
+  /// How long the resend button should stay disabled.
   static const resendCooldown = Duration(seconds: 60);
 
-  static DateTime? _lastConfirmationSentAt;
+  static DateTime? _lastCodeSentAt;
 
-  /// Time left before another confirmation email may be sent.
+  /// Time left before another code may be requested.
   ///
   /// Tracked here rather than in the page so that a user who signs in days
   /// after registering is not made to wait for a send that already happened
-  /// in a previous session. Firebase applies its own throttling on top.
+  /// in a previous session. The Cloud Function applies its own throttling
+  /// on top.
   static Duration get remainingResendCooldown {
-    final sentAt = _lastConfirmationSentAt;
+    final sentAt = _lastCodeSentAt;
     if (sentAt == null) return Duration.zero;
     final elapsed = DateTime.now().difference(sentAt);
     return elapsed >= resendCooldown ? Duration.zero : resendCooldown - elapsed;
   }
 
-  /// Sends (or re-sends) the confirmation link to the current user.
-  Future<void> sendEmailConfirmation() async {
+  /// Requests a new 6-digit verification code be emailed to the current user.
+  Future<void> sendVerificationCode() async {
     final user = _auth.currentUser;
     if (user == null || user.emailVerified) return;
-    await _sendVerification(user);
-  }
-
-  /// Re-reads the account from Firebase and reports whether the address has
-  /// been confirmed in the meantime.
-  ///
-  /// [User.emailVerified] is a snapshot taken when the ID token was issued, so
-  /// it never flips on its own — the account has to be reloaded. Refreshing
-  /// the token afterwards makes [FirebaseAuth.userChanges] emit, which is what
-  /// moves AuthGate past the confirmation screen.
-  Future<bool> refreshEmailConfirmed() async {
-    final user = _auth.currentUser;
-    if (user == null) return false;
-    await user.reload();
-    final refreshed = _auth.currentUser;
-    if (refreshed == null || !refreshed.emailVerified) return false;
-    await refreshed.getIdToken(true);
-    await NotificationService.instance
-        .cancelEmailVerificationReminder(refreshed.uid);
-    return true;
-  }
-
-  Future<void> _sendVerification(User user) async {
     try {
-      await user.sendEmailVerification();
-      _lastConfirmationSentAt = DateTime.now();
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.code);
+      await _functions.httpsCallable('sendVerificationCode').call();
+      _lastCodeSentAt = DateTime.now();
+    } on FirebaseFunctionsException catch (e) {
+      throw Exception(e.message ?? e.code);
     }
+  }
+
+  /// Submits the code the user typed. Throws with a user-facing message if
+  /// it's wrong, expired, or too many attempts have been made; otherwise
+  /// refreshes the local session so [FirebaseAuth.userChanges] emits and
+  /// AuthGate moves past the confirmation screen.
+  Future<void> verifyEmailCode(String code) async {
+    try {
+      await _functions.httpsCallable('verifyEmailCode').call({'code': code});
+    } on FirebaseFunctionsException catch (e) {
+      throw Exception(e.message ?? e.code);
+    }
+
+    final user = _auth.currentUser;
+    if (user == null) return;
+    await user.reload();
+    await _auth.currentUser?.getIdToken(true);
+    await NotificationService.instance.cancelEmailVerificationReminder(user.uid);
   }
 
   User? getCurrentUser() => _auth.currentUser;

@@ -962,6 +962,162 @@ abstract class AppLocalizations {
   /// **'M,T,W,T,F,S,S'**
   String get calDayLabels;
 
+  /// No description provided for @profilePhotosComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photos are coming soon.'**
+  String get profilePhotosComingSoon;
+
+  /// No description provided for @orDivider.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get orDivider;
+
+  /// No description provided for @verifyEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your email'**
+  String get verifyEmailTitle;
+
+  /// No description provided for @verifyEmailBodyPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to '**
+  String get verifyEmailBodyPrefix;
+
+  /// No description provided for @verifyEmailBodySuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'. Enter it below.'**
+  String get verifyEmailBodySuffix;
+
+  /// No description provided for @btnVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get btnVerify;
+
+  /// No description provided for @btnResendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get btnResendCode;
+
+  /// No description provided for @btnResendCodeCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code ({seconds}s)'**
+  String btnResendCodeCooldown(int seconds);
+
+  /// No description provided for @useDifferentAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different account'**
+  String get useDifferentAccount;
+
+  /// No description provided for @checkSpamFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your spam folder if it has not arrived.'**
+  String get checkSpamFolder;
+
+  /// No description provided for @codeSentSnackbar.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code sent.'**
+  String get codeSentSnackbar;
+
+  /// No description provided for @sessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session expired. Please sign in again.'**
+  String get sessionExpired;
+
+  /// No description provided for @signedOutElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'You were signed out because this account was opened on another device.'**
+  String get signedOutElsewhere;
+
+  /// No description provided for @addressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get addressLabel;
+
+  /// No description provided for @onbContactDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your contact details'**
+  String get onbContactDetailsTitle;
+
+  /// No description provided for @onbContactDetailsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared with your neighbours so they can reach you.'**
+  String get onbContactDetailsSubtitle;
+
+  /// No description provided for @fieldStreet.
+  ///
+  /// In en, this message translates to:
+  /// **'Street'**
+  String get fieldStreet;
+
+  /// No description provided for @fieldHouseNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'No.'**
+  String get fieldHouseNumber;
+
+  /// No description provided for @fieldPostalCode.
+  ///
+  /// In en, this message translates to:
+  /// **'PLZ'**
+  String get fieldPostalCode;
+
+  /// No description provided for @fieldCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get fieldCity;
+
+  /// No description provided for @fieldCanton.
+  ///
+  /// In en, this message translates to:
+  /// **'Canton'**
+  String get fieldCanton;
+
+  /// No description provided for @fieldPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get fieldPhoneNumber;
+
+  /// No description provided for @greetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get greetingMorning;
+
+  /// No description provided for @greetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get greetingAfternoon;
+
+  /// No description provided for @greetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get greetingEvening;
+
+  /// No description provided for @machineOpenStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get machineOpenStatus;
+
   /// No description provided for @isTypingText.
   ///
   /// In en, this message translates to:
@@ -973,6 +1129,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type your message'**
   String get typeYourMessage;
+
+  /// No description provided for @yesterdayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterdayLabel;
+
+  /// No description provided for @sayHelloTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Say hello to {name}'**
+  String sayHelloTo(String name);
+
+  /// No description provided for @messageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Message {name}'**
+  String messageHint(String name);
 }
 
 class _AppLocalizationsDelegate

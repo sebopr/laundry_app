@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
+import 'package:lavaplan/services/auth/session_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 // ─── Login page ───────────────────────────────────────────────────────────────
@@ -22,6 +24,21 @@ class _LoginPageState extends State<LoginPage> {
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    if (SessionService.instance.consumeKickedFlag()) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text(AppLocalizations.of(context)!.signedOutElsewhere)),
+        );
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _pwController.dispose();
@@ -34,7 +51,12 @@ class _LoginPageState extends State<LoginPage> {
       await AuthService().signInWithEmailPassword(
           _emailController.text.trim(), _pwController.text);
     } catch (e) {
-      if (mounted) setState(() { _error = _friendlyError(e); _loading = false; });
+      if (mounted) {
+        setState(() {
+          _error = _friendlyError(AppLocalizations.of(context)!, e);
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -43,7 +65,12 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await AuthService().signInWithGoogle();
     } catch (e) {
-      if (mounted) setState(() { _error = _friendlyError(e); _loading = false; });
+      if (mounted) {
+        setState(() {
+          _error = _friendlyError(AppLocalizations.of(context)!, e);
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -52,13 +79,19 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await AuthService().signInWithApple();
     } catch (e) {
-      if (mounted) setState(() { _error = _friendlyError(e); _loading = false; });
+      if (mounted) {
+        setState(() {
+          _error = _friendlyError(AppLocalizations.of(context)!, e);
+          _loading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -67,19 +100,19 @@ class _LoginPageState extends State<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 48),
-              const _AuthHeader(tagline: 'Book your laundry slot'),
+              _AuthHeader(tagline: l10n.appTagline),
               const SizedBox(height: 48),
-              Text('Welcome back',
+              Text(l10n.loginTitle,
                   style: theme.textTheme.titleLarge
                       ?.copyWith(fontWeight: FontWeight.w700)),
               const SizedBox(height: 2),
-              Text('Sign in to continue',
+              Text(l10n.loginSubtitle,
                   style: theme.textTheme.bodyMedium
                       ?.copyWith(color: Colors.grey.shade500)),
               const SizedBox(height: 24),
               _InputField(
                 controller: _emailController,
-                label: 'Email',
+                label: l10n.fieldEmail,
                 icon: LucideIcons.mail,
                 keyboardType: TextInputType.emailAddress,
                 autocorrect: false,
@@ -87,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 12),
               _InputField(
                 controller: _pwController,
-                label: 'Password',
+                label: l10n.fieldPassword,
                 icon: LucideIcons.lock,
                 obscureText: _obscurePw,
                 onToggleObscure: () =>
@@ -102,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
               ],
               const SizedBox(height: 20),
               _PrimaryButton(
-                label: 'Sign in',
+                label: l10n.btnSignIn,
                 loading: _loading,
                 onPressed: _signIn,
               ),
@@ -110,24 +143,24 @@ class _LoginPageState extends State<LoginPage> {
               _OrDivider(),
               const SizedBox(height: 20),
               _SocialButton(
-                label: 'Continue with Google',
+                label: l10n.btnContinueGoogle,
                 icon: const _GoogleIcon(),
                 onPressed: _loading ? null : _googleSignIn,
               ),
               const SizedBox(height: 10),
               _SocialButton(
-                label: 'Continue with Apple',
+                label: l10n.btnContinueApple,
                 icon: const Icon(Icons.apple, size: 20),
                 onPressed: _loading ? null : _appleSignIn,
                 dark: true,
               ),
               const SizedBox(height: 32),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text("Don't have an account?",
+                Text(l10n.loginNoAccount,
                     style: theme.textTheme.bodyMedium),
                 TextButton(
                   onPressed: widget.onRegisterTap,
-                  child: const Text('Sign up'),
+                  child: Text(l10n.btnSignUp),
                 ),
               ]),
               const SizedBox(height: 16),
@@ -167,8 +200,9 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _register() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_pwController.text != _confirmPwController.text) {
-      setState(() => _error = 'Passwords do not match.');
+      setState(() => _error = l10n.errorPasswordMismatch);
       return;
     }
     setState(() { _loading = true; _error = null; });
@@ -176,7 +210,12 @@ class _RegisterPageState extends State<RegisterPage> {
       await AuthService().signUpWithEmailPassword(
           _emailController.text.trim(), _pwController.text);
     } catch (e) {
-      if (mounted) setState(() { _error = _friendlyError(e); _loading = false; });
+      if (mounted) {
+        setState(() {
+          _error = _friendlyError(l10n, e);
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -185,7 +224,12 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       await AuthService().signInWithGoogle();
     } catch (e) {
-      if (mounted) setState(() { _error = _friendlyError(e); _loading = false; });
+      if (mounted) {
+        setState(() {
+          _error = _friendlyError(AppLocalizations.of(context)!, e);
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -194,13 +238,19 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       await AuthService().signInWithApple();
     } catch (e) {
-      if (mounted) setState(() { _error = _friendlyError(e); _loading = false; });
+      if (mounted) {
+        setState(() {
+          _error = _friendlyError(AppLocalizations.of(context)!, e);
+          _loading = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -209,19 +259,19 @@ class _RegisterPageState extends State<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 48),
-              const _AuthHeader(tagline: 'Book your laundry slot'),
+              _AuthHeader(tagline: l10n.appTagline),
               const SizedBox(height: 48),
-              Text('Create account',
+              Text(l10n.registerTitle,
                   style: theme.textTheme.titleLarge
                       ?.copyWith(fontWeight: FontWeight.w700)),
               const SizedBox(height: 2),
-              Text('Join your building\'s laundry system',
+              Text(l10n.registerSubtitle,
                   style: theme.textTheme.bodyMedium
                       ?.copyWith(color: Colors.grey.shade500)),
               const SizedBox(height: 24),
               _InputField(
                 controller: _emailController,
-                label: 'Email',
+                label: l10n.fieldEmail,
                 icon: LucideIcons.mail,
                 keyboardType: TextInputType.emailAddress,
                 autocorrect: false,
@@ -229,7 +279,7 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 12),
               _InputField(
                 controller: _pwController,
-                label: 'Password',
+                label: l10n.fieldPassword,
                 icon: LucideIcons.lock,
                 obscureText: _obscurePw,
                 onToggleObscure: () =>
@@ -238,7 +288,7 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 12),
               _InputField(
                 controller: _confirmPwController,
-                label: 'Confirm password',
+                label: l10n.fieldConfirmPassword,
                 icon: LucideIcons.lock,
                 obscureText: _obscureConfirm,
                 onToggleObscure: () =>
@@ -253,7 +303,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
               const SizedBox(height: 20),
               _PrimaryButton(
-                label: 'Create account',
+                label: l10n.btnCreateAccount,
                 loading: _loading,
                 onPressed: _register,
               ),
@@ -261,24 +311,24 @@ class _RegisterPageState extends State<RegisterPage> {
               _OrDivider(),
               const SizedBox(height: 20),
               _SocialButton(
-                label: 'Continue with Google',
+                label: l10n.btnContinueGoogle,
                 icon: const _GoogleIcon(),
                 onPressed: _loading ? null : _googleSignIn,
               ),
               const SizedBox(height: 10),
               _SocialButton(
-                label: 'Continue with Apple',
+                label: l10n.btnContinueApple,
                 icon: const Icon(Icons.apple, size: 20),
                 onPressed: _loading ? null : _appleSignIn,
                 dark: true,
               ),
               const SizedBox(height: 32),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text('Already have an account?',
+                Text(l10n.registerHaveAccount,
                     style: theme.textTheme.bodyMedium),
                 TextButton(
                   onPressed: widget.onLoginTap,
-                  child: const Text('Sign in'),
+                  child: Text(l10n.btnSignIn),
                 ),
               ]),
               const SizedBox(height: 16),
@@ -416,7 +466,7 @@ class _OrDivider extends StatelessWidget {
       const Expanded(child: Divider()),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14),
-        child: Text('or',
+        child: Text(AppLocalizations.of(context)!.orDivider,
             style: Theme.of(context)
                 .textTheme
                 .bodySmall
@@ -498,25 +548,25 @@ class _GoogleIcon extends StatelessWidget {
   }
 }
 
-String _friendlyError(Object e) {
+String _friendlyError(AppLocalizations l10n, Object e) {
   final msg = e.toString().toLowerCase();
   if (msg.contains('wrong-password') ||
       msg.contains('invalid-credential') ||
       msg.contains('user-not-found')) {
-    return 'Incorrect email or password.';
+    return l10n.errorWrongCredentials;
   }
-  if (msg.contains('invalid-email')) return 'Please enter a valid email.';
+  if (msg.contains('invalid-email')) return l10n.errorInvalidEmail;
   if (msg.contains('email-already-in-use')) {
-    return 'An account already exists for this email.';
+    return l10n.errorEmailInUse;
   }
   if (msg.contains('weak-password')) {
-    return 'Password must be at least 6 characters.';
+    return l10n.errorWeakPassword;
   }
   if (msg.contains('network-request-failed')) {
-    return 'No internet connection.';
+    return l10n.errorNoInternet;
   }
   if (msg.contains('too-many-requests')) {
-    return 'Too many attempts. Try again later.';
+    return l10n.errorTooManyRequests;
   }
-  return 'Something went wrong. Please try again.';
+  return l10n.errorGeneric;
 }

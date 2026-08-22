@@ -492,10 +492,108 @@ class AppLocalizationsDe extends AppLocalizations {
   String get calDayLabels => 'M,D,M,D,F,S,S';
 
   @override
+  String get profilePhotosComingSoon => 'Profilbilder folgen bald.';
+
+  @override
+  String get orDivider => 'oder';
+
+  @override
+  String get verifyEmailTitle => 'Bestätige deine E-Mail';
+
+  @override
+  String get verifyEmailBodyPrefix =>
+      'Wir haben einen 6-stelligen Code gesendet an ';
+
+  @override
+  String get verifyEmailBodySuffix => '. Gib ihn unten ein.';
+
+  @override
+  String get btnVerify => 'Bestätigen';
+
+  @override
+  String get btnResendCode => 'Code erneut senden';
+
+  @override
+  String btnResendCodeCooldown(int seconds) {
+    return 'Code erneut senden (${seconds}s)';
+  }
+
+  @override
+  String get useDifferentAccount => 'Anderes Konto verwenden';
+
+  @override
+  String get checkSpamFolder =>
+      'Schau in deinem Spam-Ordner nach, falls er nicht angekommen ist.';
+
+  @override
+  String get codeSentSnackbar => 'Bestätigungscode gesendet.';
+
+  @override
+  String get sessionExpired =>
+      'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.';
+
+  @override
+  String get signedOutElsewhere =>
+      'Du wurdest abgemeldet, weil dieses Konto auf einem anderen Gerät geöffnet wurde.';
+
+  @override
+  String get addressLabel => 'Adresse';
+
+  @override
+  String get onbContactDetailsTitle => 'Deine Kontaktdaten';
+
+  @override
+  String get onbContactDetailsSubtitle =>
+      'Wird mit deinen Nachbarn geteilt, damit sie dich erreichen können.';
+
+  @override
+  String get fieldStreet => 'Strasse';
+
+  @override
+  String get fieldHouseNumber => 'Nr.';
+
+  @override
+  String get fieldPostalCode => 'PLZ';
+
+  @override
+  String get fieldCity => 'Ort';
+
+  @override
+  String get fieldCanton => 'Kanton';
+
+  @override
+  String get fieldPhoneNumber => 'Telefonnummer';
+
+  @override
+  String get greetingMorning => 'Guten Morgen';
+
+  @override
+  String get greetingAfternoon => 'Guten Tag';
+
+  @override
+  String get greetingEvening => 'Guten Abend';
+
+  @override
+  String get machineOpenStatus => 'Frei';
+
+  @override
   String isTypingText(String name) {
     return '$name schreibt...';
   }
 
   @override
   String get typeYourMessage => 'Nachricht eingeben';
+
+  @override
+  String get yesterdayLabel => 'Gestern';
+
+  @override
+  String sayHelloTo(String name) {
+    return 'Sag Hallo zu $name';
+  }
+
+  @override
+  String messageHint(String name) {
+    return 'Nachricht an $name';
+  }
 }

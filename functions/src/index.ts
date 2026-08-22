@@ -1,10 +1,15 @@
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { getMessaging } from "firebase-admin/messaging";
-import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import {
+  onDocumentCreated,
+  onDocumentDeleted,
+} from "firebase-functions/v2/firestore";
 import * as logger from "firebase-functions/logger";
 
 initializeApp();
+
+export { sendVerificationCode, verifyEmailCode } from "./emailVerification";
 
 const db = getFirestore();
 const messaging = getMessaging();
@@ -81,5 +86,130 @@ export const onNewChatMessage = onDocumentCreated(
     } catch (err) {
       logger.error(`Failed to send chat push notification to ${receiverId}`, err);
     }
+  }
+);
+
+const SLOT_LABELS: Record<string, string> = {
+  morning: "Morning (08:00–12:00)",
+  afternoon: "Afternoon (12:00–22:00)",
+};
+
+const MONTH_NAMES = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+/** Formats a "YYYY-MM-DD" booking date as "Today" / "Tomorrow" / "Aug 21". */
+function formatBookingDate(dateStr: string): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  if (!y || !m || !d) return dateStr;
+
+  const bookingDate = Date.UTC(y, m - 1, d);
+  const now = new Date();
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const diffDays = Math.round((bookingDate - today) / 86400000);
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Tomorrow";
+  return `${MONTH_NAMES[m - 1]} ${d}`;
+}
+
+/**
+ * Notifies every other resident of the same building when a machine slot is
+ * booked or cancelled, so neighbours don't have to keep the app open to see
+ * availability change.
+ */
+async function notifyBuildingOfBookingChange(
+  booking: FirebaseFirestore.DocumentData,
+  action: "booked" | "cancelled"
+) {
+  const linkedUuid = booking.linked_uuid as string | undefined;
+  const bookerId = booking.user_id as string | undefined;
+  const bookerEmail = booking.email as string | undefined;
+  const machine = booking.machine as number | undefined;
+  const slot = booking.slot as string | undefined;
+  const date = booking.date as string | undefined;
+
+  if (!linkedUuid || !bookerId || machine == null || !slot || !date) {
+    logger.warn(`Skipping booking ${action} notification: missing fields`, {
+      linkedUuid,
+      bookerId,
+      machine,
+      slot,
+      date,
+    });
+    return;
+  }
+
+  const [bookerDoc, buildingUsersSnap] = await Promise.all([
+    db.collection("users").doc(bookerId).get(),
+    db.collection("users").where("linked_uuid", "==", linkedUuid).get(),
+  ]);
+
+  const bookerName =
+    (bookerDoc.data()?.displayName as string | undefined) ||
+    bookerEmail ||
+    "A neighbour";
+  const slotLabel = SLOT_LABELS[slot] ?? slot;
+  const dateLabel = formatBookingDate(date);
+  const title = action === "booked" ? "New booking" : "Booking cancelled";
+  const verb = action === "booked" ? "booked" : "cancelled";
+  const body =
+    `${bookerName} ${verb} Machine ${machine} · ${dateLabel}, ${slotLabel}`;
+
+  const tokens: string[] = [];
+  buildingUsersSnap.forEach((doc) => {
+    if (doc.id === bookerId) return; // don't notify the person who acted
+    const token = doc.data().fcmToken as string | undefined;
+    if (token) tokens.push(token);
+  });
+
+  if (tokens.length === 0) {
+    logger.info(`No other residents with tokens for building ${linkedUuid}`);
+    return;
+  }
+
+  try {
+    const response = await messaging.sendEachForMulticast({
+      tokens,
+      notification: { title, body },
+      data: {
+        type: "booking",
+        action,
+        machine: String(machine),
+        slot,
+        date,
+      },
+      android: { priority: "high" },
+      apns: {
+        payload: {
+          aps: { sound: "default" },
+        },
+      },
+    });
+    logger.info(`Booking ${action} notifications sent`, {
+      success: response.successCount,
+      failure: response.failureCount,
+    });
+  } catch (err) {
+    logger.error(`Failed to send booking ${action} notifications`, err);
+  }
+}
+
+export const onBookingCreated = onDocumentCreated(
+  "bookings/{bookingId}",
+  async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
+    await notifyBuildingOfBookingChange(snapshot.data(), "booked");
+  }
+);
+
+export const onBookingDeleted = onDocumentDeleted(
+  "bookings/{bookingId}",
+  async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
+    await notifyBuildingOfBookingChange(snapshot.data(), "cancelled");
   }
 );

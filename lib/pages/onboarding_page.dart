@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:lavaplan/components/avatar_photo_picker.dart';
 import 'package:lavaplan/components/custom_cam_painter.dart';
 import 'package:lavaplan/constants/swiss_cantons.dart';
+import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/admin/create_building_page.dart';
 import 'package:lavaplan/services/household/household_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -152,16 +153,17 @@ class _NameStepState extends State<_NameStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('What\'s your name?',
+          Text(l10n.onbWhatsYourName,
               style: theme.textTheme.headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text('This is how your neighbours will see you.',
+          Text(l10n.onbNameSubtitle,
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: Colors.grey.shade600)),
           const SizedBox(height: 32),
@@ -170,7 +172,7 @@ class _NameStepState extends State<_NameStep> {
             autofocus: true,
             textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
-              hintText: 'e.g. Anna',
+              hintText: l10n.onbNameHint,
               filled: true,
               fillColor: theme.colorScheme.secondary,
               border: OutlineInputBorder(
@@ -191,7 +193,7 @@ class _NameStepState extends State<_NameStep> {
                       height: 20,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2))
-                  : const Text('Continue'),
+                  : Text(l10n.btnContinue),
             ),
           ),
         ],
@@ -297,16 +299,17 @@ class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Your contact details',
+          Text(l10n.onbContactDetailsTitle,
               style: theme.textTheme.headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text('Shared with your neighbours so they can reach you.',
+          Text(l10n.onbContactDetailsSubtitle,
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: Colors.grey.shade600)),
           const SizedBox(height: 24),
@@ -326,7 +329,7 @@ class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
                   controller: _streetController,
                   autofocus: true,
                   textCapitalization: TextCapitalization.words,
-                  decoration: _fieldDecoration(context, 'Street'),
+                  decoration: _fieldDecoration(context, l10n.fieldStreet),
                 ),
               ),
               const SizedBox(width: 12),
@@ -335,7 +338,7 @@ class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
                 child: TextField(
                   controller: _houseNumberController,
                   keyboardType: TextInputType.text,
-                  decoration: _fieldDecoration(context, 'No.'),
+                  decoration: _fieldDecoration(context, l10n.fieldHouseNumber),
                 ),
               ),
             ],
@@ -349,7 +352,7 @@ class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
                 child: TextField(
                   controller: _postalCodeController,
                   keyboardType: TextInputType.number,
-                  decoration: _fieldDecoration(context, 'PLZ'),
+                  decoration: _fieldDecoration(context, l10n.fieldPostalCode),
                 ),
               ),
               const SizedBox(width: 12),
@@ -358,7 +361,7 @@ class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
                 child: TextField(
                   controller: _cityController,
                   textCapitalization: TextCapitalization.words,
-                  decoration: _fieldDecoration(context, 'City'),
+                  decoration: _fieldDecoration(context, l10n.fieldCity),
                 ),
               ),
             ],
@@ -366,7 +369,7 @@ class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _canton,
-            decoration: _fieldDecoration(context, 'Canton'),
+            decoration: _fieldDecoration(context, l10n.fieldCanton),
             icon: const Icon(LucideIcons.chevronDown),
             items: swissCantons
                 .map((c) => DropdownMenuItem(
@@ -380,7 +383,7 @@ class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
           TextField(
             controller: _phoneController,
             keyboardType: TextInputType.phone,
-            decoration: _fieldDecoration(context, 'Phone number'),
+            decoration: _fieldDecoration(context, l10n.fieldPhoneNumber),
             onSubmitted: (_) => _save(),
           ),
           const SizedBox(height: 24),
@@ -394,7 +397,7 @@ class _ProfileDetailsStepState extends State<_ProfileDetailsStep> {
                       height: 20,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2))
-                  : const Text('Continue'),
+                  : Text(l10n.btnContinue),
             ),
           ),
           const SizedBox(height: 24),
@@ -441,23 +444,24 @@ class _RoleStepState extends State<_RoleStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('How will you use this app?',
+          Text(l10n.onbHowWillYouUse,
               style: theme.textTheme.headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text('You can change this later in Settings.',
+          Text(l10n.onbChangeInSettings,
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: Colors.grey.shade600)),
           const SizedBox(height: 28),
           _RoleCard(
             icon: LucideIcons.house,
-            title: 'I\'m a resident',
-            subtitle: 'I live in the building and want to book machines',
+            title: l10n.onbImAResident,
+            subtitle: l10n.onbResidentSubtitle,
             selected: _role == 'resident',
             onTap: () => setState(() {
               _role = 'resident';
@@ -467,8 +471,8 @@ class _RoleStepState extends State<_RoleStep> {
           const SizedBox(height: 12),
           _RoleCard(
             icon: LucideIcons.userCog2,
-            title: 'I manage building(s)',
-            subtitle: 'I\'m responsible for the laundry room',
+            title: l10n.onbIManageBuildings,
+            subtitle: l10n.onbManagerSubtitle,
             selected: _role == 'admin',
             onTap: () => setState(() => _role = 'admin'),
           ),
@@ -493,11 +497,11 @@ class _RoleStepState extends State<_RoleStep> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('I also live in one of these buildings',
+                          Text(l10n.onbAlsoLive,
                               style: theme.textTheme.bodyMedium
                                   ?.copyWith(fontWeight: FontWeight.w500)),
                           Text(
-                            'You\'ll be able to book machines as a resident too',
+                            l10n.onbAlsoLiveSubtitle,
                             style: theme.textTheme.bodySmall
                                 ?.copyWith(color: Colors.grey.shade600),
                           ),
@@ -520,7 +524,7 @@ class _RoleStepState extends State<_RoleStep> {
                       height: 20,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2))
-                  : const Text('Continue'),
+                  : Text(l10n.btnContinue),
             ),
           ),
         ],
@@ -643,7 +647,7 @@ class _BuildingStepState extends State<_BuildingStep> {
 
     if (!result.startsWith('building:')) {
       setState(() =>
-          _error = 'This doesn\'t look like a building QR. Try again.');
+          _error = AppLocalizations.of(context)!.onbNotBuildingQr);
       return;
     }
 
@@ -673,6 +677,7 @@ class _BuildingStepState extends State<_BuildingStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isAdmin = _isAdminResident == true;
 
     return Padding(
@@ -680,14 +685,12 @@ class _BuildingStepState extends State<_BuildingStep> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Join your building',
+          Text(l10n.onbJoinYourBuilding,
               style: theme.textTheme.headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Text(
-            isAdmin
-                ? 'Create a new building or scan an existing QR.'
-                : 'Scan the QR code posted in your laundry room.',
+            isAdmin ? l10n.onbCreateOrScan : l10n.onbScanQrRoom,
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: Colors.grey.shade600),
           ),
@@ -695,8 +698,8 @@ class _BuildingStepState extends State<_BuildingStep> {
           if (isAdmin) ...[
             _OptionCard(
               icon: LucideIcons.building2,
-              title: 'Create a new building',
-              subtitle: 'Set up a building and get its QR code',
+              title: l10n.onbCreateNewBuilding,
+              subtitle: l10n.onbCreateBuildingSubtitle,
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -709,8 +712,8 @@ class _BuildingStepState extends State<_BuildingStep> {
             const SizedBox(height: 12),
             _OptionCard(
               icon: LucideIcons.scanLine,
-              title: 'Scan existing building QR',
-              subtitle: 'Join a building that\'s already set up',
+              title: l10n.onbScanExisting,
+              subtitle: l10n.onbScanExistingSubtitle,
               onTap: _scanExisting,
             ),
           ] else ...[
@@ -737,7 +740,7 @@ class _BuildingStepState extends State<_BuildingStep> {
                         child: CircularProgressIndicator(
                             color: Colors.white, strokeWidth: 2))
                     : const Icon(LucideIcons.scanLine),
-                label: const Text('Scan QR code'),
+                label: Text(l10n.onbScanQrCode),
               ),
             ),
           ],
@@ -762,16 +765,17 @@ class _HouseholdStepState extends State<_HouseholdStep> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Your household',
+          Text(l10n.onbYourHousehold,
               style: theme.textTheme.headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text('Set up who shares the laundry with you.',
+          Text(l10n.onbSetUpHousehold,
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: Colors.grey.shade600)),
           const SizedBox(height: 32),
@@ -782,16 +786,15 @@ class _HouseholdStepState extends State<_HouseholdStep> {
               children: [
                 _OptionCard(
                   icon: LucideIcons.house,
-                  title: 'First from my household',
-                  subtitle: 'Create a new household and invite others later',
+                  title: l10n.onbFirstFromHousehold,
+                  subtitle: l10n.onbFirstSubtitle,
                   onTap: () => setState(() => _creating = true),
                 ),
                 const SizedBox(height: 12),
                 _OptionCard(
                   icon: LucideIcons.userPlus2,
-                  title: 'Join an existing household',
-                  subtitle:
-                      'Scan the invite QR from your household member',
+                  title: l10n.onbJoinExisting,
+                  subtitle: l10n.onbJoinSubtitle,
                   onTap: () => _joinFlow(context),
                 ),
               ],
@@ -802,6 +805,7 @@ class _HouseholdStepState extends State<_HouseholdStep> {
   }
 
   Future<void> _joinFlow(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final result = await Navigator.push<String>(
       context,
       MaterialPageRoute(builder: (_) => const QrScanPage()),
@@ -809,8 +813,8 @@ class _HouseholdStepState extends State<_HouseholdStep> {
     if (result == null || !mounted) return;
 
     if (!result.startsWith('household:')) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('This is not a household invite QR.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.onbNotHouseholdQr)));
       return;
     }
 
@@ -914,10 +918,11 @@ class _CreateHouseholdFormState extends State<_CreateHouseholdForm> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Name on your mailbox',
+        Text(l10n.onbNameOnMailbox,
             style: theme.textTheme.bodyMedium
                 ?.copyWith(fontWeight: FontWeight.w500)),
         const SizedBox(height: 8),
@@ -926,7 +931,7 @@ class _CreateHouseholdFormState extends State<_CreateHouseholdForm> {
           autofocus: true,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
-            hintText: 'e.g. Müller',
+            hintText: l10n.onbMailboxHint,
             filled: true,
             fillColor: theme.colorScheme.secondary,
             border: OutlineInputBorder(
@@ -947,7 +952,7 @@ class _CreateHouseholdFormState extends State<_CreateHouseholdForm> {
                     height: 20,
                     child: CircularProgressIndicator(
                         color: Colors.white, strokeWidth: 2))
-                : const Text('Create household'),
+                : Text(l10n.onbCreateHousehold),
           ),
         ),
       ],
@@ -995,7 +1000,7 @@ class _QrScanPageState extends State<QrScanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Scan QR Code')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.scanQrCode)),
       body: Stack(
         children: [
           QRView(key: _qrKey, onQRViewCreated: _onViewCreated),

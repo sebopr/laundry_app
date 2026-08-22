@@ -482,10 +482,108 @@ class AppLocalizationsRm extends AppLocalizations {
   String get calDayLabels => 'G,M,M,G,V,S,D';
 
   @override
+  String get profilePhotosComingSoon =>
+      'Fotografias da profil vegnan bainbref.';
+
+  @override
+  String get orDivider => 'u';
+
+  @override
+  String get verifyEmailTitle => 'Conferma tia e-mail';
+
+  @override
+  String get verifyEmailBodyPrefix =>
+      'Nus avain tramess in code da 6 cifras a ';
+
+  @override
+  String get verifyEmailBodySuffix => '. Endatescha el sutvart.';
+
+  @override
+  String get btnVerify => 'Verifitgar';
+
+  @override
+  String get btnResendCode => 'Trametter danov il code';
+
+  @override
+  String btnResendCodeCooldown(int seconds) {
+    return 'Trametter danov il code (${seconds}s)';
+  }
+
+  @override
+  String get useDifferentAccount => 'Utilisar in auter conto';
+
+  @override
+  String get checkSpamFolder =>
+      'Controlla tia dossier spam sche el n\'è betg arrivà.';
+
+  @override
+  String get codeSentSnackbar => 'Code da verificaziun tramess.';
+
+  @override
+  String get sessionExpired => 'Tia sessiun è scadida. Anfin danov.';
+
+  @override
+  String get signedOutElsewhere =>
+      'Ti es vegnì deconnectà perquai che quest conto è vegnì avert sin in auter apparat.';
+
+  @override
+  String get addressLabel => 'Adressa';
+
+  @override
+  String get onbContactDetailsTitle => 'Tias datas da contact';
+
+  @override
+  String get onbContactDetailsSubtitle =>
+      'Cundivì cun tes vischinauncas per ch\'els ta possian cuntanscher.';
+
+  @override
+  String get fieldStreet => 'Via';
+
+  @override
+  String get fieldHouseNumber => 'Nr.';
+
+  @override
+  String get fieldPostalCode => 'NPA';
+
+  @override
+  String get fieldCity => 'Lieu';
+
+  @override
+  String get fieldCanton => 'Chantun';
+
+  @override
+  String get fieldPhoneNumber => 'Numer da telefon';
+
+  @override
+  String get greetingMorning => 'Bun di';
+
+  @override
+  String get greetingAfternoon => 'Bun di';
+
+  @override
+  String get greetingEvening => 'Buna saira';
+
+  @override
+  String get machineOpenStatus => 'Disponibel';
+
+  @override
   String isTypingText(String name) {
     return '$name scriva...';
   }
 
   @override
   String get typeYourMessage => 'Scriver in messadi';
+
+  @override
+  String get yesterdayLabel => 'Ier';
+
+  @override
+  String sayHelloTo(String name) {
+    return 'Salida $name';
+  }
+
+  @override
+  String messageHint(String name) {
+    return 'Messadi a $name';
+  }
 }
