@@ -12,7 +12,8 @@
     "shell": "npm run build && firebase functions:shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "fix-duplicate-admins": "npm run build && node lib/scripts/fixDuplicateBuildingAdmins.js"
+    "fix-duplicate-admins": "npm run build && node lib/scripts/fixDuplicateBuildingAdmins.js",
+    "delete-test-account": "npm run build && node lib/scripts/deleteTestAccount.js"
   },
   "dependencies": {
     "firebase-admin": "^12.6.0",

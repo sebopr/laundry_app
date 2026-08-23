@@ -10,6 +10,8 @@ import 'package:lavaplan/components/custom_cam_painter.dart';
 import 'package:lavaplan/constants/swiss_cantons.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/admin/create_building_page.dart';
+import 'package:lavaplan/services/account/account_service.dart';
+import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/household/household_service.dart';
 import 'package:lavaplan/services/household/join_request_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -53,6 +55,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     // Steps: 0=name, 1=profile details, 2=role, 3=building, 4=household
     const totalSteps = 5;
 
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
@@ -60,13 +64,38 @@ class _OnboardingPageState extends State<OnboardingPage> {
           children: [
             const SizedBox(height: 32),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/branding/lavaplan_mark.png', height: 28),
-                const SizedBox(width: 10),
-                Text('Lavaplan',
-                    style: theme.textTheme.titleLarge
-                        ?.copyWith(fontWeight: FontWeight.bold)),
+                // Balances the menu button below so the logo stays centered.
+                const SizedBox(width: 48),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/branding/lavaplan_mark.png',
+                          height: 28),
+                      const SizedBox(width: 10),
+                      Text('Lavaplan',
+                          style: theme.textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                // Onboarding has no other way out — a resident who leaves
+                // their building (or never finds one that uses the app)
+                // would otherwise be stuck here with no path forward.
+                PopupMenuButton<String>(
+                  icon: const Icon(LucideIcons.moreVertical),
+                  onSelected: (value) {
+                    if (value == 'signOut') AuthService().signOut();
+                    if (value == 'deleteAccount') _confirmDeleteAccount(context);
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(value: 'signOut', child: Text(l10n.signOut)),
+                    PopupMenuItem(
+                        value: 'deleteAccount',
+                        child: Text(l10n.deleteAccount)),
+                  ],
+                ),
               ],
             ),
             const SizedBox(height: 28),
@@ -95,6 +124,38 @@ class _OnboardingPageState extends State<OnboardingPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _confirmDeleteAccount(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(l10n.deleteAccount),
+        content: Text(l10n.deleteAccountContent),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.btnCancel)),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: Text(l10n.deleteAccount),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      await AccountService.deleteAccount();
+      await AuthService().signOut();
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
   }
 }
 
@@ -619,7 +680,7 @@ class _BuildingStepState extends State<_BuildingStep> {
   bool _loading = false;
   String? _error;
   bool? _isAdminResident; // loaded from Firestore
-  StreamSubscription<Map<String, dynamic>?>? _requestSub;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _userDocSub;
 
   @override
   void initState() {
@@ -629,10 +690,20 @@ class _BuildingStepState extends State<_BuildingStep> {
     // AuthGate re-supplying a new `initialStep` doesn't move this PageView
     // on its own — OnboardingPage's State is reused in place, so `_step`
     // only ever advances via the parent's onDone() (see every other step).
-    // Watch the request ourselves and call it the moment an admin approves.
-    _requestSub = JoinRequestService.latestForSelf().listen((data) {
-      if (data?['status'] == 'approved') {
-        _requestSub?.cancel();
+    // Watch our own linked_uuid directly rather than the join request's
+    // status: a resident who just left a building lands back on this step
+    // with `linked_uuid` freshly null, but their *most recent* join request
+    // is still the old, already-approved one from the building they left —
+    // reacting to that would skip this step immediately. linked_uuid
+    // turning non-null is the one unambiguous "this step is done" signal,
+    // since it's the exact condition AuthGate itself checks.
+    _userDocSub = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .snapshots()
+        .listen((snap) {
+      if (snap.data()?['linked_uuid'] != null) {
+        _userDocSub?.cancel();
         widget.onDone();
       }
     });
@@ -640,7 +711,7 @@ class _BuildingStepState extends State<_BuildingStep> {
 
   @override
   void dispose() {
-    _requestSub?.cancel();
+    _userDocSub?.cancel();
     super.dispose();
   }
 

@@ -12,6 +12,29 @@ import 'package:lavaplan/services/notifications/push_notification_service.dart';
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
+  // Guards against a stale, already-signed-in session whose account was
+  // deleted server-side (e.g. via the admin deleteAccount function, or a
+  // manual Auth console/script deletion) — the device's cached ID token
+  // stays cryptographically valid for its own lifetime regardless, so
+  // without this check a deleted account could keep using the app, and
+  // even recreate a Firestore profile, until that token happened to expire
+  // on its own. Runs once per uid per app session, same guard style as
+  // registerToken/claimSession below.
+  static String? _verifiedUid;
+
+  static Future<void> _verifyAccountStillExists(User user) async {
+    if (_verifiedUid == user.uid) return;
+    _verifiedUid = user.uid;
+    try {
+      await user.reload();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found' || e.code == 'user-disabled') {
+        SessionService.instance.reset();
+        await FirebaseAuth.instance.signOut();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -38,6 +61,11 @@ class AuthGate extends StatelessWidget {
         if (AuthService.needsEmailConfirmation(user)) {
           return VerifyEmailPage(user: user);
         }
+
+        // Fire-and-forget: if this account was deleted server-side, this
+        // signs the device out, which makes userChanges() emit null and
+        // rebuilds this into LoginOrRegister above.
+        _verifyAccountStillExists(user);
 
         // A no-op if this device is already registered for this uid — makes
         // sure a persisted login (no fresh sign-in call) still ends up with
