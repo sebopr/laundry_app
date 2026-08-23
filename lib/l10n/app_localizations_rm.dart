@@ -296,16 +296,8 @@ class AppLocalizationsRm extends AppLocalizations {
       'L\'administratur da l\'edifizi è vegnì infurmà e sto acceptar tia dumonda avant che ti possias cuntinuar.';
 
   @override
-  String get onbHouseholdRequestPendingSubtitle =>
-      'L\'administratur da l\'edifizi è vegnì infurmà e sto acceptar tia dumonda per l\'economia domestica avant che ti possias cuntinuar.';
-
-  @override
   String get onbBuildingRequestRejected =>
       'Tia dumonda da s\'unir è vegnida refusada. Ti pos rescannar il code u empruvar in auter edifizi.';
-
-  @override
-  String get onbHouseholdRequestRejected =>
-      'Tia dumonda per l\'economia domestica è vegnida refusada. Ti pos empruvar anc ina giada.';
 
   @override
   String get scanQrCode => 'Scannar QR';
@@ -391,11 +383,6 @@ class AppLocalizationsRm extends AppLocalizations {
 
   @override
   String get joinRequestBuildingLabel => 'Vul sa unir a quest edifizi';
-
-  @override
-  String joinRequestHouseholdLabel(String name) {
-    return 'Vul crear l\'economia domestica «$name»';
-  }
 
   @override
   String get btnApprove => 'Acceptar';

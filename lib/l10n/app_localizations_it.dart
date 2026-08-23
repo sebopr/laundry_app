@@ -298,16 +298,8 @@ class AppLocalizationsIt extends AppLocalizations {
       'L\'amministratore dell\'edificio è stato avvisato e deve accettare la tua richiesta prima che tu possa continuare.';
 
   @override
-  String get onbHouseholdRequestPendingSubtitle =>
-      'L\'amministratore dell\'edificio è stato avvisato e deve accettare il tuo nucleo familiare prima che tu possa continuare.';
-
-  @override
   String get onbBuildingRequestRejected =>
       'La tua richiesta di adesione è stata rifiutata. Puoi scansionare di nuovo il codice o provare un altro edificio.';
-
-  @override
-  String get onbHouseholdRequestRejected =>
-      'La tua richiesta per il nucleo familiare è stata rifiutata. Puoi riprovare.';
 
   @override
   String get scanQrCode => 'Scansiona QR';
@@ -393,11 +385,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get joinRequestBuildingLabel => 'Vuole unirsi a questo edificio';
-
-  @override
-  String joinRequestHouseholdLabel(String name) {
-    return 'Vuole creare il nucleo familiare \"$name\"';
-  }
 
   @override
   String get btnApprove => 'Approva';

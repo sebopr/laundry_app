@@ -303,16 +303,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Der Gebäudeadmin wurde benachrichtigt und muss deine Anfrage akzeptieren, bevor du fortfahren kannst.';
 
   @override
-  String get onbHouseholdRequestPendingSubtitle =>
-      'Der Gebäudeadmin wurde benachrichtigt und muss deinen Haushalt akzeptieren, bevor du fortfahren kannst.';
-
-  @override
   String get onbBuildingRequestRejected =>
       'Deine Beitrittsanfrage wurde abgelehnt. Du kannst den Code erneut scannen oder ein anderes Gebäude versuchen.';
-
-  @override
-  String get onbHouseholdRequestRejected =>
-      'Deine Haushaltsanfrage wurde abgelehnt. Du kannst es erneut versuchen.';
 
   @override
   String get scanQrCode => 'QR-Code scannen';
@@ -399,11 +391,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get joinRequestBuildingLabel => 'Möchte diesem Gebäude beitreten';
-
-  @override
-  String joinRequestHouseholdLabel(String name) {
-    return 'Möchte den Haushalt „$name“ erstellen';
-  }
 
   @override
   String get btnApprove => 'Annehmen';

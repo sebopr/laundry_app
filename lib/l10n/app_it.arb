@@ -101,9 +101,7 @@
   "onbNotBuildingQr": "Non sembra un QR dell'edificio. Riprova.",
   "onbRequestPendingTitle": "In attesa di approvazione",
   "onbBuildingRequestPendingSubtitle": "L'amministratore dell'edificio è stato avvisato e deve accettare la tua richiesta prima che tu possa continuare.",
-  "onbHouseholdRequestPendingSubtitle": "L'amministratore dell'edificio è stato avvisato e deve accettare il tuo nucleo familiare prima che tu possa continuare.",
   "onbBuildingRequestRejected": "La tua richiesta di adesione è stata rifiutata. Puoi scansionare di nuovo il codice o provare un altro edificio.",
-  "onbHouseholdRequestRejected": "La tua richiesta per il nucleo familiare è stata rifiutata. Puoi riprovare.",
 
   "scanQrCode": "Scansiona QR",
 
@@ -137,12 +135,6 @@
     }
   },
   "joinRequestBuildingLabel": "Vuole unirsi a questo edificio",
-  "joinRequestHouseholdLabel": "Vuole creare il nucleo familiare \"{name}\"",
-  "@joinRequestHouseholdLabel": {
-    "placeholders": {
-      "name": { "type": "String" }
-    }
-  },
   "btnApprove": "Approva",
   "btnReject": "Rifiuta",
   "machinesDescription": "Attiva/disattiva le macchine, aggiungile o rimuovile.",

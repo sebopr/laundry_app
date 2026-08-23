@@ -302,16 +302,8 @@ class AppLocalizationsFr extends AppLocalizations {
       'L\'administrateur de l\'immeuble a été averti et doit accepter votre demande avant que vous puissiez continuer.';
 
   @override
-  String get onbHouseholdRequestPendingSubtitle =>
-      'L\'administrateur de l\'immeuble a été averti et doit accepter votre foyer avant que vous puissiez continuer.';
-
-  @override
   String get onbBuildingRequestRejected =>
       'Votre demande d\'adhésion a été refusée. Vous pouvez rescanner le code ou essayer un autre immeuble.';
-
-  @override
-  String get onbHouseholdRequestRejected =>
-      'Votre demande de foyer a été refusée. Vous pouvez réessayer.';
 
   @override
   String get scanQrCode => 'Scanner le QR';
@@ -398,11 +390,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get joinRequestBuildingLabel => 'Souhaite rejoindre cet immeuble';
-
-  @override
-  String joinRequestHouseholdLabel(String name) {
-    return 'Souhaite créer le foyer « $name »';
-  }
 
   @override
   String get btnApprove => 'Accepter';

@@ -101,9 +101,7 @@
   "onbNotBuildingQr": "Cela ne ressemble pas à un QR d'immeuble. Réessayez.",
   "onbRequestPendingTitle": "En attente d'approbation",
   "onbBuildingRequestPendingSubtitle": "L'administrateur de l'immeuble a été averti et doit accepter votre demande avant que vous puissiez continuer.",
-  "onbHouseholdRequestPendingSubtitle": "L'administrateur de l'immeuble a été averti et doit accepter votre foyer avant que vous puissiez continuer.",
   "onbBuildingRequestRejected": "Votre demande d'adhésion a été refusée. Vous pouvez rescanner le code ou essayer un autre immeuble.",
-  "onbHouseholdRequestRejected": "Votre demande de foyer a été refusée. Vous pouvez réessayer.",
 
   "scanQrCode": "Scanner le QR",
 
@@ -137,12 +135,6 @@
     }
   },
   "joinRequestBuildingLabel": "Souhaite rejoindre cet immeuble",
-  "joinRequestHouseholdLabel": "Souhaite créer le foyer « {name} »",
-  "@joinRequestHouseholdLabel": {
-    "placeholders": {
-      "name": { "type": "String" }
-    }
-  },
   "btnApprove": "Accepter",
   "btnReject": "Refuser",
   "machinesDescription": "Activez ou désactivez les machines, ajoutez ou supprimez-en.",

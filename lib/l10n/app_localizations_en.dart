@@ -295,16 +295,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'The building admin has been notified and needs to accept your request before you can continue.';
 
   @override
-  String get onbHouseholdRequestPendingSubtitle =>
-      'The building admin has been notified and needs to accept your household before you can continue.';
-
-  @override
   String get onbBuildingRequestRejected =>
       'Your request to join was declined. You can scan the code again or try a different building.';
-
-  @override
-  String get onbHouseholdRequestRejected =>
-      'Your household request was declined. You can try again.';
 
   @override
   String get scanQrCode => 'Scan QR Code';
@@ -390,11 +382,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get joinRequestBuildingLabel => 'Wants to join this building';
-
-  @override
-  String joinRequestHouseholdLabel(String name) {
-    return 'Wants to create the household \"$name\"';
-  }
 
   @override
   String get btnApprove => 'Approve';

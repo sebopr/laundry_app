@@ -31,8 +31,7 @@ class BuildingDetailPage extends StatelessWidget {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) =>
-                        GenerateQrPage(buildingUuid: buildingUuid)),
+                    builder: (_) => GenerateQrPage(buildingUuid: buildingUuid)),
               ),
             ),
           ],
@@ -84,8 +83,7 @@ class _ResidentsTab extends StatelessWidget {
 
               if (users.isEmpty) {
                 return Center(
-                    child:
-                        Text(AppLocalizations.of(context)!.noResidentsYet));
+                    child: Text(AppLocalizations.of(context)!.noResidentsYet));
               }
 
               // Group by household_id
@@ -244,20 +242,16 @@ class _PendingRequestTileState extends State<_PendingRequestTile> {
     final displayName = widget.request['displayName'] as String? ??
         widget.request['email'] as String? ??
         '?';
-    final isHousehold = widget.request['type'] == 'household';
-    final subtitle = isHousehold
-        ? l10n.joinRequestHouseholdLabel(
-            widget.request['household_name'] as String? ?? '')
-        : l10n.joinRequestBuildingLabel;
 
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: Colors.orange.withValues(alpha: 0.12),
-        child: Icon(isHousehold ? LucideIcons.house : LucideIcons.userPlus2,
+        child: Icon(LucideIcons.userPlus2,
             color: Colors.orange.shade800, size: 18),
       ),
       title: Text(displayName),
-      subtitle: Text(subtitle, style: const TextStyle(fontSize: 11)),
+      subtitle: Text(l10n.joinRequestBuildingLabel,
+          style: const TextStyle(fontSize: 11)),
       trailing: _resolving
           ? const SizedBox(
               width: 20,
@@ -272,7 +266,8 @@ class _PendingRequestTileState extends State<_PendingRequestTile> {
                   onPressed: () => _resolve(false),
                 ),
                 IconButton(
-                  icon: Icon(LucideIcons.check, color: theme.colorScheme.primary),
+                  icon:
+                      Icon(LucideIcons.check, color: theme.colorScheme.primary),
                   tooltip: l10n.btnApprove,
                   onPressed: () => _resolve(true),
                 ),
@@ -308,8 +303,8 @@ class _HouseholdGroup extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 6),
             child: Text(
               name.toUpperCase(),
-              style: theme.textTheme.labelSmall?.copyWith(
-                  color: Colors.grey.shade600, letterSpacing: 1.2),
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: Colors.grey.shade600, letterSpacing: 1.2),
             ),
           ),
           Container(
@@ -337,8 +332,8 @@ class _HouseholdGroup extends StatelessWidget {
                       const Divider(height: 1, indent: 56, endIndent: 16),
                     ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: theme.colorScheme.primary
-                            .withValues(alpha: 0.12),
+                        backgroundColor:
+                            theme.colorScheme.primary.withValues(alpha: 0.12),
                         child: Text(
                           displayName.length >= 2
                               ? displayName.substring(0, 2).toUpperCase()
@@ -408,8 +403,7 @@ class _MachinesTab extends StatelessWidget {
 
   Future<void> _addMachine(Map<String, dynamic> machines) async {
     final keys = machines.keys.map(int.parse).toList();
-    final next =
-        keys.isEmpty ? 1 : (keys.reduce((a, b) => a > b ? a : b) + 1);
+    final next = keys.isEmpty ? 1 : (keys.reduce((a, b) => a > b ? a : b) + 1);
     await FirebaseFirestore.instance
         .collection('buildings')
         .doc(buildingUuid)
@@ -458,9 +452,8 @@ class _MachinesTab extends StatelessWidget {
         }
 
         final raw = snap.data!.data()?['machines'];
-        final machines = raw is Map
-            ? Map<String, dynamic>.from(raw)
-            : <String, dynamic>{};
+        final machines =
+            raw is Map ? Map<String, dynamic>.from(raw) : <String, dynamic>{};
 
         final sortedEntries = machines.entries
             .where((e) => int.tryParse(e.key) != null)
@@ -484,8 +477,7 @@ class _MachinesTab extends StatelessWidget {
                     number: int.parse(e.key),
                     status: _machineStatus(e.value),
                     buildingUuid: buildingUuid,
-                    onRemove: () =>
-                        _removeMachine(context, int.parse(e.key)),
+                    onRemove: () => _removeMachine(context, int.parse(e.key)),
                   ),
                 )),
             const SizedBox(height: 4),
@@ -557,8 +549,8 @@ class _MachineToggleCard extends StatelessWidget {
                     Container(
                       width: 8,
                       height: 8,
-                      decoration:
-                          BoxDecoration(shape: BoxShape.circle, color: dotColor),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: dotColor),
                     ),
                     const SizedBox(width: 4),
                     Text(label,

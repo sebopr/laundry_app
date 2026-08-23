@@ -656,23 +656,11 @@ abstract class AppLocalizations {
   /// **'The building admin has been notified and needs to accept your request before you can continue.'**
   String get onbBuildingRequestPendingSubtitle;
 
-  /// No description provided for @onbHouseholdRequestPendingSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'The building admin has been notified and needs to accept your household before you can continue.'**
-  String get onbHouseholdRequestPendingSubtitle;
-
   /// No description provided for @onbBuildingRequestRejected.
   ///
   /// In en, this message translates to:
   /// **'Your request to join was declined. You can scan the code again or try a different building.'**
   String get onbBuildingRequestRejected;
-
-  /// No description provided for @onbHouseholdRequestRejected.
-  ///
-  /// In en, this message translates to:
-  /// **'Your household request was declined. You can try again.'**
-  String get onbHouseholdRequestRejected;
 
   /// No description provided for @scanQrCode.
   ///
@@ -763,12 +751,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wants to join this building'**
   String get joinRequestBuildingLabel;
-
-  /// No description provided for @joinRequestHouseholdLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Wants to create the household \"{name}\"'**
-  String joinRequestHouseholdLabel(String name);
 
   /// No description provided for @btnApprove.
   ///

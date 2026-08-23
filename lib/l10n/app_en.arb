@@ -101,9 +101,7 @@
   "onbNotBuildingQr": "This doesn't look like a building QR. Try again.",
   "onbRequestPendingTitle": "Waiting for approval",
   "onbBuildingRequestPendingSubtitle": "The building admin has been notified and needs to accept your request before you can continue.",
-  "onbHouseholdRequestPendingSubtitle": "The building admin has been notified and needs to accept your household before you can continue.",
   "onbBuildingRequestRejected": "Your request to join was declined. You can scan the code again or try a different building.",
-  "onbHouseholdRequestRejected": "Your household request was declined. You can try again.",
 
   "scanQrCode": "Scan QR Code",
 
@@ -137,12 +135,6 @@
     }
   },
   "joinRequestBuildingLabel": "Wants to join this building",
-  "joinRequestHouseholdLabel": "Wants to create the household \"{name}\"",
-  "@joinRequestHouseholdLabel": {
-    "placeholders": {
-      "name": { "type": "String" }
-    }
-  },
   "btnApprove": "Approve",
   "btnReject": "Decline",
   "machinesDescription": "Toggle machines in or out of service, or add/remove machines.",

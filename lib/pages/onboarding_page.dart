@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -617,11 +619,29 @@ class _BuildingStepState extends State<_BuildingStep> {
   bool _loading = false;
   String? _error;
   bool? _isAdminResident; // loaded from Firestore
+  StreamSubscription<Map<String, dynamic>?>? _requestSub;
 
   @override
   void initState() {
     super.initState();
     _loadRole();
+
+    // AuthGate re-supplying a new `initialStep` doesn't move this PageView
+    // on its own — OnboardingPage's State is reused in place, so `_step`
+    // only ever advances via the parent's onDone() (see every other step).
+    // Watch the request ourselves and call it the moment an admin approves.
+    _requestSub = JoinRequestService.latestForSelf().listen((data) {
+      if (data?['status'] == 'approved') {
+        _requestSub?.cancel();
+        widget.onDone();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _requestSub?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadRole() async {
@@ -670,7 +690,7 @@ class _BuildingStepState extends State<_BuildingStep> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Map<String, dynamic>?>(
-      stream: JoinRequestService.latestForSelf('building'),
+      stream: JoinRequestService.latestForSelf(),
       builder: (context, snap) {
         if (snap.data?['status'] == 'pending') {
           return _PendingRequestView(
@@ -813,23 +833,6 @@ class _HouseholdStepState extends State<_HouseholdStep> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Map<String, dynamic>?>(
-      stream: JoinRequestService.latestForSelf('household'),
-      builder: (context, snap) {
-        if (snap.data?['status'] == 'pending') {
-          return _PendingRequestView(
-            title: AppLocalizations.of(context)!.onbRequestPendingTitle,
-            subtitle: AppLocalizations.of(context)!
-                .onbHouseholdRequestPendingSubtitle,
-          );
-        }
-        return _buildChoiceView(
-            context, rejected: snap.data?['status'] == 'rejected');
-      },
-    );
-  }
-
-  Widget _buildChoiceView(BuildContext context, {required bool rejected}) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     return Padding(
@@ -845,12 +848,6 @@ class _HouseholdStepState extends State<_HouseholdStep> {
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: Colors.grey.shade600)),
           const SizedBox(height: 32),
-          if (rejected && !_creating)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Text(l10n.onbHouseholdRequestRejected,
-                  style: const TextStyle(color: Colors.orange)),
-            ),
           if (_creating)
             _CreateHouseholdForm()
           else
@@ -984,7 +981,7 @@ class _CreateHouseholdFormState extends State<_CreateHouseholdForm> {
     final linkedUuid =
         doc.data()?['linked_uuid'] as String? ?? '';
 
-    await JoinRequestService.requestHouseholdCreate(name, linkedUuid);
+    await HouseholdService.create(name, linkedUuid);
   }
 
   @override

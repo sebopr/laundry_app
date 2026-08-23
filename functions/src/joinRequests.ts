@@ -14,12 +14,17 @@ function db() {
 
 /**
  * Notifies every admin of the target building whenever a resident requests
- * to join the building or create a new household within it. Requests are
- * written directly by the client (users/{uid} is the only doc they can
- * already write to a similar degree) but only take effect once an admin
- * calls resolveJoinRequest below — that's the part that actually grants
- * access, and it runs with the Admin SDK so it isn't gated by what the
- * client's own Firestore rules allow it to write.
+ * to join it. Requests are written directly by the client (users/{uid} is
+ * the only doc they can already write to a similar degree) but only take
+ * effect once an admin calls resolveJoinRequest below — that's the part
+ * that actually grants access, and it runs with the Admin SDK so it isn't
+ * gated by what the client's own Firestore rules allow it to write.
+ *
+ * Households aren't gated the same way: creating one or joining an
+ * existing one both stay instant client-side (see HouseholdService) —
+ * the resident is already building-approved by then, and joining an
+ * existing household means its head already vetted them by handing over
+ * their QR code.
  */
 export const onJoinRequestCreated = onDocumentCreated(
   { document: "join_requests/{requestId}", secrets: [RESEND_API_KEY] },
@@ -31,12 +36,8 @@ export const onJoinRequestCreated = onDocumentCreated(
     if (data.status !== "pending") return;
 
     const linkedUuid = data.linked_uuid as string | undefined;
-    const type = data.type as string | undefined;
-    if (!linkedUuid || !type) {
-      logger.warn("Skipping join request notification: missing fields", {
-        linkedUuid,
-        type,
-      });
+    if (!linkedUuid) {
+      logger.warn("Skipping join request notification: missing linked_uuid");
       return;
     }
 
@@ -60,12 +61,8 @@ export const onJoinRequestCreated = onDocumentCreated(
       (data.email as string | undefined) ||
       "A new resident";
 
-    const title =
-      type === "household" ? "New household request" : "New resident request";
-    const body =
-      type === "household"
-        ? `${requesterName} wants to create the household "${data.household_name}" in ${buildingName}.`
-        : `${requesterName} wants to join ${buildingName}.`;
+    const title = "New resident request";
+    const body = `${requesterName} wants to join ${buildingName}.`;
 
     const tokens: string[] = [];
     const emails: string[] = [];
@@ -85,7 +82,6 @@ export const onJoinRequestCreated = onDocumentCreated(
             data: {
               type: "join_request",
               requestId: event.params.requestId,
-              requestType: type,
             },
             android: { priority: "high" },
             apns: { payload: { aps: { sound: "default" } } },
@@ -115,10 +111,10 @@ export const onJoinRequestCreated = onDocumentCreated(
 );
 
 /**
- * Approves or rejects a pending join request. Runs as the caller (an admin
- * of the target building), but performs the actual grant with the Admin SDK
+ * Approves or rejects a pending building-join request. Runs as the caller
+ * (an admin of the target building), but grants access with the Admin SDK
  * so it doesn't depend on the admin's own client having write access to
- * another resident's user doc or to the households collection.
+ * another resident's user doc.
  */
 export const resolveJoinRequest = onCall(
   { region: "europe-west6" },
@@ -163,29 +159,11 @@ export const resolveJoinRequest = onCall(
     }
 
     const requesterUid = reqData.uid as string;
-    const type = reqData.type as string;
 
     if (approve) {
-      if (type === "household") {
-        const householdName = reqData.household_name as string;
-        const householdRef = db().collection("households").doc();
-        await householdRef.set({
-          name: householdName,
-          linked_uuid: linkedUuid,
-          head_uid: requesterUid,
-          members: [requesterUid],
-          createdAt: Timestamp.now(),
-        });
-        await db().collection("users").doc(requesterUid).update({
-          household_id: householdRef.id,
-          household_name: householdName,
-          isHouseholdHead: true,
-        });
-      } else {
-        await db().collection("users").doc(requesterUid).update({
-          linked_uuid: linkedUuid,
-        });
-      }
+      await db().collection("users").doc(requesterUid).update({
+        linked_uuid: linkedUuid,
+      });
     }
 
     await reqRef.update({
@@ -198,14 +176,9 @@ export const resolveJoinRequest = onCall(
     const token = requesterDoc.data()?.fcmToken as string | undefined;
     if (token) {
       const title = approve ? "Request approved" : "Request declined";
-      const body =
-        type === "household"
-          ? approve
-            ? "Your new household has been approved."
-            : "Your household request was declined."
-          : approve
-            ? "You've been added to the building."
-            : "Your request to join the building was declined.";
+      const body = approve
+        ? "You've been added to the building."
+        : "Your request to join the building was declined.";
 
       try {
         await getMessaging().send({
