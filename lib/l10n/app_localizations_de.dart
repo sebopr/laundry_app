@@ -526,6 +526,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get statusTaken => 'Belegt';
 
   @override
+  String bookedBy(String name) {
+    return 'Gebucht von $name';
+  }
+
+  @override
+  String get aNeighbour => 'einem Nachbarn';
+
+  @override
   String get statusPassed => 'Vergangen';
 
   @override

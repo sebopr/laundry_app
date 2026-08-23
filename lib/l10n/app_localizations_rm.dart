@@ -516,6 +516,14 @@ class AppLocalizationsRm extends AppLocalizations {
   String get statusTaken => 'Occupà';
 
   @override
+  String bookedBy(String name) {
+    return 'Reservà da $name';
+  }
+
+  @override
+  String get aNeighbour => 'in vischin';
+
+  @override
   String get statusPassed => 'Passà';
 
   @override

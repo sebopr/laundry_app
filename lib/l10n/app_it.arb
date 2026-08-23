@@ -192,6 +192,13 @@
   "machineOutOfService": "Questa macchina è temporaneamente fuori servizio.",
   "statusYourBooking": "La tua prenotazione",
   "statusTaken": "Occupato",
+  "bookedBy": "Prenotato da {name}",
+  "@bookedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "aNeighbour": "un vicino",
   "statusPassed": "Passato",
   "statusAvailable": "Disponibile",
   "legendAvailable": "Disponibile",

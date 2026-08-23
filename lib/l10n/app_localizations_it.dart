@@ -518,6 +518,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get statusTaken => 'Occupato';
 
   @override
+  String bookedBy(String name) {
+    return 'Prenotato da $name';
+  }
+
+  @override
+  String get aNeighbour => 'un vicino';
+
+  @override
   String get statusPassed => 'Passato';
 
   @override

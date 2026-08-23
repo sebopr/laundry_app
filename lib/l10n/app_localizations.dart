@@ -992,6 +992,18 @@ abstract class AppLocalizations {
   /// **'Taken'**
   String get statusTaken;
 
+  /// No description provided for @bookedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked by {name}'**
+  String bookedBy(String name);
+
+  /// No description provided for @aNeighbour.
+  ///
+  /// In en, this message translates to:
+  /// **'a neighbour'**
+  String get aNeighbour;
+
   /// No description provided for @statusPassed.
   ///
   /// In en, this message translates to:

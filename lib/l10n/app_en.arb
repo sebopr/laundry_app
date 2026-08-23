@@ -192,6 +192,13 @@
   "machineOutOfService": "This machine is temporarily out of service.",
   "statusYourBooking": "Your booking",
   "statusTaken": "Taken",
+  "bookedBy": "Booked by {name}",
+  "@bookedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "aNeighbour": "a neighbour",
   "statusPassed": "Passed",
   "statusAvailable": "Available",
   "legendAvailable": "Available",

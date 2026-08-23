@@ -525,6 +525,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get statusTaken => 'Pris';
 
   @override
+  String bookedBy(String name) {
+    return 'Réservé par $name';
+  }
+
+  @override
+  String get aNeighbour => 'un voisin';
+
+  @override
   String get statusPassed => 'Passé';
 
   @override

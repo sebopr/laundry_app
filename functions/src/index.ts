@@ -132,7 +132,6 @@ async function notifyBuildingOfBookingChange(
 ) {
   const linkedUuid = booking.linked_uuid as string | undefined;
   const bookerId = booking.user_id as string | undefined;
-  const bookerEmail = booking.email as string | undefined;
   const machine = booking.machine as number | undefined;
   const slot = booking.slot as string | undefined;
   const date = booking.date as string | undefined;
@@ -153,10 +152,10 @@ async function notifyBuildingOfBookingChange(
     db.collection("users").where("linked_uuid", "==", linkedUuid).get(),
   ]);
 
+  // Never fall back to the booker's email in a notification every other
+  // resident sees — only their display name, or a neutral placeholder.
   const bookerName =
-    (bookerDoc.data()?.displayName as string | undefined) ||
-    bookerEmail ||
-    "A neighbour";
+    (bookerDoc.data()?.displayName as string | undefined) || "A neighbour";
   const slotLabel = SLOT_LABELS[slot] ?? slot;
   const dateLabel = formatBookingDate(date);
   const title = action === "booked" ? "New booking" : "Booking cancelled";

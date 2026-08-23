@@ -192,6 +192,13 @@
   "machineOutOfService": "Diese Maschine ist vorübergehend außer Betrieb.",
   "statusYourBooking": "Deine Buchung",
   "statusTaken": "Belegt",
+  "bookedBy": "Gebucht von {name}",
+  "@bookedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "aNeighbour": "einem Nachbarn",
   "statusPassed": "Vergangen",
   "statusAvailable": "Verfügbar",
   "legendAvailable": "Verfügbar",

@@ -192,6 +192,13 @@
   "machineOutOfService": "Questa maschina è temporaneamain fuo da servetsch.",
   "statusYourBooking": "Vossa reservaziun",
   "statusTaken": "Occupà",
+  "bookedBy": "Reservà da {name}",
+  "@bookedBy": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "aNeighbour": "in vischin",
   "statusPassed": "Passà",
   "statusAvailable": "Disponibel",
   "legendAvailable": "Disponibel",

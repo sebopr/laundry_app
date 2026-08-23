@@ -57,10 +57,8 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
   }
 
   Future<void> _loadLinkedUuid() async {
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(_userId)
-        .get();
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(_userId).get();
     if (!mounted) return;
     final data = doc.data();
     setState(() {
@@ -69,6 +67,21 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
         _linkedUuid = data!['linked_uuid'];
       }
     });
+  }
+
+  // Live uid -> displayName lookup for the building, same scoping ChatService
+  // uses for its contact list — so a booker's name here always matches
+  // their current profile, and never depends on when the booking was made.
+  Stream<Map<String, String>> _residentNamesStream() {
+    if (_linkedUuid == null) return const Stream.empty();
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where('linked_uuid', isEqualTo: _linkedUuid)
+        .snapshots()
+        .map((s) => {
+              for (final d in s.docs)
+                d.id: (d.data()['displayName'] as String?) ?? '',
+            });
   }
 
   // Requires a composite Firestore index on (linked_uuid, date).
@@ -184,97 +197,104 @@ class _BookingCalendarPageState extends State<BookingCalendarPage> {
     final isToday = _selectedDate == _today();
 
     return Scaffold(
-      body: StreamBuilder<Map<int, String>>(
-        stream: _machinesStream(),
-        builder: (context, machinesSnap) {
-          final machineStatuses = machinesSnap.data ?? {};
+      body: StreamBuilder<Map<String, String>>(
+        stream: _residentNamesStream(),
+        builder: (context, residentsSnap) {
+          final residentNames = residentsSnap.data ?? {};
 
-          return StreamBuilder<List<Map<String, dynamic>>>(
-            stream: _bookingsStream(),
-            builder: (context, snapshot) {
-              final bookings = snapshot.data ?? [];
+          return StreamBuilder<Map<int, String>>(
+            stream: _machinesStream(),
+            builder: (context, machinesSnap) {
+              final machineStatuses = machinesSnap.data ?? {};
 
-              final myTodayBookings = isToday
-                  ? (bookings
-                        .where((b) => b['user_id'] == _userId)
-                        .toList()
-                      ..sort((a, b) => (a['start'] as Timestamp)
-                          .toDate()
-                          .compareTo((b['start'] as Timestamp).toDate())))
-                  : <Map<String, dynamic>>[];
+              return StreamBuilder<List<Map<String, dynamic>>>(
+                stream: _bookingsStream(),
+                builder: (context, snapshot) {
+                  final bookings = snapshot.data ?? [];
 
-              return CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    floating: true,
-                    automaticallyImplyLeading: false,
-                    titleSpacing: 16,
-                    title: _GreetingHeader(
-                      greeting: _greeting(l10n),
-                      name: _displayName,
-                    ),
-                  ),
+                  final myTodayBookings = isToday
+                      ? (bookings.where((b) => b['user_id'] == _userId).toList()
+                        ..sort((a, b) => (a['start'] as Timestamp)
+                            .toDate()
+                            .compareTo((b['start'] as Timestamp).toDate())))
+                      : <Map<String, dynamic>>[];
 
-                  // Date navigation
-                  SliverToBoxAdapter(
-                    child: _DateNav(
-                      label: _formatDate(l10n, _selectedDate),
-                      isToday: isToday,
-                      onPrev: () => setState(() => _selectedDate =
-                          _selectedDate.subtract(const Duration(days: 1))),
-                      onNext: () => setState(() => _selectedDate =
-                          _selectedDate.add(const Duration(days: 1))),
-                      onToday: () =>
-                          setState(() => _selectedDate = _today()),
-                      onTapDate: _showCalendar,
-                    ),
-                  ),
-
-                  // Hero banner — only shown on today when user has a booking
-                  if (myTodayBookings.isNotEmpty)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-                        child: _BookingBanner(booking: myTodayBookings.first),
-                      ),
-                    ),
-
-                  // Machine cards — list is driven by Firestore data.
-                  // Fall back to [1, 2, 3] only while the stream hasn't emitted.
-                  Builder(builder: (context) {
-                    final machineNums = machineStatuses.isEmpty
-                        ? [1, 2, 3]
-                        : (machineStatuses.keys.toList()..sort());
-                    return SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, i) {
-                            final machine = machineNums[i];
-                            final mb = bookings
-                                .where((b) => b['machine'] == machine)
-                                .toList();
-                            final inMaintenance =
-                                machineStatuses[machine] == 'maintenance';
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _MachineCard(
-                                machine: machine,
-                                bookings: mb,
-                                userId: _userId,
-                                isSlotPast: _isSlotPast,
-                                onBook: (slot) => _book(machine, slot),
-                                onCancel: _cancel,
-                                inMaintenance: inMaintenance,
-                              ),
-                            );
-                          },
-                          childCount: machineNums.length,
+                  return CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        floating: true,
+                        automaticallyImplyLeading: false,
+                        titleSpacing: 16,
+                        title: _GreetingHeader(
+                          greeting: _greeting(l10n),
+                          name: _displayName,
                         ),
                       ),
-                    );
-                  }),
-                ],
+
+                      // Date navigation
+                      SliverToBoxAdapter(
+                        child: _DateNav(
+                          label: _formatDate(l10n, _selectedDate),
+                          isToday: isToday,
+                          onPrev: () => setState(() => _selectedDate =
+                              _selectedDate.subtract(const Duration(days: 1))),
+                          onNext: () => setState(() => _selectedDate =
+                              _selectedDate.add(const Duration(days: 1))),
+                          onToday: () =>
+                              setState(() => _selectedDate = _today()),
+                          onTapDate: _showCalendar,
+                        ),
+                      ),
+
+                      // Hero banner — only shown on today when user has a booking
+                      if (myTodayBookings.isNotEmpty)
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+                            child:
+                                _BookingBanner(booking: myTodayBookings.first),
+                          ),
+                        ),
+
+                      // Machine cards — list is driven by Firestore data.
+                      // Fall back to [1, 2, 3] only while the stream hasn't emitted.
+                      Builder(builder: (context) {
+                        final machineNums = machineStatuses.isEmpty
+                            ? [1, 2, 3]
+                            : (machineStatuses.keys.toList()..sort());
+                        return SliverPadding(
+                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, i) {
+                                final machine = machineNums[i];
+                                final mb = bookings
+                                    .where((b) => b['machine'] == machine)
+                                    .toList();
+                                final inMaintenance =
+                                    machineStatuses[machine] == 'maintenance';
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: _MachineCard(
+                                    machine: machine,
+                                    bookings: mb,
+                                    userId: _userId,
+                                    residentNames: residentNames,
+                                    isSlotPast: _isSlotPast,
+                                    onBook: (slot) => _book(machine, slot),
+                                    onCancel: _cancel,
+                                    inMaintenance: inMaintenance,
+                                  ),
+                                );
+                              },
+                              childCount: machineNums.length,
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  );
+                },
               );
             },
           );
@@ -361,8 +381,8 @@ class _DateNav extends StatelessWidget {
                 onTap: onTapDate,
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.secondary,
                     borderRadius: BorderRadius.circular(20),
@@ -375,8 +395,7 @@ class _DateNav extends StatelessWidget {
                               ?.copyWith(fontWeight: FontWeight.w600)),
                       const SizedBox(width: 6),
                       Icon(LucideIcons.calendar,
-                          size: 16,
-                          color: theme.colorScheme.primary),
+                          size: 16, color: theme.colorScheme.primary),
                     ],
                   ),
                 ),
@@ -484,6 +503,7 @@ class _MachineCard extends StatelessWidget {
   final int machine;
   final List<Map<String, dynamic>> bookings;
   final String userId;
+  final Map<String, String> residentNames;
   final bool Function(_Slot) isSlotPast;
   final void Function(_Slot) onBook;
   final void Function(String) onCancel;
@@ -493,6 +513,7 @@ class _MachineCard extends StatelessWidget {
     required this.machine,
     required this.bookings,
     required this.userId,
+    required this.residentNames,
     required this.isSlotPast,
     required this.onBook,
     required this.onCancel,
@@ -504,7 +525,9 @@ class _MachineCard extends StatelessWidget {
 
   (Color, String) _status(AppLocalizations l10n) {
     if (inMaintenance) return (Colors.grey.shade400, l10n.maintenanceStatus);
-    if (bookings.isEmpty) return (const Color(0xFF34A853), l10n.machineOpenStatus);
+    if (bookings.isEmpty) {
+      return (const Color(0xFF34A853), l10n.machineOpenStatus);
+    }
     if (bookings.length >= _Slot.values.length) {
       return (const Color(0xFFE15B5B), l10n.legendFull);
     }
@@ -542,8 +565,8 @@ class _MachineCard extends StatelessWidget {
                   width: 32,
                   height: 32,
                   padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: statusColor),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: statusColor),
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -577,8 +600,7 @@ class _MachineCard extends StatelessWidget {
           const Divider(height: 1),
           if (inMaintenance)
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Row(
                 children: [
                   Icon(LucideIcons.wrench,
@@ -597,6 +619,7 @@ class _MachineCard extends StatelessWidget {
               slot: _Slot.morning,
               booking: _bookingFor(_Slot.morning),
               userId: userId,
+              residentNames: residentNames,
               isPast: isSlotPast(_Slot.morning),
               onBook: () => onBook(_Slot.morning),
               onCancel: onCancel,
@@ -606,6 +629,7 @@ class _MachineCard extends StatelessWidget {
               slot: _Slot.afternoon,
               booking: _bookingFor(_Slot.afternoon),
               userId: userId,
+              residentNames: residentNames,
               isPast: isSlotPast(_Slot.afternoon),
               onBook: () => onBook(_Slot.afternoon),
               onCancel: onCancel,
@@ -624,6 +648,7 @@ class _SlotRow extends StatelessWidget {
   final _Slot slot;
   final Map<String, dynamic>? booking;
   final String userId;
+  final Map<String, String> residentNames;
   final bool isPast;
   final VoidCallback onBook;
   final void Function(String) onCancel;
@@ -632,6 +657,7 @@ class _SlotRow extends StatelessWidget {
     required this.slot,
     required this.booking,
     required this.userId,
+    required this.residentNames,
     required this.isPast,
     required this.onBook,
     required this.onCancel,
@@ -643,6 +669,14 @@ class _SlotRow extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final isMine = booking != null && booking!['user_id'] == userId;
     final isTaken = booking != null && !isMine;
+    // Looked up live from the building's current residents (same scoping
+    // ChatService uses) rather than a name frozen on the booking doc, so it
+    // always matches the booker's current profile — never their email.
+    final bookerName = isTaken
+        ? ((residentNames[booking!['user_id']]?.isNotEmpty == true)
+            ? residentNames[booking!['user_id']]!
+            : l10n.aNeighbour)
+        : null;
 
     final (dotColor, statusText) = switch ((isMine, isTaken, isPast)) {
       (true, _, _) => (Colors.blue, l10n.statusYourBooking),
@@ -665,6 +699,11 @@ class _SlotRow extends StatelessWidget {
                 Text(slot.timeRange,
                     style: theme.textTheme.bodySmall
                         ?.copyWith(color: Colors.grey.shade600)),
+                if (bookerName != null)
+                  Text(l10n.bookedBy(bookerName),
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: Colors.red.shade300)),
               ],
             ),
           ),
@@ -674,7 +713,8 @@ class _SlotRow extends StatelessWidget {
               Container(
                 width: 8,
                 height: 8,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor),
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: dotColor),
               ),
               const SizedBox(width: 4),
               ConstrainedBox(
@@ -712,8 +752,7 @@ class _SlotRow extends StatelessWidget {
                         style: FilledButton.styleFrom(
                           visualDensity: VisualDensity.compact,
                           minimumSize: const Size(0, 32),
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: Text(l10n.btnBook),
@@ -796,10 +835,8 @@ class _CalendarSheetState extends State<_CalendarSheet> {
     return StreamBuilder<Map<int, String>>(
       stream: widget.machinesStream,
       builder: (context, machinesSnap) {
-        final activeMachineCount = (machinesSnap.data ?? {})
-            .values
-            .where((v) => v == 'active')
-            .length;
+        final activeMachineCount =
+            (machinesSnap.data ?? {}).values.where((v) => v == 'active').length;
 
         return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: _bookingsStream,
@@ -841,7 +878,8 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                     const SizedBox(height: 12),
                     Center(
                       child: Container(
-                        width: 40, height: 4,
+                        width: 40,
+                        height: 4,
                         decoration: BoxDecoration(
                           color: Colors.grey.shade300,
                           borderRadius: BorderRadius.circular(2),
@@ -884,8 +922,8 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                             .map((d) => Expanded(
                                   child: Center(
                                     child: Text(d,
-                                        style: theme.textTheme.bodySmall
-                                            ?.copyWith(
+                                        style:
+                                            theme.textTheme.bodySmall?.copyWith(
                                           color: Colors.grey.shade500,
                                           fontWeight: FontWeight.w600,
                                         )),
@@ -903,8 +941,7 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                             child: CircularProgressIndicator(),
                           )
                         : Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -919,8 +956,8 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                                   return const SizedBox.shrink();
                                 }
                                 final day = i - startPad + 1;
-                                final date = DateTime(
-                                    _month.year, _month.month, day);
+                                final date =
+                                    DateTime(_month.year, _month.month, day);
                                 final isSelected = date == _selected;
                                 final isToday = date == today;
                                 final isPast = date.isBefore(today);
@@ -939,8 +976,7 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                                           Navigator.pop(context);
                                         },
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
                                         width: 34,
@@ -952,8 +988,8 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                                               : null,
                                           border: isToday && !isSelected
                                               ? Border.all(
-                                                  color: theme
-                                                      .colorScheme.primary,
+                                                  color:
+                                                      theme.colorScheme.primary,
                                                   width: 1.5)
                                               : null,
                                         ),
@@ -967,10 +1003,9 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                                                   : isPast
                                                       ? Colors.grey.shade400
                                                       : null,
-                                              fontWeight:
-                                                  isSelected || isToday
-                                                      ? FontWeight.bold
-                                                      : null,
+                                              fontWeight: isSelected || isToday
+                                                  ? FontWeight.bold
+                                                  : null,
                                             ),
                                           ),
                                         ),
@@ -979,8 +1014,7 @@ class _CalendarSheetState extends State<_CalendarSheet> {
                                         Container(
                                           width: 6,
                                           height: 6,
-                                          margin:
-                                              const EdgeInsets.only(top: 2),
+                                          margin: const EdgeInsets.only(top: 2),
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: dot,

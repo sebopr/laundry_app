@@ -516,6 +516,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusTaken => 'Taken';
 
   @override
+  String bookedBy(String name) {
+    return 'Booked by $name';
+  }
+
+  @override
+  String get aNeighbour => 'a neighbour';
+
+  @override
   String get statusPassed => 'Passed';
 
   @override
