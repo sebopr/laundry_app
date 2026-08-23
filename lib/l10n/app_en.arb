@@ -48,6 +48,10 @@
   "darkMode": "Dark mode",
   "language": "Language",
   "signOut": "Sign out",
+  "leaveBuilding": "Leave building",
+  "leaveBuildingContent": "You'll lose access to this building's booking system and chat. If you're the head of your household, headship passes to another member (or the household is removed if you're its only member). Any future bookings you have will be cancelled.",
+  "deleteAccount": "Delete account",
+  "deleteAccountContent": "This permanently deletes your account and all its data. This cannot be undone. If you manage any buildings, you'll need to transfer or delete them first.",
   "setupHousehold": "Set up household",
   "youManageHousehold": "You manage this household",
   "memberLabel": "Member",
@@ -95,6 +99,11 @@
   "onbCreateHousehold": "Create household",
   "onbNotHouseholdQr": "This is not a household invite QR.",
   "onbNotBuildingQr": "This doesn't look like a building QR. Try again.",
+  "onbRequestPendingTitle": "Waiting for approval",
+  "onbBuildingRequestPendingSubtitle": "The building admin has been notified and needs to accept your request before you can continue.",
+  "onbHouseholdRequestPendingSubtitle": "The building admin has been notified and needs to accept your household before you can continue.",
+  "onbBuildingRequestRejected": "Your request to join was declined. You can scan the code again or try a different building.",
+  "onbHouseholdRequestRejected": "Your household request was declined. You can try again.",
 
   "scanQrCode": "Scan QR Code",
 
@@ -121,6 +130,21 @@
   "noHousehold": "No household",
   "removeResident": "Remove resident",
   "removeResidentContent": "This will remove the resident from the building. They will need to re-scan the QR to rejoin.",
+  "pendingRequestsTitle": "{count, plural, =1{1 pending request} other{{count} pending requests}}",
+  "@pendingRequestsTitle": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "joinRequestBuildingLabel": "Wants to join this building",
+  "joinRequestHouseholdLabel": "Wants to create the household \"{name}\"",
+  "@joinRequestHouseholdLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "btnApprove": "Approve",
+  "btnReject": "Decline",
   "machinesDescription": "Toggle machines in or out of service, or add/remove machines.",
   "removeMachineTitle": "Remove machine?",
   "removeMachineContent": "Machine {number} will be removed. Existing bookings for this machine are not automatically cancelled.",

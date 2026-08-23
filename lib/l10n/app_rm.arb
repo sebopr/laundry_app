@@ -48,6 +48,10 @@
   "darkMode": "Modus nair",
   "language": "Lingua",
   "signOut": "Sortir",
+  "leaveBuilding": "Bandunar l'edifizi",
+  "leaveBuildingContent": "Ti perdas l'access al sistem da reservaziun e al chat da quest edifizi. Sche ti es il chau da tia economia domestica, vegn la direcziun transferida ad in auter commember (u l'economia domestica vegn allontanada sche ti es l'unic commember). Tias reservaziuns futuras vegnan annulladas.",
+  "deleteAccount": "Stizzar il conto",
+  "deleteAccountContent": "Quai stizza per adina tes conto e tut ses datas. Quai na po betg vegnir revocà. Sche ti administreschas edifizis, sto ti als transferir u stizzar avant.",
   "setupHousehold": "Configurar chasa",
   "youManageHousehold": "Vus administrais questa chasa",
   "memberLabel": "Commember",
@@ -95,6 +99,11 @@
   "onbCreateHousehold": "Crear chasa",
   "onbNotHouseholdQr": "Quai n'è betg in QR d'invitaziun da chasa.",
   "onbNotBuildingQr": "Quai na para betg in QR d'edifizi. Retenta.",
+  "onbRequestPendingTitle": "Spetgond l'approvaziun",
+  "onbBuildingRequestPendingSubtitle": "L'administratur da l'edifizi è vegnì infurmà e sto acceptar tia dumonda avant che ti possias cuntinuar.",
+  "onbHouseholdRequestPendingSubtitle": "L'administratur da l'edifizi è vegnì infurmà e sto acceptar tia dumonda per l'economia domestica avant che ti possias cuntinuar.",
+  "onbBuildingRequestRejected": "Tia dumonda da s'unir è vegnida refusada. Ti pos rescannar il code u empruvar in auter edifizi.",
+  "onbHouseholdRequestRejected": "Tia dumonda per l'economia domestica è vegnida refusada. Ti pos empruvar anc ina giada.",
 
   "scanQrCode": "Scannar QR",
 
@@ -121,6 +130,21 @@
   "noHousehold": "Nagin'a chasa",
   "removeResident": "Allontanar abitant",
   "removeResidentContent": "Quai allontana l'abitant da l'edifizi. El sto rescannar il QR per s'unir.",
+  "pendingRequestsTitle": "{count, plural, =1{1 dumonda avert} other{{count} dumondas avertas}}",
+  "@pendingRequestsTitle": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "joinRequestBuildingLabel": "Vul sa unir a quest edifizi",
+  "joinRequestHouseholdLabel": "Vul crear l'economia domestica «{name}»",
+  "@joinRequestHouseholdLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "btnApprove": "Acceptar",
+  "btnReject": "Refusar",
   "machinesDescription": "Activar u deactivar maschinas, agiuntar u allontanar.",
   "removeMachineTitle": "Allontanar maschina?",
   "removeMachineContent": "La maschina {number} vegn allontanada. Las reservaziuns existentas n'vegnan betg annulladas.",

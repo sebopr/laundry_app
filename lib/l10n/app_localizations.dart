@@ -356,6 +356,30 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get signOut;
 
+  /// No description provided for @leaveBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave building'**
+  String get leaveBuilding;
+
+  /// No description provided for @leaveBuildingContent.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll lose access to this building\'s booking system and chat. If you\'re the head of your household, headship passes to another member (or the household is removed if you\'re its only member). Any future bookings you have will be cancelled.'**
+  String get leaveBuildingContent;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes your account and all its data. This cannot be undone. If you manage any buildings, you\'ll need to transfer or delete them first.'**
+  String get deleteAccountContent;
+
   /// No description provided for @setupHousehold.
   ///
   /// In en, this message translates to:
@@ -620,6 +644,36 @@ abstract class AppLocalizations {
   /// **'This doesn\'t look like a building QR. Try again.'**
   String get onbNotBuildingQr;
 
+  /// No description provided for @onbRequestPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for approval'**
+  String get onbRequestPendingTitle;
+
+  /// No description provided for @onbBuildingRequestPendingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The building admin has been notified and needs to accept your request before you can continue.'**
+  String get onbBuildingRequestPendingSubtitle;
+
+  /// No description provided for @onbHouseholdRequestPendingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The building admin has been notified and needs to accept your household before you can continue.'**
+  String get onbHouseholdRequestPendingSubtitle;
+
+  /// No description provided for @onbBuildingRequestRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request to join was declined. You can scan the code again or try a different building.'**
+  String get onbBuildingRequestRejected;
+
+  /// No description provided for @onbHouseholdRequestRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Your household request was declined. You can try again.'**
+  String get onbHouseholdRequestRejected;
+
   /// No description provided for @scanQrCode.
   ///
   /// In en, this message translates to:
@@ -697,6 +751,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This will remove the resident from the building. They will need to re-scan the QR to rejoin.'**
   String get removeResidentContent;
+
+  /// No description provided for @pendingRequestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 pending request} other{{count} pending requests}}'**
+  String pendingRequestsTitle(num count);
+
+  /// No description provided for @joinRequestBuildingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wants to join this building'**
+  String get joinRequestBuildingLabel;
+
+  /// No description provided for @joinRequestHouseholdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wants to create the household \"{name}\"'**
+  String joinRequestHouseholdLabel(String name);
+
+  /// No description provided for @btnApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get btnApprove;
+
+  /// No description provided for @btnReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get btnReject;
 
   /// No description provided for @machinesDescription.
   ///

@@ -48,6 +48,10 @@
   "darkMode": "Mode sombre",
   "language": "Langue",
   "signOut": "Se déconnecter",
+  "leaveBuilding": "Quitter l'immeuble",
+  "leaveBuildingContent": "Vous perdrez l'accès au système de réservation et au chat de cet immeuble. Si vous êtes le chef de votre foyer, la direction passe à un autre membre (ou le foyer est supprimé si vous en êtes le seul membre). Vos réservations futures seront annulées.",
+  "deleteAccount": "Supprimer le compte",
+  "deleteAccountContent": "Cela supprime définitivement votre compte et toutes ses données. Cette action est irréversible. Si vous gérez des immeubles, vous devrez d'abord les transférer ou les supprimer.",
   "setupHousehold": "Configurer le ménage",
   "youManageHousehold": "Vous gérez ce ménage",
   "memberLabel": "Membre",
@@ -95,6 +99,11 @@
   "onbCreateHousehold": "Créer un ménage",
   "onbNotHouseholdQr": "Ce n'est pas un QR d'invitation de ménage.",
   "onbNotBuildingQr": "Cela ne ressemble pas à un QR d'immeuble. Réessayez.",
+  "onbRequestPendingTitle": "En attente d'approbation",
+  "onbBuildingRequestPendingSubtitle": "L'administrateur de l'immeuble a été averti et doit accepter votre demande avant que vous puissiez continuer.",
+  "onbHouseholdRequestPendingSubtitle": "L'administrateur de l'immeuble a été averti et doit accepter votre foyer avant que vous puissiez continuer.",
+  "onbBuildingRequestRejected": "Votre demande d'adhésion a été refusée. Vous pouvez rescanner le code ou essayer un autre immeuble.",
+  "onbHouseholdRequestRejected": "Votre demande de foyer a été refusée. Vous pouvez réessayer.",
 
   "scanQrCode": "Scanner le QR",
 
@@ -121,6 +130,21 @@
   "noHousehold": "Pas de ménage",
   "removeResident": "Supprimer le résident",
   "removeResidentContent": "Cela supprimera le résident de l'immeuble. Il devra re-scanner le QR pour rejoindre.",
+  "pendingRequestsTitle": "{count, plural, =1{1 demande en attente} other{{count} demandes en attente}}",
+  "@pendingRequestsTitle": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "joinRequestBuildingLabel": "Souhaite rejoindre cet immeuble",
+  "joinRequestHouseholdLabel": "Souhaite créer le foyer « {name} »",
+  "@joinRequestHouseholdLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "btnApprove": "Accepter",
+  "btnReject": "Refuser",
   "machinesDescription": "Activez ou désactivez les machines, ajoutez ou supprimez-en.",
   "removeMachineTitle": "Supprimer la machine ?",
   "removeMachineContent": "La machine {number} sera supprimée. Les réservations existantes ne seront pas annulées automatiquement.",

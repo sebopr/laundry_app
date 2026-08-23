@@ -136,6 +136,20 @@ class AppLocalizationsRm extends AppLocalizations {
   String get signOut => 'Sortir';
 
   @override
+  String get leaveBuilding => 'Bandunar l\'edifizi';
+
+  @override
+  String get leaveBuildingContent =>
+      'Ti perdas l\'access al sistem da reservaziun e al chat da quest edifizi. Sche ti es il chau da tia economia domestica, vegn la direcziun transferida ad in auter commember (u l\'economia domestica vegn allontanada sche ti es l\'unic commember). Tias reservaziuns futuras vegnan annulladas.';
+
+  @override
+  String get deleteAccount => 'Stizzar il conto';
+
+  @override
+  String get deleteAccountContent =>
+      'Quai stizza per adina tes conto e tut ses datas. Quai na po betg vegnir revocà. Sche ti administreschas edifizis, sto ti als transferir u stizzar avant.';
+
+  @override
   String get setupHousehold => 'Configurar chasa';
 
   @override
@@ -275,6 +289,25 @@ class AppLocalizationsRm extends AppLocalizations {
   String get onbNotBuildingQr => 'Quai na para betg in QR d\'edifizi. Retenta.';
 
   @override
+  String get onbRequestPendingTitle => 'Spetgond l\'approvaziun';
+
+  @override
+  String get onbBuildingRequestPendingSubtitle =>
+      'L\'administratur da l\'edifizi è vegnì infurmà e sto acceptar tia dumonda avant che ti possias cuntinuar.';
+
+  @override
+  String get onbHouseholdRequestPendingSubtitle =>
+      'L\'administratur da l\'edifizi è vegnì infurmà e sto acceptar tia dumonda per l\'economia domestica avant che ti possias cuntinuar.';
+
+  @override
+  String get onbBuildingRequestRejected =>
+      'Tia dumonda da s\'unir è vegnida refusada. Ti pos rescannar il code u empruvar in auter edifizi.';
+
+  @override
+  String get onbHouseholdRequestRejected =>
+      'Tia dumonda per l\'economia domestica è vegnida refusada. Ti pos empruvar anc ina giada.';
+
+  @override
   String get scanQrCode => 'Scannar QR';
 
   @override
@@ -339,6 +372,36 @@ class AppLocalizationsRm extends AppLocalizations {
   @override
   String get removeResidentContent =>
       'Quai allontana l\'abitant da l\'edifizi. El sto rescannar il QR per s\'unir.';
+
+  @override
+  String pendingRequestsTitle(num count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString dumondas avertas',
+      one: '1 dumonda avert',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get joinRequestBuildingLabel => 'Vul sa unir a quest edifizi';
+
+  @override
+  String joinRequestHouseholdLabel(String name) {
+    return 'Vul crear l\'economia domestica «$name»';
+  }
+
+  @override
+  String get btnApprove => 'Acceptar';
+
+  @override
+  String get btnReject => 'Refusar';
 
   @override
   String get machinesDescription =>

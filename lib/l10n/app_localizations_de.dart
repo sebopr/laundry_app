@@ -139,6 +139,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get signOut => 'Abmelden';
 
   @override
+  String get leaveBuilding => 'Gebäude verlassen';
+
+  @override
+  String get leaveBuildingContent =>
+      'Du verlierst den Zugriff auf das Buchungssystem und den Chat dieses Gebäudes. Falls du das Haushaltsoberhaupt bist, geht die Leitung an ein anderes Mitglied über (oder der Haushalt wird entfernt, falls du das einzige Mitglied bist). Zukünftige Buchungen von dir werden storniert.';
+
+  @override
+  String get deleteAccount => 'Konto löschen';
+
+  @override
+  String get deleteAccountContent =>
+      'Dies löscht dein Konto und alle zugehörigen Daten dauerhaft. Dies kann nicht rückgängig gemacht werden. Falls du Gebäude verwaltest, musst du diese zuerst übertragen oder löschen.';
+
+  @override
   String get setupHousehold => 'Haushalt einrichten';
 
   @override
@@ -282,6 +296,25 @@ class AppLocalizationsDe extends AppLocalizations {
       'Das sieht nicht wie ein Gebäude-QR aus. Bitte erneut versuchen.';
 
   @override
+  String get onbRequestPendingTitle => 'Warten auf Genehmigung';
+
+  @override
+  String get onbBuildingRequestPendingSubtitle =>
+      'Der Gebäudeadmin wurde benachrichtigt und muss deine Anfrage akzeptieren, bevor du fortfahren kannst.';
+
+  @override
+  String get onbHouseholdRequestPendingSubtitle =>
+      'Der Gebäudeadmin wurde benachrichtigt und muss deinen Haushalt akzeptieren, bevor du fortfahren kannst.';
+
+  @override
+  String get onbBuildingRequestRejected =>
+      'Deine Beitrittsanfrage wurde abgelehnt. Du kannst den Code erneut scannen oder ein anderes Gebäude versuchen.';
+
+  @override
+  String get onbHouseholdRequestRejected =>
+      'Deine Haushaltsanfrage wurde abgelehnt. Du kannst es erneut versuchen.';
+
+  @override
   String get scanQrCode => 'QR-Code scannen';
 
   @override
@@ -347,6 +380,36 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get removeResidentContent =>
       'Dies entfernt den Bewohner aus dem Gebäude. Er muss den QR erneut scannen, um wieder beizutreten.';
+
+  @override
+  String pendingRequestsTitle(num count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString offene Anfragen',
+      one: '1 offene Anfrage',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get joinRequestBuildingLabel => 'Möchte diesem Gebäude beitreten';
+
+  @override
+  String joinRequestHouseholdLabel(String name) {
+    return 'Möchte den Haushalt „$name“ erstellen';
+  }
+
+  @override
+  String get btnApprove => 'Annehmen';
+
+  @override
+  String get btnReject => 'Ablehnen';
 
   @override
   String get machinesDescription =>

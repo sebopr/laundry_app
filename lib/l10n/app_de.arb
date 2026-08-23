@@ -48,6 +48,10 @@
   "darkMode": "Dunkelmodus",
   "language": "Sprache",
   "signOut": "Abmelden",
+  "leaveBuilding": "Gebäude verlassen",
+  "leaveBuildingContent": "Du verlierst den Zugriff auf das Buchungssystem und den Chat dieses Gebäudes. Falls du das Haushaltsoberhaupt bist, geht die Leitung an ein anderes Mitglied über (oder der Haushalt wird entfernt, falls du das einzige Mitglied bist). Zukünftige Buchungen von dir werden storniert.",
+  "deleteAccount": "Konto löschen",
+  "deleteAccountContent": "Dies löscht dein Konto und alle zugehörigen Daten dauerhaft. Dies kann nicht rückgängig gemacht werden. Falls du Gebäude verwaltest, musst du diese zuerst übertragen oder löschen.",
   "setupHousehold": "Haushalt einrichten",
   "youManageHousehold": "Du verwaltest diesen Haushalt",
   "memberLabel": "Mitglied",
@@ -95,6 +99,11 @@
   "onbCreateHousehold": "Haushalt erstellen",
   "onbNotHouseholdQr": "Dies ist kein Haushalt-Einladungs-QR.",
   "onbNotBuildingQr": "Das sieht nicht wie ein Gebäude-QR aus. Bitte erneut versuchen.",
+  "onbRequestPendingTitle": "Warten auf Genehmigung",
+  "onbBuildingRequestPendingSubtitle": "Der Gebäudeadmin wurde benachrichtigt und muss deine Anfrage akzeptieren, bevor du fortfahren kannst.",
+  "onbHouseholdRequestPendingSubtitle": "Der Gebäudeadmin wurde benachrichtigt und muss deinen Haushalt akzeptieren, bevor du fortfahren kannst.",
+  "onbBuildingRequestRejected": "Deine Beitrittsanfrage wurde abgelehnt. Du kannst den Code erneut scannen oder ein anderes Gebäude versuchen.",
+  "onbHouseholdRequestRejected": "Deine Haushaltsanfrage wurde abgelehnt. Du kannst es erneut versuchen.",
 
   "scanQrCode": "QR-Code scannen",
 
@@ -121,6 +130,21 @@
   "noHousehold": "Kein Haushalt",
   "removeResident": "Bewohner entfernen",
   "removeResidentContent": "Dies entfernt den Bewohner aus dem Gebäude. Er muss den QR erneut scannen, um wieder beizutreten.",
+  "pendingRequestsTitle": "{count, plural, =1{1 offene Anfrage} other{{count} offene Anfragen}}",
+  "@pendingRequestsTitle": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "joinRequestBuildingLabel": "Möchte diesem Gebäude beitreten",
+  "joinRequestHouseholdLabel": "Möchte den Haushalt „{name}“ erstellen",
+  "@joinRequestHouseholdLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "btnApprove": "Annehmen",
+  "btnReject": "Ablehnen",
   "machinesDescription": "Maschinen ein- oder ausschalten, hinzufügen oder entfernen.",
   "removeMachineTitle": "Maschine entfernen?",
   "removeMachineContent": "Maschine {number} wird entfernt. Bestehende Buchungen werden nicht automatisch storniert.",

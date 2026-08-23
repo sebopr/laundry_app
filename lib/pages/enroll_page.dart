@@ -1,10 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/pages/onboarding_page.dart';
 import 'package:lavaplan/services/household/household_service.dart';
+import 'package:lavaplan/services/household/join_request_service.dart';
 
 // Kept for re-scanning from Settings (e.g. moving buildings).
 // Handles both building: and household: prefixes.
@@ -26,13 +25,11 @@ class _ScanQrToJoinGroupPageState extends State<ScanQrToJoinGroupPage> {
     try {
       if (code.startsWith('building:')) {
         final linkedUuid = code.substring('building:'.length);
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .update({'linked_uuid': linkedUuid});
+        await JoinRequestService.requestBuildingJoin(linkedUuid);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Building joined successfully.')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                  'Request sent — waiting for the building admin to accept.')));
           Navigator.pop(context);
         }
       } else if (code.startsWith('household:')) {

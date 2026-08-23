@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/generate_qr_page.dart';
+import 'package:lavaplan/services/household/join_request_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class BuildingDetailPage extends StatelessWidget {
@@ -63,63 +64,72 @@ class _ResidentsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .where('linked_uuid', isEqualTo: buildingUuid)
-          .snapshots(),
-      builder: (context, snap) {
-        if (!snap.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    return Column(
+      children: [
+        _PendingRequestsSection(buildingUuid: buildingUuid),
+        Expanded(
+          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .where('linked_uuid', isEqualTo: buildingUuid)
+                .snapshots(),
+            builder: (context, snap) {
+              if (!snap.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-        final users = snap.data!.docs
-            .map((d) => {'uid': d.id, ...d.data()})
-            .toList();
+              final users = snap.data!.docs
+                  .map((d) => {'uid': d.id, ...d.data()})
+                  .toList();
 
-        if (users.isEmpty) {
-          return Center(
-              child: Text(AppLocalizations.of(context)!.noResidentsYet));
-        }
+              if (users.isEmpty) {
+                return Center(
+                    child:
+                        Text(AppLocalizations.of(context)!.noResidentsYet));
+              }
 
-        // Group by household_id
-        final Map<String, List<Map<String, dynamic>>> byHousehold = {};
-        final List<Map<String, dynamic>> noHousehold = [];
+              // Group by household_id
+              final Map<String, List<Map<String, dynamic>>> byHousehold = {};
+              final List<Map<String, dynamic>> noHousehold = [];
 
-        for (final u in users) {
-          final hid = u['household_id'] as String?;
-          if (hid == null) {
-            noHousehold.add(u);
-          } else {
-            byHousehold.putIfAbsent(hid, () => []).add(u);
-          }
-        }
+              for (final u in users) {
+                final hid = u['household_id'] as String?;
+                if (hid == null) {
+                  noHousehold.add(u);
+                } else {
+                  byHousehold.putIfAbsent(hid, () => []).add(u);
+                }
+              }
 
-        final householdIds = byHousehold.keys.toList();
+              final householdIds = byHousehold.keys.toList();
 
-        return ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          itemCount: householdIds.length + (noHousehold.isNotEmpty ? 1 : 0),
-          itemBuilder: (context, i) {
-            if (i == householdIds.length) {
-              return _HouseholdGroup(
-                name: AppLocalizations.of(context)!.noHousehold,
-                members: noHousehold,
-                onRemove: (uid) => _removeResident(context, uid),
+              return ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount:
+                    householdIds.length + (noHousehold.isNotEmpty ? 1 : 0),
+                itemBuilder: (context, i) {
+                  if (i == householdIds.length) {
+                    return _HouseholdGroup(
+                      name: AppLocalizations.of(context)!.noHousehold,
+                      members: noHousehold,
+                      onRemove: (uid) => _removeResident(context, uid),
+                    );
+                  }
+                  final hid = householdIds[i];
+                  final members = byHousehold[hid]!;
+                  final householdName =
+                      members.first['household_name'] as String? ?? hid;
+                  return _HouseholdGroup(
+                    name: householdName,
+                    members: members,
+                    onRemove: (uid) => _removeResident(context, uid),
+                  );
+                },
               );
-            }
-            final hid = householdIds[i];
-            final members = byHousehold[hid]!;
-            final householdName =
-                members.first['household_name'] as String? ?? hid;
-            return _HouseholdGroup(
-              name: householdName,
-              members: members,
-              onRemove: (uid) => _removeResident(context, uid),
-            );
-          },
-        );
-      },
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -150,6 +160,125 @@ class _ResidentsTab extends StatelessWidget {
       'household_id': FieldValue.delete(),
       'household_name': FieldValue.delete(),
     });
+  }
+}
+
+// ─── Pending requests ──────────────────────────────────────────────────────────
+
+class _PendingRequestsSection extends StatelessWidget {
+  final String buildingUuid;
+  const _PendingRequestsSection({required this.buildingUuid});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: JoinRequestService.pendingForBuilding(buildingUuid),
+      builder: (context, snap) {
+        final requests = snap.data ?? [];
+        if (requests.isEmpty) return const SizedBox.shrink();
+
+        final l10n = AppLocalizations.of(context)!;
+        final theme = Theme.of(context);
+        return Container(
+          margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.secondary,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+                color: theme.brightness == Brightness.dark
+                    ? const Color(0xFF2B3542)
+                    : const Color(0xFFE7EEEE)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+                child: Text(
+                  l10n.pendingRequestsTitle(requests.length),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                      color: Colors.orange.shade800,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.2),
+                ),
+              ),
+              ...requests.map((r) => _PendingRequestTile(request: r)),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PendingRequestTile extends StatefulWidget {
+  final Map<String, dynamic> request;
+  const _PendingRequestTile({required this.request});
+
+  @override
+  State<_PendingRequestTile> createState() => _PendingRequestTileState();
+}
+
+class _PendingRequestTileState extends State<_PendingRequestTile> {
+  bool _resolving = false;
+
+  Future<void> _resolve(bool approve) async {
+    setState(() => _resolving = true);
+    try {
+      await JoinRequestService.resolve(widget.request['id'] as String, approve);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    } finally {
+      if (mounted) setState(() => _resolving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final displayName = widget.request['displayName'] as String? ??
+        widget.request['email'] as String? ??
+        '?';
+    final isHousehold = widget.request['type'] == 'household';
+    final subtitle = isHousehold
+        ? l10n.joinRequestHouseholdLabel(
+            widget.request['household_name'] as String? ?? '')
+        : l10n.joinRequestBuildingLabel;
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: Colors.orange.withValues(alpha: 0.12),
+        child: Icon(isHousehold ? LucideIcons.house : LucideIcons.userPlus2,
+            color: Colors.orange.shade800, size: 18),
+      ),
+      title: Text(displayName),
+      subtitle: Text(subtitle, style: const TextStyle(fontSize: 11)),
+      trailing: _resolving
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2))
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(LucideIcons.x, color: Colors.redAccent),
+                  tooltip: l10n.btnReject,
+                  onPressed: () => _resolve(false),
+                ),
+                IconButton(
+                  icon: Icon(LucideIcons.check, color: theme.colorScheme.primary),
+                  tooltip: l10n.btnApprove,
+                  onPressed: () => _resolve(true),
+                ),
+              ],
+            ),
+    );
   }
 }
 

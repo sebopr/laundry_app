@@ -81,6 +81,22 @@ class ChatService {
     final String currentUserEmail = _auth.currentUser!.email!;
     final Timestamp timestamp = Timestamp.now();
 
+    // Contacts are only ever surfaced via getUsersStream(), which is scoped
+    // to the current building — but a stale open ChatPage or a tap on an
+    // old push notification can still reach here with a receiverId from a
+    // building either side has since left. Re-check at send time so leaving
+    // a building actually cuts off contact, not just the visible list.
+    final currentLinkedUuid =
+        (await _firestore.collection('users').doc(currentUserId).get())
+            .data()?['linked_uuid'];
+    final receiverLinkedUuid =
+        (await _firestore.collection('users').doc(receiverId).get())
+            .data()?['linked_uuid'];
+    if (currentLinkedUuid == null ||
+        currentLinkedUuid != receiverLinkedUuid) {
+      throw Exception('You no longer share a building with this person.');
+    }
+
 //create new message
     Message newMessage = Message(
       senderId: currentUserId,

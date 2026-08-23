@@ -100,9 +100,16 @@ class _ChatPageState extends State<ChatPage> {
 
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(
-          widget.receiverId, _messageController.text);
-      _scrollDown();
+      try {
+        await _chatService.sendMessage(
+            widget.receiverId, _messageController.text);
+        _scrollDown();
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
+        }
+      }
     }
 
     _messageController.clear();
@@ -432,11 +439,18 @@ class _ChatPageState extends State<ChatPage> {
                   },
                   onSubmitted: (value) async {
                     if (value.trim().isEmpty) return;
-                    await _chatService.sendMessage(widget.receiverId, value);
+                    try {
+                      await _chatService.sendMessage(widget.receiverId, value);
+                      _scrollDown();
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(e.toString())));
+                      }
+                    }
                     await _chatService.setTypingStatus(
                         widget.receiverId, false); // stop typing
                     _messageController.clear();
-                    _scrollDown();
                   },
                 ),
               ),

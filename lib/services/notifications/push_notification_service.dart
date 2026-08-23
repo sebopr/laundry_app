@@ -44,6 +44,12 @@ class PushNotificationService {
     if (_registeredUid == uid) return;
     _registeredUid = uid;
 
+    // Stamped once per authenticated session — the signal the daily
+    // stale-resident sweep (functions/src/accountLifecycle.ts) uses to tell
+    // whether someone's actually stopped using the app.
+    await FirebaseFirestore.instance.collection('users').doc(uid).set(
+        {'lastActive': FieldValue.serverTimestamp()}, SetOptions(merge: true));
+
     final messaging = FirebaseMessaging.instance;
     final settings = await messaging.requestPermission();
     debugPrint(

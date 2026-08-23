@@ -5,22 +5,6 @@ class HouseholdService {
   static final _db = FirebaseFirestore.instance;
   static String get _uid => FirebaseAuth.instance.currentUser!.uid;
 
-  static Future<void> create(String name, String linkedUuid) async {
-    final ref = await _db.collection('households').add({
-      'name': name,
-      'linked_uuid': linkedUuid,
-      'head_uid': _uid,
-      'members': [_uid],
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-
-    await _db.collection('users').doc(_uid).update({
-      'household_id': ref.id,
-      'household_name': name,
-      'isHouseholdHead': true,
-    });
-  }
-
   static Future<void> join(String householdId) async {
     final doc = await _db.collection('households').doc(householdId).get();
     if (!doc.exists) throw Exception('Household not found');

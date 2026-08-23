@@ -11,6 +11,12 @@ initializeApp();
 
 export { sendVerificationCode, verifyEmailCode } from "./emailVerification";
 export { appleSignInCallback } from "./appleSignIn";
+export { onJoinRequestCreated, resolveJoinRequest } from "./joinRequests";
+export {
+  leaveBuilding,
+  deleteAccount,
+  checkStaleResidents,
+} from "./accountLifecycle";
 
 const db = getFirestore();
 const messaging = getMessaging();

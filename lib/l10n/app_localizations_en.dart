@@ -135,6 +135,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign out';
 
   @override
+  String get leaveBuilding => 'Leave building';
+
+  @override
+  String get leaveBuildingContent =>
+      'You\'ll lose access to this building\'s booking system and chat. If you\'re the head of your household, headship passes to another member (or the household is removed if you\'re its only member). Any future bookings you have will be cancelled.';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountContent =>
+      'This permanently deletes your account and all its data. This cannot be undone. If you manage any buildings, you\'ll need to transfer or delete them first.';
+
+  @override
   String get setupHousehold => 'Set up household';
 
   @override
@@ -274,6 +288,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'This doesn\'t look like a building QR. Try again.';
 
   @override
+  String get onbRequestPendingTitle => 'Waiting for approval';
+
+  @override
+  String get onbBuildingRequestPendingSubtitle =>
+      'The building admin has been notified and needs to accept your request before you can continue.';
+
+  @override
+  String get onbHouseholdRequestPendingSubtitle =>
+      'The building admin has been notified and needs to accept your household before you can continue.';
+
+  @override
+  String get onbBuildingRequestRejected =>
+      'Your request to join was declined. You can scan the code again or try a different building.';
+
+  @override
+  String get onbHouseholdRequestRejected =>
+      'Your household request was declined. You can try again.';
+
+  @override
   String get scanQrCode => 'Scan QR Code';
 
   @override
@@ -338,6 +371,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get removeResidentContent =>
       'This will remove the resident from the building. They will need to re-scan the QR to rejoin.';
+
+  @override
+  String pendingRequestsTitle(num count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString pending requests',
+      one: '1 pending request',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get joinRequestBuildingLabel => 'Wants to join this building';
+
+  @override
+  String joinRequestHouseholdLabel(String name) {
+    return 'Wants to create the household \"$name\"';
+  }
+
+  @override
+  String get btnApprove => 'Approve';
+
+  @override
+  String get btnReject => 'Decline';
 
   @override
   String get machinesDescription =>

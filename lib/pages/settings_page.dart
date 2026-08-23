@@ -5,6 +5,7 @@ import 'package:lavaplan/components/avatar_photo_picker.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/onboarding_page.dart';
 import 'package:lavaplan/pages/profile_page.dart';
+import 'package:lavaplan/services/account/account_service.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
 import 'package:lavaplan/services/household/household_service.dart';
 import 'package:lavaplan/services/locale/locale_provider.dart';
@@ -41,6 +42,7 @@ class SettingsPage extends StatelessWidget {
           final householdId = userData['household_id'] as String?;
           final householdName = userData['household_name'] as String?;
           final isHead = userData['isHouseholdHead'] as bool? ?? false;
+          final linkedUuid = userData['linked_uuid'] as String?;
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -116,6 +118,15 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
               ],
+              if (linkedUuid != null)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const _RowIcon(LucideIcons.doorOpen,
+                      color: Colors.orange, tint: Color(0x1AE8963C)),
+                  title: Text(l10n.leaveBuilding,
+                      style: const TextStyle(color: Colors.orange)),
+                  onTap: () => _confirmLeaveBuilding(context),
+                ),
               const Divider(height: 32),
 
               // ── Account ───────────────────────────────────────────
@@ -128,11 +139,82 @@ class SettingsPage extends StatelessWidget {
                     style: const TextStyle(color: Colors.redAccent)),
                 onTap: () => AuthService().signOut(),
               ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const _RowIcon(LucideIcons.trash2,
+                    color: Colors.redAccent, tint: Color(0x1AE15B5B)),
+                title: Text(l10n.deleteAccount,
+                    style: const TextStyle(color: Colors.redAccent)),
+                onTap: () => _confirmDeleteAccount(context),
+              ),
             ],
           );
         },
       ),
     );
+  }
+
+  Future<void> _confirmLeaveBuilding(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(l10n.leaveBuilding),
+        content: Text(l10n.leaveBuildingContent),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.btnCancel)),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.orange),
+            child: Text(l10n.leaveBuilding),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      await AccountService.leaveBuilding();
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+  }
+
+  Future<void> _confirmDeleteAccount(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(l10n.deleteAccount),
+        content: Text(l10n.deleteAccountContent),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.btnCancel)),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: Text(l10n.deleteAccount),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    try {
+      await AccountService.deleteAccount();
+      await AuthService().signOut();
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
   }
 
   void _showHouseholdSheet(BuildContext context, String householdId,

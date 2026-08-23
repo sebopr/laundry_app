@@ -9,6 +9,7 @@ import 'package:lavaplan/constants/swiss_cantons.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/admin/create_building_page.dart';
 import 'package:lavaplan/services/household/household_service.dart';
+import 'package:lavaplan/services/household/join_request_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
@@ -656,30 +657,38 @@ class _BuildingStepState extends State<_BuildingStep> {
       _error = null;
     });
     final linkedUuid = result.substring('building:'.length);
-    final uid = FirebaseAuth.instance.currentUser!.uid;
 
-    final updates = <String, dynamic>{'linked_uuid': linkedUuid};
-    // Admin-resident scanning an existing building: also add to managed_buildings
-    if (_isAdminResident == true) {
-      updates['managed_buildings'] = FieldValue.arrayUnion([linkedUuid]);
-    }
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .update(updates);
-
-    if (mounted) {
-      setState(() => _loading = false);
-      widget.onDone();
-    }
+    // Every resident — admin-resident or not — needs that building's admin
+    // to accept before getting access. Admin-residents only get instant,
+    // ungated access to buildings *they create* (CreateBuildingPage); a
+    // building keeps exactly one admin, its creator, so scanning someone
+    // else's building never grants managed_buildings.
+    await JoinRequestService.requestBuildingJoin(linkedUuid);
+    if (mounted) setState(() => _loading = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<Map<String, dynamic>?>(
+      stream: JoinRequestService.latestForSelf('building'),
+      builder: (context, snap) {
+        if (snap.data?['status'] == 'pending') {
+          return _PendingRequestView(
+            title: AppLocalizations.of(context)!.onbRequestPendingTitle,
+            subtitle:
+                AppLocalizations.of(context)!.onbBuildingRequestPendingSubtitle,
+          );
+        }
+        return _buildOptionsView(
+            context, rejected: snap.data?['status'] == 'rejected');
+      },
+    );
+  }
+
+  Widget _buildOptionsView(BuildContext context, {required bool rejected}) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     final isAdmin = _isAdminResident == true;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -695,6 +704,12 @@ class _BuildingStepState extends State<_BuildingStep> {
                 ?.copyWith(color: Colors.grey.shade600),
           ),
           const SizedBox(height: 32),
+          if (rejected)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text(l10n.onbBuildingRequestRejected,
+                  style: const TextStyle(color: Colors.orange)),
+            ),
           if (isAdmin) ...[
             _OptionCard(
               icon: LucideIcons.building2,
@@ -750,6 +765,40 @@ class _BuildingStepState extends State<_BuildingStep> {
   }
 }
 
+// ─── Pending request waiting screen ───────────────────────────────────────────
+
+class _PendingRequestView extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  const _PendingRequestView({required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(LucideIcons.clock, size: 64, color: theme.colorScheme.primary),
+          const SizedBox(height: 24),
+          Text(title,
+              style: theme.textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center),
+          const SizedBox(height: 8),
+          Text(subtitle,
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: Colors.grey.shade600),
+              textAlign: TextAlign.center),
+          const SizedBox(height: 24),
+          const CircularProgressIndicator(),
+        ],
+      ),
+    );
+  }
+}
+
 // ─── Step 4: Household ────────────────────────────────────────────────────────
 
 class _HouseholdStep extends StatefulWidget {
@@ -764,6 +813,23 @@ class _HouseholdStepState extends State<_HouseholdStep> {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<Map<String, dynamic>?>(
+      stream: JoinRequestService.latestForSelf('household'),
+      builder: (context, snap) {
+        if (snap.data?['status'] == 'pending') {
+          return _PendingRequestView(
+            title: AppLocalizations.of(context)!.onbRequestPendingTitle,
+            subtitle: AppLocalizations.of(context)!
+                .onbHouseholdRequestPendingSubtitle,
+          );
+        }
+        return _buildChoiceView(
+            context, rejected: snap.data?['status'] == 'rejected');
+      },
+    );
+  }
+
+  Widget _buildChoiceView(BuildContext context, {required bool rejected}) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
     return Padding(
@@ -779,6 +845,12 @@ class _HouseholdStepState extends State<_HouseholdStep> {
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: Colors.grey.shade600)),
           const SizedBox(height: 32),
+          if (rejected && !_creating)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text(l10n.onbHouseholdRequestRejected,
+                  style: const TextStyle(color: Colors.orange)),
+            ),
           if (_creating)
             _CreateHouseholdForm()
           else
@@ -912,7 +984,7 @@ class _CreateHouseholdFormState extends State<_CreateHouseholdForm> {
     final linkedUuid =
         doc.data()?['linked_uuid'] as String? ?? '';
 
-    await HouseholdService.create(name, linkedUuid);
+    await JoinRequestService.requestHouseholdCreate(name, linkedUuid);
   }
 
   @override

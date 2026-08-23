@@ -48,6 +48,10 @@
   "darkMode": "Modalità scura",
   "language": "Lingua",
   "signOut": "Esci",
+  "leaveBuilding": "Lascia l'edificio",
+  "leaveBuildingContent": "Perderai l'accesso al sistema di prenotazione e alla chat di questo edificio. Se sei il capofamiglia, la gestione passa a un altro membro (o il nucleo familiare viene rimosso se sei l'unico membro). Le tue prenotazioni future verranno annullate.",
+  "deleteAccount": "Elimina account",
+  "deleteAccountContent": "Questo elimina definitivamente il tuo account e tutti i suoi dati. Questa azione non può essere annullata. Se gestisci degli edifici, dovrai prima trasferirli o eliminarli.",
   "setupHousehold": "Configura famiglia",
   "youManageHousehold": "Gestisci questa famiglia",
   "memberLabel": "Membro",
@@ -95,6 +99,11 @@
   "onbCreateHousehold": "Crea famiglia",
   "onbNotHouseholdQr": "Questo non è un QR d'invito famiglia.",
   "onbNotBuildingQr": "Non sembra un QR dell'edificio. Riprova.",
+  "onbRequestPendingTitle": "In attesa di approvazione",
+  "onbBuildingRequestPendingSubtitle": "L'amministratore dell'edificio è stato avvisato e deve accettare la tua richiesta prima che tu possa continuare.",
+  "onbHouseholdRequestPendingSubtitle": "L'amministratore dell'edificio è stato avvisato e deve accettare il tuo nucleo familiare prima che tu possa continuare.",
+  "onbBuildingRequestRejected": "La tua richiesta di adesione è stata rifiutata. Puoi scansionare di nuovo il codice o provare un altro edificio.",
+  "onbHouseholdRequestRejected": "La tua richiesta per il nucleo familiare è stata rifiutata. Puoi riprovare.",
 
   "scanQrCode": "Scansiona QR",
 
@@ -121,6 +130,21 @@
   "noHousehold": "Nessuna famiglia",
   "removeResident": "Rimuovi residente",
   "removeResidentContent": "Il residente verrà rimosso dall'edificio. Dovrà ri-scansionare il QR per rientrare.",
+  "pendingRequestsTitle": "{count, plural, =1{1 richiesta in sospeso} other{{count} richieste in sospeso}}",
+  "@pendingRequestsTitle": {
+    "placeholders": {
+      "count": { "type": "num", "format": "compact" }
+    }
+  },
+  "joinRequestBuildingLabel": "Vuole unirsi a questo edificio",
+  "joinRequestHouseholdLabel": "Vuole creare il nucleo familiare \"{name}\"",
+  "@joinRequestHouseholdLabel": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "btnApprove": "Approva",
+  "btnReject": "Rifiuta",
   "machinesDescription": "Attiva/disattiva le macchine, aggiungile o rimuovile.",
   "removeMachineTitle": "Rimuovere la macchina?",
   "removeMachineContent": "La macchina {number} verrà rimossa. Le prenotazioni esistenti non verranno cancellate automaticamente.",

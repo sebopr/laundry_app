@@ -137,6 +137,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signOut => 'Se déconnecter';
 
   @override
+  String get leaveBuilding => 'Quitter l\'immeuble';
+
+  @override
+  String get leaveBuildingContent =>
+      'Vous perdrez l\'accès au système de réservation et au chat de cet immeuble. Si vous êtes le chef de votre foyer, la direction passe à un autre membre (ou le foyer est supprimé si vous en êtes le seul membre). Vos réservations futures seront annulées.';
+
+  @override
+  String get deleteAccount => 'Supprimer le compte';
+
+  @override
+  String get deleteAccountContent =>
+      'Cela supprime définitivement votre compte et toutes ses données. Cette action est irréversible. Si vous gérez des immeubles, vous devrez d\'abord les transférer ou les supprimer.';
+
+  @override
   String get setupHousehold => 'Configurer le ménage';
 
   @override
@@ -281,6 +295,25 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cela ne ressemble pas à un QR d\'immeuble. Réessayez.';
 
   @override
+  String get onbRequestPendingTitle => 'En attente d\'approbation';
+
+  @override
+  String get onbBuildingRequestPendingSubtitle =>
+      'L\'administrateur de l\'immeuble a été averti et doit accepter votre demande avant que vous puissiez continuer.';
+
+  @override
+  String get onbHouseholdRequestPendingSubtitle =>
+      'L\'administrateur de l\'immeuble a été averti et doit accepter votre foyer avant que vous puissiez continuer.';
+
+  @override
+  String get onbBuildingRequestRejected =>
+      'Votre demande d\'adhésion a été refusée. Vous pouvez rescanner le code ou essayer un autre immeuble.';
+
+  @override
+  String get onbHouseholdRequestRejected =>
+      'Votre demande de foyer a été refusée. Vous pouvez réessayer.';
+
+  @override
   String get scanQrCode => 'Scanner le QR';
 
   @override
@@ -346,6 +379,36 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get removeResidentContent =>
       'Cela supprimera le résident de l\'immeuble. Il devra re-scanner le QR pour rejoindre.';
+
+  @override
+  String pendingRequestsTitle(num count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString demandes en attente',
+      one: '1 demande en attente',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get joinRequestBuildingLabel => 'Souhaite rejoindre cet immeuble';
+
+  @override
+  String joinRequestHouseholdLabel(String name) {
+    return 'Souhaite créer le foyer « $name »';
+  }
+
+  @override
+  String get btnApprove => 'Accepter';
+
+  @override
+  String get btnReject => 'Refuser';
 
   @override
   String get machinesDescription =>
