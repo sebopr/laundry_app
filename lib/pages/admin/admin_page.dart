@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/admin/building_detail_page.dart';
 import 'package:lavaplan/pages/admin/create_building_page.dart';
+import 'package:lavaplan/services/building/building_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class AdminPage extends StatelessWidget {
@@ -36,6 +37,8 @@ class AdminPage extends StatelessWidget {
         builder: (context, snap) {
           final managed = List<String>.from(
               snap.data?.data()?['managed_buildings'] ?? []);
+          final verified =
+              snap.data?.data()?['adminVerified'] as bool? ?? false;
 
           if (!snap.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -62,12 +65,18 @@ class AdminPage extends StatelessWidget {
             );
           }
 
-          return ListView.separated(
+          return ListView(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
-            itemCount: managed.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (context, i) =>
-                _BuildingCard(buildingUuid: managed[i]),
+            children: [
+              if (!verified) ...[
+                const _UnverifiedBanner(),
+                const SizedBox(height: 12),
+              ],
+              for (final (i, uuid) in managed.indexed) ...[
+                if (i > 0) const SizedBox(height: 12),
+                _BuildingCard(buildingUuid: uuid),
+              ],
+            ],
           );
         },
       ),
@@ -166,19 +175,57 @@ class _BuildingCard extends StatelessWidget {
   }
 }
 
-class _ResidentCount extends StatelessWidget {
+// ─── Unverified banner ────────────────────────────────────────────────────────
+
+/// Shown to self-declared admins: what they can do until they're verified.
+class _UnverifiedBanner extends StatelessWidget {
+  const _UnverifiedBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.orange.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(LucideIcons.shieldAlert, size: 18, color: Colors.orange.shade800),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context)!.adminUnverifiedBanner,
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: Colors.orange.shade900),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResidentCount extends StatefulWidget {
   final String buildingUuid;
   const _ResidentCount({required this.buildingUuid});
 
   @override
+  State<_ResidentCount> createState() => _ResidentCountState();
+}
+
+class _ResidentCountState extends State<_ResidentCount> {
+  late final Future<List<Map<String, dynamic>>> _residents =
+      BuildingService.getResidents(widget.buildingUuid);
+
+  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .where('linked_uuid', isEqualTo: buildingUuid)
-          .snapshots(),
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: _residents,
       builder: (context, snap) {
-        final count = snap.data?.docs.length ?? 0;
+        final count = snap.data?.length ?? 0;
         return Text(
           AppLocalizations.of(context)!.residentsCount(count),
           style: Theme.of(context)

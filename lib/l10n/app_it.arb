@@ -261,5 +261,25 @@
   "nudgeForgotLaundryLabel": "Bucato dimenticato",
   "nudgeForgotLaundryMessage": "🧺 Ciao, sembra che tu abbia dimenticato il bucato in lavatrice!",
   "nudgeCleanDetergentLabel": "Pulisci la vaschetta del detersivo",
-  "nudgeCleanDetergentMessage": "🧴 Ciao, potresti pulire la vaschetta del detersivo dopo l'uso?"
+  "nudgeCleanDetergentMessage": "🧴 Ciao, potresti pulire la vaschetta del detersivo dopo l'uso?",
+
+  "buildingAddressLabel": "Indirizzo dell'edificio",
+  "buildingAddressHint": "Via, numero, NPA",
+  "buildingAddressNoResults": "Nessun indirizzo trovato. Prova con via, numero e NPA.",
+  "buildingAddressSearchFailed": "La ricerca dell'indirizzo non è disponibile. Controlla la connessione e riprova.",
+  "adminDeclarationText": "Confermo di essere proprietario di questo edificio o di essere autorizzato dal proprietario o dall'amministrazione a gestire la lavanderia.",
+  "adminDeclarationLegal": "Ho letto:",
+  "privacyPolicy": "Informativa sulla privacy",
+  "termsOfUse": "Condizioni d'uso",
+  "errorBuildingExists": "Questo edificio è già su Lavaplan. Chiedi il codice QR al suo amministratore per unirti.",
+  "errorBuildingLimit": "Gli amministratori non verificati possono gestire un solo edificio. Contattaci per verificare il tuo account.",
+  "adminUnverifiedBanner": "Il tuo account amministratore non è verificato. Puoi gestire un edificio e vedi solo i nomi dei residenti.",
+  "sectionBuilding": "Edificio",
+  "adminVerified": "Amministratore verificato",
+  "adminNotVerified": "Amministratore non verificato",
+  "reportAdmin": "Segnala",
+  "reportAdminTitle": "Segnalare questo amministratore?",
+  "reportAdminContent": "Segnala questa persona se non gestisce il tuo edificio per conto del proprietario o dell'amministrazione. Esaminiamo ogni segnalazione.",
+  "reportAdminReasonHint": "Qual è il problema? (facoltativo)",
+  "reportAdminSent": "Segnalazione inviata. La esamineremo."
 }

@@ -658,4 +658,68 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get nudgeCleanDetergentMessage =>
       '🧴 Hey, could you clean the detergent bay after use?';
+
+  @override
+  String get buildingAddressLabel => 'Building address';
+
+  @override
+  String get buildingAddressHint => 'Street, number, postcode';
+
+  @override
+  String get buildingAddressNoResults =>
+      'No address found. Try street, number and postcode.';
+
+  @override
+  String get buildingAddressSearchFailed =>
+      'Address search isn\'t available. Check your connection and try again.';
+
+  @override
+  String get adminDeclarationText =>
+      'I confirm that I own this building or am authorized by its owner or property management to manage its laundry room.';
+
+  @override
+  String get adminDeclarationLegal => 'I have read the';
+
+  @override
+  String get privacyPolicy => 'Privacy policy';
+
+  @override
+  String get termsOfUse => 'Terms of use';
+
+  @override
+  String get errorBuildingExists =>
+      'This building is already on Lavaplan. Ask its admin for the QR code to join it.';
+
+  @override
+  String get errorBuildingLimit =>
+      'Unverified admins can manage one building. Contact us to verify your account.';
+
+  @override
+  String get adminUnverifiedBanner =>
+      'Your admin account isn\'t verified. You can manage one building and see residents\' names only.';
+
+  @override
+  String get sectionBuilding => 'Building';
+
+  @override
+  String get adminVerified => 'Verified admin';
+
+  @override
+  String get adminNotVerified => 'Admin not verified';
+
+  @override
+  String get reportAdmin => 'Report';
+
+  @override
+  String get reportAdminTitle => 'Report this admin?';
+
+  @override
+  String get reportAdminContent =>
+      'Report this person if they don\'t manage your building for its owner or property management. We review every report.';
+
+  @override
+  String get reportAdminReasonHint => 'What\'s wrong? (optional)';
+
+  @override
+  String get reportAdminSent => 'Report sent. We\'ll review it.';
 }

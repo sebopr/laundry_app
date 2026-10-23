@@ -671,4 +671,68 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get nudgeCleanDetergentMessage =>
       '🧴 Salut, tu pourrais nettoyer le bac à lessive après utilisation ?';
+
+  @override
+  String get buildingAddressLabel => 'Adresse de l\'immeuble';
+
+  @override
+  String get buildingAddressHint => 'Rue, numéro, NPA';
+
+  @override
+  String get buildingAddressNoResults =>
+      'Aucune adresse trouvée. Essayez rue, numéro et NPA.';
+
+  @override
+  String get buildingAddressSearchFailed =>
+      'La recherche d\'adresse n\'est pas disponible. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get adminDeclarationText =>
+      'Je confirme être propriétaire de cet immeuble ou mandaté par son propriétaire ou sa gérance pour gérer la buanderie.';
+
+  @override
+  String get adminDeclarationLegal => 'J\'ai lu :';
+
+  @override
+  String get privacyPolicy => 'Politique de confidentialité';
+
+  @override
+  String get termsOfUse => 'Conditions d\'utilisation';
+
+  @override
+  String get errorBuildingExists =>
+      'Cet immeuble est déjà sur Lavaplan. Demandez le code QR à son administrateur pour le rejoindre.';
+
+  @override
+  String get errorBuildingLimit =>
+      'Les administrateurs non vérifiés peuvent gérer un seul immeuble. Contactez-nous pour vérifier votre compte.';
+
+  @override
+  String get adminUnverifiedBanner =>
+      'Votre compte administrateur n\'est pas vérifié. Vous pouvez gérer un immeuble et ne voyez que les noms des résidents.';
+
+  @override
+  String get sectionBuilding => 'Immeuble';
+
+  @override
+  String get adminVerified => 'Administrateur vérifié';
+
+  @override
+  String get adminNotVerified => 'Administrateur non vérifié';
+
+  @override
+  String get reportAdmin => 'Signaler';
+
+  @override
+  String get reportAdminTitle => 'Signaler cet administrateur ?';
+
+  @override
+  String get reportAdminContent =>
+      'Signalez cette personne si elle ne gère pas votre immeuble pour son propriétaire ou sa gérance. Nous examinons chaque signalement.';
+
+  @override
+  String get reportAdminReasonHint => 'Quel est le problème ? (facultatif)';
+
+  @override
+  String get reportAdminSent => 'Signalement envoyé. Nous allons l\'examiner.';
 }

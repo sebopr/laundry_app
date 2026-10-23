@@ -806,12 +806,13 @@ class _BuildingStepState extends State<_BuildingStep> {
               icon: LucideIcons.building2,
               title: l10n.onbCreateNewBuilding,
               subtitle: l10n.onbCreateBuildingSubtitle,
+              // No onDone here: creating the building sets linked_uuid, which
+              // the listener in initState already turns into the next step.
+              // CreateBuildingPage just pops itself on Continue.
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => CreateBuildingPage(
-                    onCreated: widget.onDone,
-                  ),
+                  builder: (_) => const CreateBuildingPage(),
                 ),
               ),
             ),

@@ -24,9 +24,10 @@ class JoinRequestService {
     final userDoc = await _db.collection('users').doc(_uid).get();
     final data = userDoc.data() ?? {};
 
+    // No email: the building's admin may be self-declared, and those only
+    // get to see residents' names.
     await _db.collection('join_requests').add({
       'uid': _uid,
-      'email': data['email'] ?? FirebaseAuth.instance.currentUser?.email,
       'displayName': data['displayName'],
       'linked_uuid': linkedUuid,
       'status': 'pending',

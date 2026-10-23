@@ -261,5 +261,25 @@
   "nudgeForgotLaundryLabel": "Wäsche vergessen",
   "nudgeForgotLaundryMessage": "🧺 Hey, du hast wohl deine Wäsche in der Maschine vergessen!",
   "nudgeCleanDetergentLabel": "Waschmittelfach reinigen",
-  "nudgeCleanDetergentMessage": "🧴 Hey, könntest du das Waschmittelfach nach der Benutzung reinigen?"
+  "nudgeCleanDetergentMessage": "🧴 Hey, könntest du das Waschmittelfach nach der Benutzung reinigen?",
+
+  "buildingAddressLabel": "Adresse des Gebäudes",
+  "buildingAddressHint": "Strasse, Nummer, PLZ",
+  "buildingAddressNoResults": "Keine Adresse gefunden. Versuche es mit Strasse, Nummer und PLZ.",
+  "buildingAddressSearchFailed": "Die Adresssuche ist nicht verfügbar. Prüfe deine Verbindung und versuche es erneut.",
+  "adminDeclarationText": "Ich bestätige, dass ich Eigentümer dieses Gebäudes bin oder von der Eigentümerschaft oder Verwaltung beauftragt bin, die Waschküche zu verwalten.",
+  "adminDeclarationLegal": "Ich habe gelesen:",
+  "privacyPolicy": "Datenschutzerklärung",
+  "termsOfUse": "Nutzungsbedingungen",
+  "errorBuildingExists": "Dieses Gebäude ist bereits auf Lavaplan. Frag den Admin nach dem QR-Code, um beizutreten.",
+  "errorBuildingLimit": "Nicht verifizierte Admins können ein Gebäude verwalten. Kontaktiere uns, um dein Konto zu verifizieren.",
+  "adminUnverifiedBanner": "Dein Admin-Konto ist nicht verifiziert. Du kannst ein Gebäude verwalten und siehst nur die Namen der Bewohner.",
+  "sectionBuilding": "Gebäude",
+  "adminVerified": "Verifizierter Admin",
+  "adminNotVerified": "Admin nicht verifiziert",
+  "reportAdmin": "Melden",
+  "reportAdminTitle": "Diesen Admin melden?",
+  "reportAdminContent": "Melde diese Person, wenn sie dein Gebäude nicht im Auftrag der Eigentümerschaft oder Verwaltung betreut. Wir prüfen jede Meldung.",
+  "reportAdminReasonHint": "Was stimmt nicht? (optional)",
+  "reportAdminSent": "Meldung gesendet. Wir prüfen sie."
 }

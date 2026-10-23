@@ -2,7 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Lavaplan",
   "engines": {
-    "node": "20"
+    "node": "22"
   },
   "main": "lib/index.js",
   "scripts": {
@@ -13,7 +13,9 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "fix-duplicate-admins": "npm run build && node lib/scripts/fixDuplicateBuildingAdmins.js",
-    "delete-test-account": "npm run build && node lib/scripts/deleteTestAccount.js"
+    "delete-test-account": "npm run build && node lib/scripts/deleteTestAccount.js",
+    "set-admin-verified": "npm run build && node lib/scripts/setAdminVerified.js",
+    "backfill-building-admins": "npm run build && node lib/scripts/backfillBuildingAdmins.js"
   },
   "dependencies": {
     "firebase-admin": "^12.6.0",

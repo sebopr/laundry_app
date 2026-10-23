@@ -26,10 +26,11 @@ function db() {
  * since these are plain doc deletes, triggering the existing
  * onBookingDeleted neighbour-notification for free — and clears the
  * resident fields off their user doc. Shared by leaveBuilding,
- * deleteAccount, and the stale-resident cleanup below; never touches
+ * deleteAccount, removeResident (buildings.ts), and the stale-resident
+ * cleanup below; never touches
  * managed_buildings, so it can't affect a building's admin.
  */
-async function cleanupResidency(firestore: Firestore, uid: string) {
+export async function cleanupResidency(firestore: Firestore, uid: string) {
   const userRef = firestore.collection("users").doc(uid);
   const userSnap = await userRef.get();
   if (!userSnap.exists) return;

@@ -13,6 +13,12 @@ export { sendVerificationCode, verifyEmailCode } from "./emailVerification";
 export { appleSignInCallback } from "./appleSignIn";
 export { onJoinRequestCreated, resolveJoinRequest } from "./joinRequests";
 export {
+  createBuilding,
+  getBuildingResidents,
+  removeResident,
+  reportBuildingAdmin,
+} from "./buildings";
+export {
   leaveBuilding,
   deleteAccount,
   checkStaleResidents,

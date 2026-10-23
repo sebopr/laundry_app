@@ -261,5 +261,25 @@
   "nudgeForgotLaundryLabel": "Forgot laundry",
   "nudgeForgotLaundryMessage": "🧺 Hey, looks like you left your laundry in the machine!",
   "nudgeCleanDetergentLabel": "Clean detergent bay",
-  "nudgeCleanDetergentMessage": "🧴 Hey, could you clean the detergent bay after use?"
+  "nudgeCleanDetergentMessage": "🧴 Hey, could you clean the detergent bay after use?",
+
+  "buildingAddressLabel": "Building address",
+  "buildingAddressHint": "Street, number, postcode",
+  "buildingAddressNoResults": "No address found. Try street, number and postcode.",
+  "buildingAddressSearchFailed": "Address search isn't available. Check your connection and try again.",
+  "adminDeclarationText": "I confirm that I own this building or am authorized by its owner or property management to manage its laundry room.",
+  "adminDeclarationLegal": "I have read the",
+  "privacyPolicy": "Privacy policy",
+  "termsOfUse": "Terms of use",
+  "errorBuildingExists": "This building is already on Lavaplan. Ask its admin for the QR code to join it.",
+  "errorBuildingLimit": "Unverified admins can manage one building. Contact us to verify your account.",
+  "adminUnverifiedBanner": "Your admin account isn't verified. You can manage one building and see residents' names only.",
+  "sectionBuilding": "Building",
+  "adminVerified": "Verified admin",
+  "adminNotVerified": "Admin not verified",
+  "reportAdmin": "Report",
+  "reportAdminTitle": "Report this admin?",
+  "reportAdminContent": "Report this person if they don't manage your building for its owner or property management. We review every report.",
+  "reportAdminReasonHint": "What's wrong? (optional)",
+  "reportAdminSent": "Report sent. We'll review it."
 }

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
 import 'package:lavaplan/pages/generate_qr_page.dart';
+import 'package:lavaplan/services/building/building_service.dart';
 import 'package:lavaplan/services/household/join_request_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -57,33 +58,63 @@ class BuildingDetailPage extends StatelessWidget {
 
 // ─── Residents tab ────────────────────────────────────────────────────────────
 
-class _ResidentsTab extends StatelessWidget {
+class _ResidentsTab extends StatefulWidget {
   final String buildingUuid;
   const _ResidentsTab({required this.buildingUuid});
+
+  @override
+  State<_ResidentsTab> createState() => _ResidentsTabState();
+}
+
+class _ResidentsTabState extends State<_ResidentsTab> {
+  // Loaded through getBuildingResidents rather than a live users query, so
+  // contact details are only ever sent to verified admins.
+  late Future<List<Map<String, dynamic>>> _residents;
+
+  @override
+  void initState() {
+    super.initState();
+    _residents = BuildingService.getResidents(widget.buildingUuid);
+  }
+
+  Future<void> _reload() async {
+    final next = BuildingService.getResidents(widget.buildingUuid);
+    setState(() => _residents = next);
+    await next;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _PendingRequestsSection(buildingUuid: buildingUuid),
+        _PendingRequestsSection(
+            buildingUuid: widget.buildingUuid, onResolved: _reload),
         Expanded(
-          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: FirebaseFirestore.instance
-                .collection('users')
-                .where('linked_uuid', isEqualTo: buildingUuid)
-                .snapshots(),
+          child: FutureBuilder<List<Map<String, dynamic>>>(
+            future: _residents,
             builder: (context, snap) {
+              if (snap.hasError) {
+                return Center(
+                    child: Text(AppLocalizations.of(context)!.errorGeneric));
+              }
               if (!snap.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              final users = snap.data!.docs
-                  .map((d) => {'uid': d.id, ...d.data()})
-                  .toList();
+              final users = snap.data!;
 
               if (users.isEmpty) {
-                return Center(
-                    child: Text(AppLocalizations.of(context)!.noResidentsYet));
+                return RefreshIndicator(
+                  onRefresh: _reload,
+                  child: ListView(
+                    children: [
+                      const SizedBox(height: 120),
+                      Center(
+                          child: Text(
+                              AppLocalizations.of(context)!.noResidentsYet)),
+                    ],
+                  ),
+                );
               }
 
               // Group by household_id
@@ -101,28 +132,31 @@ class _ResidentsTab extends StatelessWidget {
 
               final householdIds = byHousehold.keys.toList();
 
-              return ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                itemCount:
-                    householdIds.length + (noHousehold.isNotEmpty ? 1 : 0),
-                itemBuilder: (context, i) {
-                  if (i == householdIds.length) {
+              return RefreshIndicator(
+                onRefresh: _reload,
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount:
+                      householdIds.length + (noHousehold.isNotEmpty ? 1 : 0),
+                  itemBuilder: (context, i) {
+                    if (i == householdIds.length) {
+                      return _HouseholdGroup(
+                        name: AppLocalizations.of(context)!.noHousehold,
+                        members: noHousehold,
+                        onRemove: (uid) => _removeResident(context, uid),
+                      );
+                    }
+                    final hid = householdIds[i];
+                    final members = byHousehold[hid]!;
+                    final householdName =
+                        members.first['household_name'] as String? ?? hid;
                     return _HouseholdGroup(
-                      name: AppLocalizations.of(context)!.noHousehold,
-                      members: noHousehold,
+                      name: householdName,
+                      members: members,
                       onRemove: (uid) => _removeResident(context, uid),
                     );
-                  }
-                  final hid = householdIds[i];
-                  final members = byHousehold[hid]!;
-                  final householdName =
-                      members.first['household_name'] as String? ?? hid;
-                  return _HouseholdGroup(
-                    name: householdName,
-                    members: members,
-                    onRemove: (uid) => _removeResident(context, uid),
-                  );
-                },
+                  },
+                ),
               );
             },
           ),
@@ -153,11 +187,15 @@ class _ResidentsTab extends StatelessWidget {
 
     if (confirmed != true) return;
 
-    await FirebaseFirestore.instance.collection('users').doc(uid).update({
-      'linked_uuid': FieldValue.delete(),
-      'household_id': FieldValue.delete(),
-      'household_name': FieldValue.delete(),
-    });
+    try {
+      await BuildingService.removeResident(widget.buildingUuid, uid);
+      await _reload();
+    } catch (e) {
+      debugPrint('Remove resident failed: $e');
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.errorGeneric)));
+    }
   }
 }
 
@@ -165,7 +203,9 @@ class _ResidentsTab extends StatelessWidget {
 
 class _PendingRequestsSection extends StatelessWidget {
   final String buildingUuid;
-  const _PendingRequestsSection({required this.buildingUuid});
+  final VoidCallback onResolved;
+  const _PendingRequestsSection(
+      {required this.buildingUuid, required this.onResolved});
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +241,8 @@ class _PendingRequestsSection extends StatelessWidget {
                       letterSpacing: 1.2),
                 ),
               ),
-              ...requests.map((r) => _PendingRequestTile(request: r)),
+              ...requests.map((r) => _PendingRequestTile(
+                  request: r, onResolved: onResolved)),
             ],
           ),
         );
@@ -212,7 +253,8 @@ class _PendingRequestsSection extends StatelessWidget {
 
 class _PendingRequestTile extends StatefulWidget {
   final Map<String, dynamic> request;
-  const _PendingRequestTile({required this.request});
+  final VoidCallback onResolved;
+  const _PendingRequestTile({required this.request, required this.onResolved});
 
   @override
   State<_PendingRequestTile> createState() => _PendingRequestTileState();
@@ -225,6 +267,7 @@ class _PendingRequestTileState extends State<_PendingRequestTile> {
     setState(() => _resolving = true);
     try {
       await JoinRequestService.resolve(widget.request['id'] as String, approve);
+      if (approve) widget.onResolved();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -321,8 +364,12 @@ class _HouseholdGroup extends StatelessWidget {
                 final i = entry.key;
                 final m = entry.value;
                 final uid = m['uid'] as String;
-                final displayName =
-                    m['displayName'] as String? ?? m['email'] as String? ?? '?';
+                final displayNameRaw = m['displayName'] as String? ?? '';
+                final displayName = displayNameRaw.isNotEmpty
+                    ? displayNameRaw
+                    : m['email'] as String? ?? '?';
+                // Only present for verified admins (getBuildingResidents).
+                final email = m['email'] as String?;
                 final isHead = m['isHouseholdHead'] as bool? ?? false;
                 final isSelf = uid == currentUid;
 
@@ -345,10 +392,12 @@ class _HouseholdGroup extends StatelessWidget {
                         ),
                       ),
                       title: Text(displayName),
-                      subtitle: Text(
-                        m['email'] as String? ?? '',
-                        style: const TextStyle(fontSize: 11),
-                      ),
+                      subtitle: email == null || email.isEmpty
+                          ? null
+                          : Text(
+                              email,
+                              style: const TextStyle(fontSize: 11),
+                            ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

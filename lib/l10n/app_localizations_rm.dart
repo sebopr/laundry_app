@@ -661,4 +661,68 @@ class AppLocalizationsRm extends AppLocalizations {
   @override
   String get nudgeCleanDetergentMessage =>
       '🧴 Tgau, pudessas ti nettegiar il quader da detersiv suenter l\'utilisaziun?';
+
+  @override
+  String get buildingAddressLabel => 'Adressa da l\'edifizi';
+
+  @override
+  String get buildingAddressHint => 'Via, numer, NP';
+
+  @override
+  String get buildingAddressNoResults =>
+      'Naginas adressa chattada. Emprova cun via, numer e NP.';
+
+  @override
+  String get buildingAddressSearchFailed =>
+      'La tschertga d\'adressas n\'è betg disponibla. Controllescha tia connexiun ed emprova anc ina giada.';
+
+  @override
+  String get adminDeclarationText =>
+      'Jau confermel che jau sun proprietari da quest edifizi u che jau sun incumbensà dal proprietari u da l\'administraziun d\'administrar la lavandaria.';
+
+  @override
+  String get adminDeclarationLegal => 'Jau hai legì:';
+
+  @override
+  String get privacyPolicy => 'Decleranza da protecziun da datas';
+
+  @override
+  String get termsOfUse => 'Cundiziuns d\'utilisaziun';
+
+  @override
+  String get errorBuildingExists =>
+      'Quest edifizi è gia sin Lavaplan. Dumonda l\'admin per il code QR per s\'associar.';
+
+  @override
+  String get errorBuildingLimit =>
+      'Admins betg verifitgads pon administrar in edifizi. Contactescha nus per verifitgar tes conto.';
+
+  @override
+  String get adminUnverifiedBanner =>
+      'Tes conto d\'admin n\'è betg verifitgà. Ti pos administrar in edifizi e vesas mo ils nums dals abitants.';
+
+  @override
+  String get sectionBuilding => 'Edifizi';
+
+  @override
+  String get adminVerified => 'Admin verifitgà';
+
+  @override
+  String get adminNotVerified => 'Admin betg verifitgà';
+
+  @override
+  String get reportAdmin => 'Annunziar';
+
+  @override
+  String get reportAdminTitle => 'Annunziar quest admin?';
+
+  @override
+  String get reportAdminContent =>
+      'Annunzia questa persuna sch\'ella n\'administrescha betg tes edifizi per il proprietari u l\'administraziun. Nus examinain mintga annunzia.';
+
+  @override
+  String get reportAdminReasonHint => 'Tge na va betg? (facultativ)';
+
+  @override
+  String get reportAdminSent => 'Annunzia tramessa. Nus la examinain.';
 }

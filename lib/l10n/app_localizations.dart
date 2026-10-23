@@ -1255,6 +1255,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'🧴 Hey, could you clean the detergent bay after use?'**
   String get nudgeCleanDetergentMessage;
+
+  /// No description provided for @buildingAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Building address'**
+  String get buildingAddressLabel;
+
+  /// No description provided for @buildingAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Street, number, postcode'**
+  String get buildingAddressHint;
+
+  /// No description provided for @buildingAddressNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No address found. Try street, number and postcode.'**
+  String get buildingAddressNoResults;
+
+  /// No description provided for @buildingAddressSearchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Address search isn\'t available. Check your connection and try again.'**
+  String get buildingAddressSearchFailed;
+
+  /// No description provided for @adminDeclarationText.
+  ///
+  /// In en, this message translates to:
+  /// **'I confirm that I own this building or am authorized by its owner or property management to manage its laundry room.'**
+  String get adminDeclarationText;
+
+  /// No description provided for @adminDeclarationLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read the'**
+  String get adminDeclarationLegal;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @termsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of use'**
+  String get termsOfUse;
+
+  /// No description provided for @errorBuildingExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This building is already on Lavaplan. Ask its admin for the QR code to join it.'**
+  String get errorBuildingExists;
+
+  /// No description provided for @errorBuildingLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unverified admins can manage one building. Contact us to verify your account.'**
+  String get errorBuildingLimit;
+
+  /// No description provided for @adminUnverifiedBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Your admin account isn\'t verified. You can manage one building and see residents\' names only.'**
+  String get adminUnverifiedBanner;
+
+  /// No description provided for @sectionBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get sectionBuilding;
+
+  /// No description provided for @adminVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified admin'**
+  String get adminVerified;
+
+  /// No description provided for @adminNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin not verified'**
+  String get adminNotVerified;
+
+  /// No description provided for @reportAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get reportAdmin;
+
+  /// No description provided for @reportAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this admin?'**
+  String get reportAdminTitle;
+
+  /// No description provided for @reportAdminContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Report this person if they don\'t manage your building for its owner or property management. We review every report.'**
+  String get reportAdminContent;
+
+  /// No description provided for @reportAdminReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s wrong? (optional)'**
+  String get reportAdminReasonHint;
+
+  /// No description provided for @reportAdminSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Report sent. We\'ll review it.'**
+  String get reportAdminSent;
 }
 
 class _AppLocalizationsDelegate

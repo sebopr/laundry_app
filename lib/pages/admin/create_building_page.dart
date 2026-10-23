@@ -1,80 +1,122 @@
+import 'dart:async';
 import 'dart:ui' show ImageByteFormat;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lavaplan/constants/legal.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
+import 'package:lavaplan/services/building/building_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:uuid/uuid.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CreateBuildingPage extends StatefulWidget {
-  // Called after building is created. If provided the page doesn't pop itself —
-  // the caller decides what to do next (e.g. onboarding moves to next step).
-  final VoidCallback? onCreated;
-
-  const CreateBuildingPage({super.key, this.onCreated});
+  const CreateBuildingPage({super.key});
 
   @override
   State<CreateBuildingPage> createState() => _CreateBuildingPageState();
 }
 
 class _CreateBuildingPageState extends State<CreateBuildingPage> {
-  final _nameController = TextEditingController();
+  final _searchController = TextEditingController();
+  Timer? _debounce;
+  List<AddressSuggestion> _suggestions = [];
+  bool _searching = false;
+  String? _searchError;
+  AddressSuggestion? _selected;
+  bool _declared = false;
   bool _loading = false;
   String? _createdUuid;
+  String? _createdName;
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _debounce?.cancel();
+    _searchController.dispose();
     super.dispose();
   }
 
+  void _onSearchChanged(String text) {
+    _debounce?.cancel();
+    setState(() {
+      _selected = null;
+      _searchError = null;
+    });
+    final query = text.trim();
+    if (query.length < 3) {
+      setState(() => _suggestions = []);
+      return;
+    }
+    _debounce = Timer(const Duration(milliseconds: 350), () => _search(query));
+  }
+
+  Future<void> _search(String query) async {
+    setState(() => _searching = true);
+    try {
+      final results = await BuildingService.searchAddresses(query);
+      // Ignore results for a query the user has since typed past.
+      if (!mounted || _searchController.text.trim() != query) return;
+      setState(() {
+        _suggestions = results;
+        _searchError = results.isEmpty
+            ? AppLocalizations.of(context)!.buildingAddressNoResults
+            : null;
+      });
+    } catch (e) {
+      debugPrint('Address search failed: $e');
+      if (!mounted) return;
+      setState(() {
+        _suggestions = [];
+        _searchError = AppLocalizations.of(context)!.buildingAddressSearchFailed;
+      });
+    } finally {
+      if (mounted) setState(() => _searching = false);
+    }
+  }
+
+  void _select(AddressSuggestion s) {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _selected = s;
+      _suggestions = [];
+      _searchController.text = s.label;
+    });
+  }
+
   Future<void> _create() async {
-    final name = _nameController.text.trim();
-    if (name.isEmpty) return;
+    final selected = _selected;
+    if (selected == null || !_declared || _loading) return;
     setState(() => _loading = true);
 
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    final uuid = const Uuid().v4();
-
-    // Create building document
-    await FirebaseFirestore.instance.collection('buildings').doc(uuid).set({
-      'name': name,
-      'created_by': uid,
-      'created_at': FieldValue.serverTimestamp(),
-      'machines': {'1': 'active', '2': 'active', '3': 'active'},
-    });
-
-    // Add to admin's managed_buildings
-    // Also set linked_uuid if this is the admin's first building and
-    // they're also a resident (isResidentAdmin = true)
-    final userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
-    final isResidentAdmin =
-        userDoc.data()?['isResidentAdmin'] as bool? ?? false;
-    final hasLinkedUuid =
-        userDoc.data()?['linked_uuid'] != null;
-
-    final updates = <String, dynamic>{
-      'managed_buildings': FieldValue.arrayUnion([uuid]),
-    };
-    if (isResidentAdmin && !hasLinkedUuid) {
-      updates['linked_uuid'] = uuid;
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final building = await BuildingService.createBuilding(selected.featureId);
+      if (!mounted) return;
+      setState(() {
+        _createdUuid = building.id;
+        _createdName = building.name;
+        _loading = false;
+      });
+    } on BuildingException catch (e) {
+      debugPrint('Create building failed: $e');
+      if (!mounted) return;
+      setState(() => _loading = false);
+      final message = switch (e.code) {
+        'already-exists' => l10n.errorBuildingExists,
+        'resource-exhausted' => l10n.errorBuildingLimit,
+        _ => l10n.errorGeneric,
+      };
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    } catch (e) {
+      debugPrint('Create building failed: $e');
+      if (!mounted) return;
+      setState(() => _loading = false);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.errorGeneric)));
     }
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .update(updates);
-
-    setState(() {
-      _createdUuid = uuid;
-      _loading = false;
-    });
   }
 
   Future<void> _print() async {
@@ -87,7 +129,7 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
         mainAxisAlignment: pw.MainAxisAlignment.center,
         crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
-          pw.Text(_nameController.text,
+          pw.Text(_createdName ?? '',
               style: const pw.TextStyle(fontSize: 20)),
           pw.SizedBox(height: 8),
           pw.Text(scanToJoin,
@@ -115,35 +157,44 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final canCreate = _selected != null && _declared && !_loading;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.newBuilding)),
       body: _createdUuid != null
           ? _QrView(
-              buildingName: _nameController.text,
+              buildingName: _createdName ?? '',
               uuid: _createdUuid!,
               onPrint: _print,
-              onDone: () {
-                if (widget.onCreated != null) {
-                  widget.onCreated!();
-                } else {
-                  Navigator.pop(context);
-                }
-              },
+              onDone: () => Navigator.pop(context),
             )
           : ListView(
               padding: const EdgeInsets.all(24),
               children: [
-                Text(l10n.buildingNameOrAddress,
+                Text(l10n.buildingAddressLabel.toUpperCase(),
                     style: theme.textTheme.labelSmall?.copyWith(
                         color: Colors.grey.shade600,
                         letterSpacing: 1.2)),
                 const SizedBox(height: 8),
                 TextField(
-                  controller: _nameController,
+                  controller: _searchController,
                   autofocus: true,
                   textCapitalization: TextCapitalization.words,
+                  onChanged: _onSearchChanged,
                   decoration: InputDecoration(
-                    hintText: l10n.buildingNameHint,
+                    hintText: l10n.buildingAddressHint,
+                    prefixIcon: const Icon(LucideIcons.search),
+                    suffixIcon: _searching
+                        ? const Padding(
+                            padding: EdgeInsets.all(14),
+                            child: SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2)))
+                        : _selected != null
+                            ? const Icon(LucideIcons.circleCheck,
+                                color: Colors.green)
+                            : null,
                     filled: true,
                     fillColor: theme.colorScheme.secondary,
                     border: OutlineInputBorder(
@@ -151,13 +202,30 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  onSubmitted: (_) => _create(),
+                ),
+                if (_searchError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(_searchError!,
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: Colors.orange.shade800)),
+                  ),
+                ..._suggestions.map((s) => ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                      leading: const Icon(LucideIcons.mapPin, size: 18),
+                      title: Text(s.label),
+                      onTap: () => _select(s),
+                    )),
+                const SizedBox(height: 24),
+                _DeclarationCheckbox(
+                  value: _declared,
+                  onChanged: (v) => setState(() => _declared = v),
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: _loading ? null : _create,
+                    onPressed: canCreate ? _create : null,
                     child: _loading
                         ? const SizedBox(
                             width: 20,
@@ -169,6 +237,66 @@ class _CreateBuildingPageState extends State<CreateBuildingPage> {
                 ),
               ],
             ),
+    );
+  }
+}
+
+/// The admin's declaration of authority. Creating a building is blocked
+/// until it's ticked; createBuilding stores when it was accepted.
+class _DeclarationCheckbox extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const _DeclarationCheckbox({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final linkStyle = TextStyle(
+        color: theme.colorScheme.primary,
+        decoration: TextDecoration.underline);
+
+    TextSpan link(String text, String url) => TextSpan(
+          text: text,
+          style: linkStyle,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => launchUrl(Uri.parse(url),
+                mode: LaunchMode.externalApplication),
+        );
+
+    return InkWell(
+      onTap: () => onChanged(!value),
+      borderRadius: BorderRadius.circular(12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Checkbox(
+            value: value,
+            onChanged: (v) => onChanged(v ?? false),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text.rich(
+                TextSpan(
+                  style: theme.textTheme.bodySmall,
+                  children: [
+                    TextSpan(text: l10n.adminDeclarationText),
+                    TextSpan(text: ' ${l10n.adminDeclarationLegal} '),
+                    link(l10n.privacyPolicy, privacyPolicyUrl),
+                    const TextSpan(text: ', '),
+                    link(l10n.termsOfUse, termsOfUseUrl),
+                    const TextSpan(text: '.'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:lavaplan/pages/onboarding_page.dart';
 import 'package:lavaplan/pages/profile_page.dart';
 import 'package:lavaplan/services/account/account_service.dart';
 import 'package:lavaplan/services/auth/auth_service.dart';
+import 'package:lavaplan/services/building/building_service.dart';
 import 'package:lavaplan/services/household/household_service.dart';
 import 'package:lavaplan/services/locale/locale_provider.dart';
 import 'package:lavaplan/themes/theme_provider.dart';
@@ -128,6 +129,13 @@ class SettingsPage extends StatelessWidget {
                   onTap: () => _confirmLeaveBuilding(context),
                 ),
               const Divider(height: 32),
+
+              // ── Building ──────────────────────────────────────────
+              if (linkedUuid != null) ...[
+                _SectionLabel(l10n.sectionBuilding),
+                _BuildingAdminTile(buildingUuid: linkedUuid),
+                const Divider(height: 32),
+              ],
 
               // ── Account ───────────────────────────────────────────
               _SectionLabel(l10n.sectionAccount),
@@ -455,6 +463,101 @@ class _MembersList extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+// ─── Building admin ───────────────────────────────────────────────────────────
+
+/// Who runs the resident's building, and whether that admin is verified.
+/// Residents can report an admin who doesn't act for the owner or property
+/// management (reportBuildingAdmin).
+class _BuildingAdminTile extends StatelessWidget {
+  final String buildingUuid;
+  const _BuildingAdminTile({required this.buildingUuid});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('buildings')
+          .doc(buildingUuid)
+          .snapshots(),
+      builder: (context, snap) {
+        final data = snap.data?.data() ?? {};
+        final adminName = data['admin_name'] as String? ?? '';
+        // Older buildings get these fields from the backfill script.
+        if (adminName.isEmpty) return const SizedBox.shrink();
+        final verified = data['admin_verified'] as bool? ?? false;
+        final isSelf = data['admin_uid'] == uid;
+
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: _RowIcon(
+            verified ? LucideIcons.shieldCheck : LucideIcons.shieldAlert,
+            color: verified ? null : Colors.orange,
+            tint: verified ? null : const Color(0x1AE8963C),
+          ),
+          title: Text(adminName),
+          subtitle: Text(verified ? l10n.adminVerified : l10n.adminNotVerified),
+          trailing: isSelf
+              ? null
+              : TextButton(
+                  onPressed: () => _report(context),
+                  child: Text(l10n.reportAdmin),
+                ),
+        );
+      },
+    );
+  }
+
+  Future<void> _report(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final reason = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(l10n.reportAdminTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.reportAdminContent),
+            const SizedBox(height: 12),
+            TextField(
+              controller: reason,
+              maxLength: 500,
+              maxLines: 3,
+              decoration: InputDecoration(hintText: l10n.reportAdminReasonHint),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(l10n.btnCancel)),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.reportAdmin),
+          ),
+        ],
+      ),
+    );
+    // Not disposed here: the dialog's closing animation still uses it.
+    final text = reason.text.trim();
+    if (confirmed != true) return;
+
+    try {
+      await BuildingService.reportAdmin(text);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.reportAdminSent)));
+    } catch (e) {
+      debugPrint('Report admin failed: $e');
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.errorGeneric)));
+    }
   }
 }
 

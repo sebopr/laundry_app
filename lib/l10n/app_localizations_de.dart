@@ -671,4 +671,68 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get nudgeCleanDetergentMessage =>
       '🧴 Hey, könntest du das Waschmittelfach nach der Benutzung reinigen?';
+
+  @override
+  String get buildingAddressLabel => 'Adresse des Gebäudes';
+
+  @override
+  String get buildingAddressHint => 'Strasse, Nummer, PLZ';
+
+  @override
+  String get buildingAddressNoResults =>
+      'Keine Adresse gefunden. Versuche es mit Strasse, Nummer und PLZ.';
+
+  @override
+  String get buildingAddressSearchFailed =>
+      'Die Adresssuche ist nicht verfügbar. Prüfe deine Verbindung und versuche es erneut.';
+
+  @override
+  String get adminDeclarationText =>
+      'Ich bestätige, dass ich Eigentümer dieses Gebäudes bin oder von der Eigentümerschaft oder Verwaltung beauftragt bin, die Waschküche zu verwalten.';
+
+  @override
+  String get adminDeclarationLegal => 'Ich habe gelesen:';
+
+  @override
+  String get privacyPolicy => 'Datenschutzerklärung';
+
+  @override
+  String get termsOfUse => 'Nutzungsbedingungen';
+
+  @override
+  String get errorBuildingExists =>
+      'Dieses Gebäude ist bereits auf Lavaplan. Frag den Admin nach dem QR-Code, um beizutreten.';
+
+  @override
+  String get errorBuildingLimit =>
+      'Nicht verifizierte Admins können ein Gebäude verwalten. Kontaktiere uns, um dein Konto zu verifizieren.';
+
+  @override
+  String get adminUnverifiedBanner =>
+      'Dein Admin-Konto ist nicht verifiziert. Du kannst ein Gebäude verwalten und siehst nur die Namen der Bewohner.';
+
+  @override
+  String get sectionBuilding => 'Gebäude';
+
+  @override
+  String get adminVerified => 'Verifizierter Admin';
+
+  @override
+  String get adminNotVerified => 'Admin nicht verifiziert';
+
+  @override
+  String get reportAdmin => 'Melden';
+
+  @override
+  String get reportAdminTitle => 'Diesen Admin melden?';
+
+  @override
+  String get reportAdminContent =>
+      'Melde diese Person, wenn sie dein Gebäude nicht im Auftrag der Eigentümerschaft oder Verwaltung betreut. Wir prüfen jede Meldung.';
+
+  @override
+  String get reportAdminReasonHint => 'Was stimmt nicht? (optional)';
+
+  @override
+  String get reportAdminSent => 'Meldung gesendet. Wir prüfen sie.';
 }

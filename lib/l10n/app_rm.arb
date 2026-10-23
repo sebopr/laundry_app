@@ -261,5 +261,25 @@
   "nudgeForgotLaundryLabel": "Bugada emblidada",
   "nudgeForgotLaundryMessage": "🧺 Tgau, para che ti hajas emblidà tia bugada en la maschina!",
   "nudgeCleanDetergentLabel": "Nettegiar il quader da detersiv",
-  "nudgeCleanDetergentMessage": "🧴 Tgau, pudessas ti nettegiar il quader da detersiv suenter l'utilisaziun?"
+  "nudgeCleanDetergentMessage": "🧴 Tgau, pudessas ti nettegiar il quader da detersiv suenter l'utilisaziun?",
+
+  "buildingAddressLabel": "Adressa da l'edifizi",
+  "buildingAddressHint": "Via, numer, NP",
+  "buildingAddressNoResults": "Naginas adressa chattada. Emprova cun via, numer e NP.",
+  "buildingAddressSearchFailed": "La tschertga d'adressas n'è betg disponibla. Controllescha tia connexiun ed emprova anc ina giada.",
+  "adminDeclarationText": "Jau confermel che jau sun proprietari da quest edifizi u che jau sun incumbensà dal proprietari u da l'administraziun d'administrar la lavandaria.",
+  "adminDeclarationLegal": "Jau hai legì:",
+  "privacyPolicy": "Decleranza da protecziun da datas",
+  "termsOfUse": "Cundiziuns d'utilisaziun",
+  "errorBuildingExists": "Quest edifizi è gia sin Lavaplan. Dumonda l'admin per il code QR per s'associar.",
+  "errorBuildingLimit": "Admins betg verifitgads pon administrar in edifizi. Contactescha nus per verifitgar tes conto.",
+  "adminUnverifiedBanner": "Tes conto d'admin n'è betg verifitgà. Ti pos administrar in edifizi e vesas mo ils nums dals abitants.",
+  "sectionBuilding": "Edifizi",
+  "adminVerified": "Admin verifitgà",
+  "adminNotVerified": "Admin betg verifitgà",
+  "reportAdmin": "Annunziar",
+  "reportAdminTitle": "Annunziar quest admin?",
+  "reportAdminContent": "Annunzia questa persuna sch'ella n'administrescha betg tes edifizi per il proprietari u l'administraziun. Nus examinain mintga annunzia.",
+  "reportAdminReasonHint": "Tge na va betg? (facultativ)",
+  "reportAdminSent": "Annunzia tramessa. Nus la examinain."
 }

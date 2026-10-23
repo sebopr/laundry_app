@@ -261,5 +261,25 @@
   "nudgeForgotLaundryLabel": "Linge oublié",
   "nudgeForgotLaundryMessage": "🧺 Salut, on dirait que tu as oublié ton linge dans la machine !",
   "nudgeCleanDetergentLabel": "Nettoyer le bac à lessive",
-  "nudgeCleanDetergentMessage": "🧴 Salut, tu pourrais nettoyer le bac à lessive après utilisation ?"
+  "nudgeCleanDetergentMessage": "🧴 Salut, tu pourrais nettoyer le bac à lessive après utilisation ?",
+
+  "buildingAddressLabel": "Adresse de l'immeuble",
+  "buildingAddressHint": "Rue, numéro, NPA",
+  "buildingAddressNoResults": "Aucune adresse trouvée. Essayez rue, numéro et NPA.",
+  "buildingAddressSearchFailed": "La recherche d'adresse n'est pas disponible. Vérifiez votre connexion et réessayez.",
+  "adminDeclarationText": "Je confirme être propriétaire de cet immeuble ou mandaté par son propriétaire ou sa gérance pour gérer la buanderie.",
+  "adminDeclarationLegal": "J'ai lu :",
+  "privacyPolicy": "Politique de confidentialité",
+  "termsOfUse": "Conditions d'utilisation",
+  "errorBuildingExists": "Cet immeuble est déjà sur Lavaplan. Demandez le code QR à son administrateur pour le rejoindre.",
+  "errorBuildingLimit": "Les administrateurs non vérifiés peuvent gérer un seul immeuble. Contactez-nous pour vérifier votre compte.",
+  "adminUnverifiedBanner": "Votre compte administrateur n'est pas vérifié. Vous pouvez gérer un immeuble et ne voyez que les noms des résidents.",
+  "sectionBuilding": "Immeuble",
+  "adminVerified": "Administrateur vérifié",
+  "adminNotVerified": "Administrateur non vérifié",
+  "reportAdmin": "Signaler",
+  "reportAdminTitle": "Signaler cet administrateur ?",
+  "reportAdminContent": "Signalez cette personne si elle ne gère pas votre immeuble pour son propriétaire ou sa gérance. Nous examinons chaque signalement.",
+  "reportAdminReasonHint": "Quel est le problème ? (facultatif)",
+  "reportAdminSent": "Signalement envoyé. Nous allons l'examiner."
 }
