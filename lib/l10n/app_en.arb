@@ -51,7 +51,7 @@
   "leaveBuilding": "Leave building",
   "leaveBuildingContent": "You'll lose access to this building's booking system and chat. If you're the head of your household, headship passes to another member (or the household is removed if you're its only member). Any future bookings you have will be cancelled.",
   "deleteAccount": "Delete account",
-  "deleteAccountContent": "This permanently deletes your account and all its data. This cannot be undone. If you manage any buildings, you'll need to transfer or delete them first.",
+  "deleteAccountContent": "This permanently deletes your account and all its data. This cannot be undone. Buildings you manage are deleted too if nobody else lives in them. If other residents still live in one, contact us first.",
   "setupHousehold": "Set up household",
   "youManageHousehold": "You manage this household",
   "memberLabel": "Member",
@@ -281,5 +281,28 @@
   "reportAdminTitle": "Report this admin?",
   "reportAdminContent": "Report this person if they don't manage your building for its owner or property management. We review every report.",
   "reportAdminReasonHint": "What's wrong? (optional)",
-  "reportAdminSent": "Report sent. We'll review it."
+  "reportAdminSent": "Report sent. We'll review it.",
+
+  "handOverBuilding": "Hand over building",
+  "handOverExplain": "Give this code to the person taking over. They enter it in Settings under Take over a building. You stop being this building's admin once they accept.",
+  "handOverValidUntil": "Valid until {date}",
+  "@handOverValidUntil": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "handOverCancel": "Cancel handover",
+  "handOverCancelled": "Handover cancelled. The code no longer works.",
+  "takeOverBuilding": "Take over a building",
+  "takeOverExplain": "Enter or scan the handover code from the building's current admin. You become its admin.",
+  "takeOverCodeHint": "Handover code",
+  "btnTakeOver": "Take over",
+  "takeOverDone": "You're now the admin of {name}.",
+  "@takeOverDone": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "errorTransferInvalid": "This code is invalid or has expired. Ask the current admin for a new one.",
+  "errorTransferOwn": "You already manage this building."
 }

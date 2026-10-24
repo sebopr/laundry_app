@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/components/avatar_photo_picker.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
+import 'package:lavaplan/pages/admin/take_over_building_page.dart';
 import 'package:lavaplan/pages/onboarding_page.dart';
 import 'package:lavaplan/pages/profile_page.dart';
 import 'package:lavaplan/services/account/account_service.dart';
@@ -131,11 +132,22 @@ class SettingsPage extends StatelessWidget {
               const Divider(height: 32),
 
               // ── Building ──────────────────────────────────────────
-              if (linkedUuid != null) ...[
-                _SectionLabel(l10n.sectionBuilding),
+              _SectionLabel(l10n.sectionBuilding),
+              if (linkedUuid != null)
                 _BuildingAdminTile(buildingUuid: linkedUuid),
-                const Divider(height: 32),
-              ],
+              // Residents and admins alike can be handed a building.
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const _RowIcon(LucideIcons.arrowRightLeft),
+                title: Text(l10n.takeOverBuilding),
+                trailing: const Icon(LucideIcons.chevronRight),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const TakeOverBuildingPage()),
+                ),
+              ),
+              const Divider(height: 32),
 
               // ── Account ───────────────────────────────────────────
               _SectionLabel(l10n.sectionAccount),
@@ -486,22 +498,29 @@ class _BuildingAdminTile extends StatelessWidget {
           .snapshots(),
       builder: (context, snap) {
         final data = snap.data?.data() ?? {};
+        final buildingName = data['name'] as String? ?? '';
+        // Older buildings only get the admin fields from the backfill
+        // script; until then the row shows just the building.
         final adminName = data['admin_name'] as String? ?? '';
-        // Older buildings get these fields from the backfill script.
-        if (adminName.isEmpty) return const SizedBox.shrink();
         final verified = data['admin_verified'] as bool? ?? false;
         final isSelf = data['admin_uid'] == uid;
+        final hasAdmin = adminName.isNotEmpty;
 
         return ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: _RowIcon(
-            verified ? LucideIcons.shieldCheck : LucideIcons.shieldAlert,
-            color: verified ? null : Colors.orange,
-            tint: verified ? null : const Color(0x1AE8963C),
-          ),
-          title: Text(adminName),
-          subtitle: Text(verified ? l10n.adminVerified : l10n.adminNotVerified),
-          trailing: isSelf
+          leading: !hasAdmin
+              ? const _RowIcon(LucideIcons.building2)
+              : _RowIcon(
+                  verified ? LucideIcons.shieldCheck : LucideIcons.shieldAlert,
+                  color: verified ? null : Colors.orange,
+                  tint: verified ? null : const Color(0x1AE8963C),
+                ),
+          title: Text(buildingName),
+          subtitle: hasAdmin
+              ? Text(
+                  '$adminName · ${verified ? l10n.adminVerified : l10n.adminNotVerified}')
+              : null,
+          trailing: !hasAdmin || isSelf
               ? null
               : TextButton(
                   onPressed: () => _report(context),

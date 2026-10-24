@@ -148,7 +148,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get deleteAccountContent =>
-      'Cela supprime définitivement votre compte et toutes ses données. Cette action est irréversible. Si vous gérez des immeubles, vous devrez d\'abord les transférer ou les supprimer.';
+      'Votre compte et toutes ses données seront définitivement supprimés. Cette action est irréversible. Les immeubles que vous gérez sont aussi supprimés si personne d\'autre n\'y habite. Si d\'autres résidents y habitent encore, contactez-nous d\'abord.';
 
   @override
   String get setupHousehold => 'Configurer le ménage';
@@ -735,4 +735,48 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reportAdminSent => 'Signalement envoyé. Nous allons l\'examiner.';
+
+  @override
+  String get handOverBuilding => 'Transmettre l\'immeuble';
+
+  @override
+  String get handOverExplain =>
+      'Donnez ce code à la personne qui reprend. Elle le saisit dans Réglages sous Reprendre un immeuble. Dès qu\'elle accepte, vous n\'êtes plus administrateur de cet immeuble.';
+
+  @override
+  String handOverValidUntil(String date) {
+    return 'Valable jusqu\'au $date';
+  }
+
+  @override
+  String get handOverCancel => 'Annuler la transmission';
+
+  @override
+  String get handOverCancelled =>
+      'Transmission annulée. Le code ne fonctionne plus.';
+
+  @override
+  String get takeOverBuilding => 'Reprendre un immeuble';
+
+  @override
+  String get takeOverExplain =>
+      'Saisissez ou scannez le code de transmission de l\'administrateur actuel. Vous devenez administrateur de l\'immeuble.';
+
+  @override
+  String get takeOverCodeHint => 'Code de transmission';
+
+  @override
+  String get btnTakeOver => 'Reprendre';
+
+  @override
+  String takeOverDone(String name) {
+    return 'Vous êtes maintenant administrateur de $name.';
+  }
+
+  @override
+  String get errorTransferInvalid =>
+      'Ce code est invalide ou a expiré. Demandez-en un nouveau à l\'administrateur actuel.';
+
+  @override
+  String get errorTransferOwn => 'Vous gérez déjà cet immeuble.';
 }

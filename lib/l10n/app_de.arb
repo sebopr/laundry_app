@@ -51,7 +51,7 @@
   "leaveBuilding": "Gebäude verlassen",
   "leaveBuildingContent": "Du verlierst den Zugriff auf das Buchungssystem und den Chat dieses Gebäudes. Falls du das Haushaltsoberhaupt bist, geht die Leitung an ein anderes Mitglied über (oder der Haushalt wird entfernt, falls du das einzige Mitglied bist). Zukünftige Buchungen von dir werden storniert.",
   "deleteAccount": "Konto löschen",
-  "deleteAccountContent": "Dies löscht dein Konto und alle zugehörigen Daten dauerhaft. Dies kann nicht rückgängig gemacht werden. Falls du Gebäude verwaltest, musst du diese zuerst übertragen oder löschen.",
+  "deleteAccountContent": "Dein Konto und alle zugehörigen Daten werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden. Gebäude, die du verwaltest, werden ebenfalls gelöscht, wenn dort niemand sonst wohnt. Wohnen dort noch andere Bewohner, kontaktiere uns zuerst.",
   "setupHousehold": "Haushalt einrichten",
   "youManageHousehold": "Du verwaltest diesen Haushalt",
   "memberLabel": "Mitglied",
@@ -281,5 +281,18 @@
   "reportAdminTitle": "Diesen Admin melden?",
   "reportAdminContent": "Melde diese Person, wenn sie dein Gebäude nicht im Auftrag der Eigentümerschaft oder Verwaltung betreut. Wir prüfen jede Meldung.",
   "reportAdminReasonHint": "Was stimmt nicht? (optional)",
-  "reportAdminSent": "Meldung gesendet. Wir prüfen sie."
+  "reportAdminSent": "Meldung gesendet. Wir prüfen sie.",
+
+  "handOverBuilding": "Gebäude übergeben",
+  "handOverExplain": "Gib diesen Code der Person, die übernimmt. Sie gibt ihn in den Einstellungen unter Gebäude übernehmen ein. Sobald sie annimmt, bist du nicht mehr Admin dieses Gebäudes.",
+  "handOverValidUntil": "Gültig bis {date}",
+  "handOverCancel": "Übergabe abbrechen",
+  "handOverCancelled": "Übergabe abgebrochen. Der Code funktioniert nicht mehr.",
+  "takeOverBuilding": "Gebäude übernehmen",
+  "takeOverExplain": "Gib den Übergabecode des aktuellen Admins ein oder scanne ihn. Du wirst Admin des Gebäudes.",
+  "takeOverCodeHint": "Übergabecode",
+  "btnTakeOver": "Übernehmen",
+  "takeOverDone": "Du bist jetzt Admin von {name}.",
+  "errorTransferInvalid": "Dieser Code ist ungültig oder abgelaufen. Frag den aktuellen Admin nach einem neuen.",
+  "errorTransferOwn": "Du verwaltest dieses Gebäude bereits."
 }

@@ -51,7 +51,7 @@
   "leaveBuilding": "Quitter l'immeuble",
   "leaveBuildingContent": "Vous perdrez l'accès au système de réservation et au chat de cet immeuble. Si vous êtes le chef de votre foyer, la direction passe à un autre membre (ou le foyer est supprimé si vous en êtes le seul membre). Vos réservations futures seront annulées.",
   "deleteAccount": "Supprimer le compte",
-  "deleteAccountContent": "Cela supprime définitivement votre compte et toutes ses données. Cette action est irréversible. Si vous gérez des immeubles, vous devrez d'abord les transférer ou les supprimer.",
+  "deleteAccountContent": "Votre compte et toutes ses données seront définitivement supprimés. Cette action est irréversible. Les immeubles que vous gérez sont aussi supprimés si personne d'autre n'y habite. Si d'autres résidents y habitent encore, contactez-nous d'abord.",
   "setupHousehold": "Configurer le ménage",
   "youManageHousehold": "Vous gérez ce ménage",
   "memberLabel": "Membre",
@@ -281,5 +281,18 @@
   "reportAdminTitle": "Signaler cet administrateur ?",
   "reportAdminContent": "Signalez cette personne si elle ne gère pas votre immeuble pour son propriétaire ou sa gérance. Nous examinons chaque signalement.",
   "reportAdminReasonHint": "Quel est le problème ? (facultatif)",
-  "reportAdminSent": "Signalement envoyé. Nous allons l'examiner."
+  "reportAdminSent": "Signalement envoyé. Nous allons l'examiner.",
+
+  "handOverBuilding": "Transmettre l'immeuble",
+  "handOverExplain": "Donnez ce code à la personne qui reprend. Elle le saisit dans Réglages sous Reprendre un immeuble. Dès qu'elle accepte, vous n'êtes plus administrateur de cet immeuble.",
+  "handOverValidUntil": "Valable jusqu'au {date}",
+  "handOverCancel": "Annuler la transmission",
+  "handOverCancelled": "Transmission annulée. Le code ne fonctionne plus.",
+  "takeOverBuilding": "Reprendre un immeuble",
+  "takeOverExplain": "Saisissez ou scannez le code de transmission de l'administrateur actuel. Vous devenez administrateur de l'immeuble.",
+  "takeOverCodeHint": "Code de transmission",
+  "btnTakeOver": "Reprendre",
+  "takeOverDone": "Vous êtes maintenant administrateur de {name}.",
+  "errorTransferInvalid": "Ce code est invalide ou a expiré. Demandez-en un nouveau à l'administrateur actuel.",
+  "errorTransferOwn": "Vous gérez déjà cet immeuble."
 }

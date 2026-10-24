@@ -150,7 +150,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get deleteAccountContent =>
-      'Dies löscht dein Konto und alle zugehörigen Daten dauerhaft. Dies kann nicht rückgängig gemacht werden. Falls du Gebäude verwaltest, musst du diese zuerst übertragen oder löschen.';
+      'Dein Konto und alle zugehörigen Daten werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden. Gebäude, die du verwaltest, werden ebenfalls gelöscht, wenn dort niemand sonst wohnt. Wohnen dort noch andere Bewohner, kontaktiere uns zuerst.';
 
   @override
   String get setupHousehold => 'Haushalt einrichten';
@@ -735,4 +735,48 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get reportAdminSent => 'Meldung gesendet. Wir prüfen sie.';
+
+  @override
+  String get handOverBuilding => 'Gebäude übergeben';
+
+  @override
+  String get handOverExplain =>
+      'Gib diesen Code der Person, die übernimmt. Sie gibt ihn in den Einstellungen unter Gebäude übernehmen ein. Sobald sie annimmt, bist du nicht mehr Admin dieses Gebäudes.';
+
+  @override
+  String handOverValidUntil(String date) {
+    return 'Gültig bis $date';
+  }
+
+  @override
+  String get handOverCancel => 'Übergabe abbrechen';
+
+  @override
+  String get handOverCancelled =>
+      'Übergabe abgebrochen. Der Code funktioniert nicht mehr.';
+
+  @override
+  String get takeOverBuilding => 'Gebäude übernehmen';
+
+  @override
+  String get takeOverExplain =>
+      'Gib den Übergabecode des aktuellen Admins ein oder scanne ihn. Du wirst Admin des Gebäudes.';
+
+  @override
+  String get takeOverCodeHint => 'Übergabecode';
+
+  @override
+  String get btnTakeOver => 'Übernehmen';
+
+  @override
+  String takeOverDone(String name) {
+    return 'Du bist jetzt Admin von $name.';
+  }
+
+  @override
+  String get errorTransferInvalid =>
+      'Dieser Code ist ungültig oder abgelaufen. Frag den aktuellen Admin nach einem neuen.';
+
+  @override
+  String get errorTransferOwn => 'Du verwaltest dieses Gebäude bereits.';
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lavaplan/l10n/app_localizations.dart';
+import 'package:lavaplan/pages/admin/hand_over_page.dart';
 import 'package:lavaplan/pages/generate_qr_page.dart';
 import 'package:lavaplan/services/building/building_service.dart';
 import 'package:lavaplan/services/household/join_request_service.dart';
@@ -33,6 +34,17 @@ class BuildingDetailPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (_) => GenerateQrPage(buildingUuid: buildingUuid)),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(LucideIcons.arrowRightLeft),
+              tooltip: l10n.handOverBuilding,
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => HandOverPage(
+                        buildingUuid: buildingUuid,
+                        buildingName: buildingName)),
               ),
             ),
           ],

@@ -1,8 +1,11 @@
+import { randomInt } from "crypto";
 import {
   DocumentData,
   FieldValue,
+  Timestamp,
   getFirestore,
 } from "firebase-admin/firestore";
+import { getMessaging } from "firebase-admin/messaging";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 import { defineSecret, defineString } from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
@@ -308,3 +311,233 @@ export const reportBuildingAdmin = onCall(
     return { success: true };
   }
 );
+
+// ─── Handover ────────────────────────────────────────────────────────────────
+
+const TRANSFER_TTL_DAYS = 7;
+// No 0/O or 1/I, so a code read out loud or typed from paper can't be
+// mistyped into another valid one.
+const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+function newTransferCode() {
+  let code = "";
+  for (let i = 0; i < 8; i++) code += CODE_ALPHABET[randomInt(CODE_ALPHABET.length)];
+  return code;
+}
+
+/** Strips the dash and spaces people type and the `transfer:` QR prefix. */
+function normalizeTransferCode(input: unknown) {
+  return String(input ?? "")
+    .replace(/^transfer:/i, "")
+    .replace(/[^a-z0-9]/gi, "")
+    .toUpperCase();
+}
+
+async function openTransfersFor(buildingId: string) {
+  return db()
+    .collection("building_transfers")
+    .where("building_id", "==", buildingId)
+    .where("status", "==", "open")
+    .get();
+}
+
+/**
+ * Starts a handover: the building's admin gets a one-time code to give the
+ * person taking over. Returns the building's still-valid open code if there
+ * is one, so reopening the handover screen shows the same code.
+ */
+export const createBuildingTransfer = onCall(
+  { region: "europe-west6" },
+  async (request) => {
+    const uid = request.auth?.uid;
+    const buildingId = request.data?.buildingId as string;
+    await requireBuildingAdmin(uid, buildingId);
+
+    const now = Date.now();
+    const open = await openTransfersFor(buildingId);
+    for (const doc of open.docs) {
+      const expiresAt = doc.data().expiresAt as Timestamp;
+      if (expiresAt.toMillis() > now && doc.data().from_uid === uid) {
+        return { code: doc.id, expiresAt: expiresAt.toMillis() };
+      }
+      await doc.ref.update({ status: "expired" });
+    }
+
+    const buildingSnap = await db().collection("buildings").doc(buildingId).get();
+    const expiresAt = Timestamp.fromMillis(now + TRANSFER_TTL_DAYS * 86400000);
+    const ref = db().collection("building_transfers").doc(newTransferCode());
+    await ref.create({
+      building_id: buildingId,
+      building_name: (buildingSnap.data()?.name as string | undefined) ?? "",
+      from_uid: uid,
+      status: "open",
+      createdAt: FieldValue.serverTimestamp(),
+      expiresAt,
+    });
+    return { code: ref.id, expiresAt: expiresAt.toMillis() };
+  }
+);
+
+/** Withdraws the building's open handover code. */
+export const cancelBuildingTransfer = onCall(
+  { region: "europe-west6" },
+  async (request) => {
+    const buildingId = request.data?.buildingId as string;
+    await requireBuildingAdmin(request.auth?.uid, buildingId);
+    const open = await openTransfersFor(buildingId);
+    await Promise.all(open.docs.map((doc) => doc.ref.update({ status: "cancelled" })));
+    return { success: true };
+  }
+);
+
+/**
+ * Completes a handover. The person taking over must accept the declaration
+ * of authority, and the usual limits apply: a self-declared admin can only
+ * hold one building. Trust belongs to the person, so the building's
+ * verified badge follows the new admin. Someone who wasn't an admin yet
+ * becomes one. The previous admin keeps their residency, if any.
+ */
+export const acceptBuildingTransfer = onCall(
+  { region: "europe-west6" },
+  async (request) => {
+    const uid = request.auth?.uid;
+    if (!uid) {
+      throw new HttpsError("unauthenticated", "Sign in first.");
+    }
+    if (request.data?.declarationAccepted !== true) {
+      throw new HttpsError(
+        "failed-precondition",
+        "The declaration of authority must be accepted."
+      );
+    }
+    const code = normalizeTransferCode(request.data?.code);
+    if (!code) {
+      throw new HttpsError("invalid-argument", "code is required.");
+    }
+
+    const firestore = db();
+    const transferRef = firestore.collection("building_transfers").doc(code);
+    const userRef = firestore.collection("users").doc(uid);
+
+    const result = await firestore.runTransaction(async (tx) => {
+      const transferSnap = await tx.get(transferRef);
+      const transfer = transferSnap.data();
+      if (
+        !transfer ||
+        transfer.status !== "open" ||
+        (transfer.expiresAt as Timestamp).toMillis() <= Date.now()
+      ) {
+        throw new HttpsError("not-found", "Invalid or expired handover code.");
+      }
+
+      const buildingId = transfer.building_id as string;
+      const fromUid = transfer.from_uid as string;
+      const buildingRef = firestore.collection("buildings").doc(buildingId);
+      const fromRef = firestore.collection("users").doc(fromUid);
+      const [userSnap, buildingSnap, fromSnap] = await Promise.all([
+        tx.get(userRef),
+        tx.get(buildingRef),
+        tx.get(fromRef),
+      ]);
+      const user = (userSnap.data() ?? {}) as DocumentData;
+      const managed = (user.managed_buildings as string[] | undefined) ?? [];
+
+      if (!buildingSnap.exists) {
+        throw new HttpsError("not-found", "Invalid or expired handover code.");
+      }
+      // The code only works while the person who made it still runs the
+      // building; anything else means it's stale.
+      const fromManaged =
+        (fromSnap.data()?.managed_buildings as string[] | undefined) ?? [];
+      if (!fromManaged.includes(buildingId)) {
+        throw new HttpsError("not-found", "Invalid or expired handover code.");
+      }
+      if (managed.includes(buildingId)) {
+        throw new HttpsError("already-exists", "You already manage this building.");
+      }
+      const verified = user.adminVerified === true;
+      if (!verified && managed.length >= 1) {
+        throw new HttpsError(
+          "resource-exhausted",
+          "Unverified admins can manage one building."
+        );
+      }
+
+      const userUpdates: DocumentData = {
+        managed_buildings: FieldValue.arrayUnion(buildingId),
+        adminDeclaration: {
+          acceptedAt: FieldValue.serverTimestamp(),
+          version: DECLARATION_VERSION,
+        },
+      };
+      if (user.role !== "admin") {
+        userUpdates.role = "admin";
+        userUpdates.isResidentAdmin = !!user.linked_uuid;
+      }
+      const adminName = (user.displayName as string | undefined) ?? "";
+
+      tx.update(userRef, userUpdates);
+      tx.update(fromRef, { managed_buildings: FieldValue.arrayRemove(buildingId) });
+      tx.update(buildingRef, {
+        admin_uid: uid,
+        admin_name: adminName,
+        admin_verified: verified,
+      });
+      tx.update(transferRef, {
+        status: "accepted",
+        to_uid: uid,
+        acceptedAt: FieldValue.serverTimestamp(),
+      });
+
+      return {
+        buildingId,
+        buildingName: (buildingSnap.data()?.name as string | undefined) ?? "",
+        fromUid,
+        adminName,
+      };
+    });
+
+    logger.info(
+      `Building ${result.buildingId} handed over from ${result.fromUid} to ${uid}`
+    );
+    await notifyHandover(result.buildingId, result.buildingName, result.adminName, uid);
+    return { buildingId: result.buildingId, name: result.buildingName };
+  }
+);
+
+/**
+ * Tells the building's residents (the previous admin too, if they live
+ * there) who runs it now.
+ * A handover nobody hears about would be easy to abuse quietly.
+ */
+async function notifyHandover(
+  buildingId: string,
+  buildingName: string,
+  adminName: string,
+  newAdminUid: string
+) {
+  const residentsSnap = await db()
+    .collection("users")
+    .where("linked_uuid", "==", buildingId)
+    .get();
+  const tokens = residentsSnap.docs
+    .filter((doc) => doc.id !== newAdminUid)
+    .map((doc) => doc.data().fcmToken as string | undefined)
+    .filter((t): t is string => !!t);
+  if (!tokens.length) return;
+
+  try {
+    await getMessaging().sendEachForMulticast({
+      tokens,
+      notification: {
+        title: "New building admin",
+        body: `${adminName || "Someone new"} now manages ${buildingName || "your building"}.`,
+      },
+      data: { type: "building_admin_changed", buildingId },
+      android: { priority: "high" },
+      apns: { payload: { aps: { sound: "default" } } },
+    });
+  } catch (err) {
+    logger.error("Failed to notify residents of handover", err);
+  }
+}

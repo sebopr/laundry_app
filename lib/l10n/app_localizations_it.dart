@@ -148,7 +148,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get deleteAccountContent =>
-      'Questo elimina definitivamente il tuo account e tutti i suoi dati. Questa azione non può essere annullata. Se gestisci degli edifici, dovrai prima trasferirli o eliminarli.';
+      'Il tuo account e tutti i suoi dati verranno eliminati definitivamente. L\'operazione non può essere annullata. Anche gli edifici che gestisci vengono eliminati se nessun altro ci abita. Se altri residenti ci abitano ancora, contattaci prima.';
 
   @override
   String get setupHousehold => 'Configura famiglia';
@@ -725,4 +725,48 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get reportAdminSent => 'Segnalazione inviata. La esamineremo.';
+
+  @override
+  String get handOverBuilding => 'Cedi l\'edificio';
+
+  @override
+  String get handOverExplain =>
+      'Dai questo codice alla persona che subentra. Lo inserisce nelle Impostazioni in Subentra in un edificio. Quando accetta, non sei più l\'amministratore di questo edificio.';
+
+  @override
+  String handOverValidUntil(String date) {
+    return 'Valido fino al $date';
+  }
+
+  @override
+  String get handOverCancel => 'Annulla la cessione';
+
+  @override
+  String get handOverCancelled =>
+      'Cessione annullata. Il codice non funziona più.';
+
+  @override
+  String get takeOverBuilding => 'Subentra in un edificio';
+
+  @override
+  String get takeOverExplain =>
+      'Inserisci o scansiona il codice di cessione dell\'amministratore attuale. Diventi l\'amministratore dell\'edificio.';
+
+  @override
+  String get takeOverCodeHint => 'Codice di cessione';
+
+  @override
+  String get btnTakeOver => 'Subentra';
+
+  @override
+  String takeOverDone(String name) {
+    return 'Ora sei l\'amministratore di $name.';
+  }
+
+  @override
+  String get errorTransferInvalid =>
+      'Questo codice non è valido o è scaduto. Chiedine uno nuovo all\'amministratore attuale.';
+
+  @override
+  String get errorTransferOwn => 'Gestisci già questo edificio.';
 }

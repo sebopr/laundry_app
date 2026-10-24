@@ -377,7 +377,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteAccountContent.
   ///
   /// In en, this message translates to:
-  /// **'This permanently deletes your account and all its data. This cannot be undone. If you manage any buildings, you\'ll need to transfer or delete them first.'**
+  /// **'This permanently deletes your account and all its data. This cannot be undone. Buildings you manage are deleted too if nobody else lives in them. If other residents still live in one, contact us first.'**
   String get deleteAccountContent;
 
   /// No description provided for @setupHousehold.
@@ -1369,6 +1369,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Report sent. We\'ll review it.'**
   String get reportAdminSent;
+
+  /// No description provided for @handOverBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over building'**
+  String get handOverBuilding;
+
+  /// No description provided for @handOverExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Give this code to the person taking over. They enter it in Settings under Take over a building. You stop being this building\'s admin once they accept.'**
+  String get handOverExplain;
+
+  /// No description provided for @handOverValidUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until {date}'**
+  String handOverValidUntil(String date);
+
+  /// No description provided for @handOverCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel handover'**
+  String get handOverCancel;
+
+  /// No description provided for @handOverCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Handover cancelled. The code no longer works.'**
+  String get handOverCancelled;
+
+  /// No description provided for @takeOverBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Take over a building'**
+  String get takeOverBuilding;
+
+  /// No description provided for @takeOverExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter or scan the handover code from the building\'s current admin. You become its admin.'**
+  String get takeOverExplain;
+
+  /// No description provided for @takeOverCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Handover code'**
+  String get takeOverCodeHint;
+
+  /// No description provided for @btnTakeOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Take over'**
+  String get btnTakeOver;
+
+  /// No description provided for @takeOverDone.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re now the admin of {name}.'**
+  String takeOverDone(String name);
+
+  /// No description provided for @errorTransferInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This code is invalid or has expired. Ask the current admin for a new one.'**
+  String get errorTransferInvalid;
+
+  /// No description provided for @errorTransferOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'You already manage this building.'**
+  String get errorTransferOwn;
 }
 
 class _AppLocalizationsDelegate

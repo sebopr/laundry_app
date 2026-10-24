@@ -146,7 +146,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAccountContent =>
-      'This permanently deletes your account and all its data. This cannot be undone. If you manage any buildings, you\'ll need to transfer or delete them first.';
+      'This permanently deletes your account and all its data. This cannot be undone. Buildings you manage are deleted too if nobody else lives in them. If other residents still live in one, contact us first.';
 
   @override
   String get setupHousehold => 'Set up household';
@@ -722,4 +722,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportAdminSent => 'Report sent. We\'ll review it.';
+
+  @override
+  String get handOverBuilding => 'Hand over building';
+
+  @override
+  String get handOverExplain =>
+      'Give this code to the person taking over. They enter it in Settings under Take over a building. You stop being this building\'s admin once they accept.';
+
+  @override
+  String handOverValidUntil(String date) {
+    return 'Valid until $date';
+  }
+
+  @override
+  String get handOverCancel => 'Cancel handover';
+
+  @override
+  String get handOverCancelled =>
+      'Handover cancelled. The code no longer works.';
+
+  @override
+  String get takeOverBuilding => 'Take over a building';
+
+  @override
+  String get takeOverExplain =>
+      'Enter or scan the handover code from the building\'s current admin. You become its admin.';
+
+  @override
+  String get takeOverCodeHint => 'Handover code';
+
+  @override
+  String get btnTakeOver => 'Take over';
+
+  @override
+  String takeOverDone(String name) {
+    return 'You\'re now the admin of $name.';
+  }
+
+  @override
+  String get errorTransferInvalid =>
+      'This code is invalid or has expired. Ask the current admin for a new one.';
+
+  @override
+  String get errorTransferOwn => 'You already manage this building.';
 }

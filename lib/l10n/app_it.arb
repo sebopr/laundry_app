@@ -51,7 +51,7 @@
   "leaveBuilding": "Lascia l'edificio",
   "leaveBuildingContent": "Perderai l'accesso al sistema di prenotazione e alla chat di questo edificio. Se sei il capofamiglia, la gestione passa a un altro membro (o il nucleo familiare viene rimosso se sei l'unico membro). Le tue prenotazioni future verranno annullate.",
   "deleteAccount": "Elimina account",
-  "deleteAccountContent": "Questo elimina definitivamente il tuo account e tutti i suoi dati. Questa azione non può essere annullata. Se gestisci degli edifici, dovrai prima trasferirli o eliminarli.",
+  "deleteAccountContent": "Il tuo account e tutti i suoi dati verranno eliminati definitivamente. L'operazione non può essere annullata. Anche gli edifici che gestisci vengono eliminati se nessun altro ci abita. Se altri residenti ci abitano ancora, contattaci prima.",
   "setupHousehold": "Configura famiglia",
   "youManageHousehold": "Gestisci questa famiglia",
   "memberLabel": "Membro",
@@ -281,5 +281,18 @@
   "reportAdminTitle": "Segnalare questo amministratore?",
   "reportAdminContent": "Segnala questa persona se non gestisce il tuo edificio per conto del proprietario o dell'amministrazione. Esaminiamo ogni segnalazione.",
   "reportAdminReasonHint": "Qual è il problema? (facoltativo)",
-  "reportAdminSent": "Segnalazione inviata. La esamineremo."
+  "reportAdminSent": "Segnalazione inviata. La esamineremo.",
+
+  "handOverBuilding": "Cedi l'edificio",
+  "handOverExplain": "Dai questo codice alla persona che subentra. Lo inserisce nelle Impostazioni in Subentra in un edificio. Quando accetta, non sei più l'amministratore di questo edificio.",
+  "handOverValidUntil": "Valido fino al {date}",
+  "handOverCancel": "Annulla la cessione",
+  "handOverCancelled": "Cessione annullata. Il codice non funziona più.",
+  "takeOverBuilding": "Subentra in un edificio",
+  "takeOverExplain": "Inserisci o scansiona il codice di cessione dell'amministratore attuale. Diventi l'amministratore dell'edificio.",
+  "takeOverCodeHint": "Codice di cessione",
+  "btnTakeOver": "Subentra",
+  "takeOverDone": "Ora sei l'amministratore di {name}.",
+  "errorTransferInvalid": "Questo codice non è valido o è scaduto. Chiedine uno nuovo all'amministratore attuale.",
+  "errorTransferOwn": "Gestisci già questo edificio."
 }

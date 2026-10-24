@@ -17,6 +17,9 @@ export {
   getBuildingResidents,
   removeResident,
   reportBuildingAdmin,
+  createBuildingTransfer,
+  cancelBuildingTransfer,
+  acceptBuildingTransfer,
 } from "./buildings";
 export {
   leaveBuilding,

@@ -147,7 +147,7 @@ class AppLocalizationsRm extends AppLocalizations {
 
   @override
   String get deleteAccountContent =>
-      'Quai stizza per adina tes conto e tut ses datas. Quai na po betg vegnir revocà. Sche ti administreschas edifizis, sto ti als transferir u stizzar avant.';
+      'Tes conto e tut sias datas vegnan stizzads definitivamain. Quai na po betg vegnir revocà. Edifizis che ti administreschas vegnan er stizzads sche nagin auter n\'abita là. Sch\'auters abitants abitan anc là, contactescha nus l\'emprim.';
 
   @override
   String get setupHousehold => 'Configurar chasa';
@@ -725,4 +725,48 @@ class AppLocalizationsRm extends AppLocalizations {
 
   @override
   String get reportAdminSent => 'Annunzia tramessa. Nus la examinain.';
+
+  @override
+  String get handOverBuilding => 'Surdar l\'edifizi';
+
+  @override
+  String get handOverExplain =>
+      'Dà quest code a la persuna che surpiglia. Ella al endatescha en ils parameters sut Surpigliar in edifizi. Uschespert ch\'ella accepta, n\'es ti betg pli admin da quest edifizi.';
+
+  @override
+  String handOverValidUntil(String date) {
+    return 'Valaivel fin ils $date';
+  }
+
+  @override
+  String get handOverCancel => 'Interrumper la surdada';
+
+  @override
+  String get handOverCancelled =>
+      'Surdada interrutta. Il code na funcziuna betg pli.';
+
+  @override
+  String get takeOverBuilding => 'Surpigliar in edifizi';
+
+  @override
+  String get takeOverExplain =>
+      'Endatescha u scannescha il code da surdada da l\'admin actual. Ti daventas admin da l\'edifizi.';
+
+  @override
+  String get takeOverCodeHint => 'Code da surdada';
+
+  @override
+  String get btnTakeOver => 'Surpigliar';
+
+  @override
+  String takeOverDone(String name) {
+    return 'Ti es ussa admin da $name.';
+  }
+
+  @override
+  String get errorTransferInvalid =>
+      'Quest code n\'è betg valaivel u è scadì. Dumonda l\'admin actual per in nov.';
+
+  @override
+  String get errorTransferOwn => 'Ti administreschas gia quest edifizi.';
 }

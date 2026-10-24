@@ -51,7 +51,7 @@
   "leaveBuilding": "Bandunar l'edifizi",
   "leaveBuildingContent": "Ti perdas l'access al sistem da reservaziun e al chat da quest edifizi. Sche ti es il chau da tia economia domestica, vegn la direcziun transferida ad in auter commember (u l'economia domestica vegn allontanada sche ti es l'unic commember). Tias reservaziuns futuras vegnan annulladas.",
   "deleteAccount": "Stizzar il conto",
-  "deleteAccountContent": "Quai stizza per adina tes conto e tut ses datas. Quai na po betg vegnir revocà. Sche ti administreschas edifizis, sto ti als transferir u stizzar avant.",
+  "deleteAccountContent": "Tes conto e tut sias datas vegnan stizzads definitivamain. Quai na po betg vegnir revocà. Edifizis che ti administreschas vegnan er stizzads sche nagin auter n'abita là. Sch'auters abitants abitan anc là, contactescha nus l'emprim.",
   "setupHousehold": "Configurar chasa",
   "youManageHousehold": "Vus administrais questa chasa",
   "memberLabel": "Commember",
@@ -281,5 +281,18 @@
   "reportAdminTitle": "Annunziar quest admin?",
   "reportAdminContent": "Annunzia questa persuna sch'ella n'administrescha betg tes edifizi per il proprietari u l'administraziun. Nus examinain mintga annunzia.",
   "reportAdminReasonHint": "Tge na va betg? (facultativ)",
-  "reportAdminSent": "Annunzia tramessa. Nus la examinain."
+  "reportAdminSent": "Annunzia tramessa. Nus la examinain.",
+
+  "handOverBuilding": "Surdar l'edifizi",
+  "handOverExplain": "Dà quest code a la persuna che surpiglia. Ella al endatescha en ils parameters sut Surpigliar in edifizi. Uschespert ch'ella accepta, n'es ti betg pli admin da quest edifizi.",
+  "handOverValidUntil": "Valaivel fin ils {date}",
+  "handOverCancel": "Interrumper la surdada",
+  "handOverCancelled": "Surdada interrutta. Il code na funcziuna betg pli.",
+  "takeOverBuilding": "Surpigliar in edifizi",
+  "takeOverExplain": "Endatescha u scannescha il code da surdada da l'admin actual. Ti daventas admin da l'edifizi.",
+  "takeOverCodeHint": "Code da surdada",
+  "btnTakeOver": "Surpigliar",
+  "takeOverDone": "Ti es ussa admin da {name}.",
+  "errorTransferInvalid": "Quest code n'è betg valaivel u è scadì. Dumonda l'admin actual per in nov.",
+  "errorTransferOwn": "Ti administreschas gia quest edifizi."
 }

@@ -103,6 +103,50 @@ class BuildingService {
     }
   }
 
+  /// Starts (or reopens) a handover of [buildingId]. Returns the one-time
+  /// code for the person taking over and when it expires.
+  static Future<({String code, DateTime expiresAt})> createTransfer(
+      String buildingId) async {
+    try {
+      final result = await _functions
+          .httpsCallable('createBuildingTransfer')
+          .call({'buildingId': buildingId});
+      final data = Map<String, dynamic>.from(result.data as Map);
+      return (
+        code: data['code'] as String,
+        expiresAt:
+            DateTime.fromMillisecondsSinceEpoch(data['expiresAt'] as int),
+      );
+    } on FirebaseFunctionsException catch (e) {
+      throw BuildingException(e.code, e.message);
+    }
+  }
+
+  /// Withdraws the building's open handover code.
+  static Future<void> cancelTransfer(String buildingId) async {
+    try {
+      await _functions
+          .httpsCallable('cancelBuildingTransfer')
+          .call({'buildingId': buildingId});
+    } on FirebaseFunctionsException catch (e) {
+      throw BuildingException(e.code, e.message);
+    }
+  }
+
+  /// Takes over the building a handover code belongs to. Returns its name.
+  static Future<String> acceptTransfer(String code) async {
+    try {
+      final result =
+          await _functions.httpsCallable('acceptBuildingTransfer').call({
+        'code': code,
+        'declarationAccepted': true,
+      });
+      return Map<String, dynamic>.from(result.data as Map)['name'] as String;
+    } on FirebaseFunctionsException catch (e) {
+      throw BuildingException(e.code, e.message);
+    }
+  }
+
   /// Reports the caller's building admin as not acting for the owner.
   static Future<void> reportAdmin(String reason) async {
     try {

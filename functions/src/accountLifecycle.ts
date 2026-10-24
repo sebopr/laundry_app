@@ -101,11 +101,35 @@ export const leaveBuilding = onCall(
 );
 
 /**
+ * Deletes a building and everything scoped to it: bookings, households,
+ * join requests and its EGID lock (building_egids, see buildings.ts). Only
+ * called once the building has no residents left besides its admin.
+ */
+async function deleteBuildingData(firestore: Firestore, buildingId: string) {
+  const buildingRef = firestore.collection("buildings").doc(buildingId);
+  const egid = (await buildingRef.get()).data()?.egid as string | undefined;
+
+  const scoped = await Promise.all(
+    ["bookings", "households", "join_requests"].map((name) =>
+      firestore.collection(name).where("linked_uuid", "==", buildingId).get()
+    )
+  );
+  await Promise.all(
+    scoped.flatMap((snap) => snap.docs.map((doc) => doc.ref.delete()))
+  );
+
+  if (egid) {
+    await firestore.collection("building_egids").doc(egid).delete();
+  }
+  await buildingRef.delete();
+}
+
+/**
  * Deletes the caller's account entirely: Firestore user doc, Firebase Auth
  * record, residency/household/booking cleanup, and any pending requests.
- * Refuses if the caller currently administers any building — they'd leave
- * it with no admin, which we never allow — so they have to transfer or
- * delete each building first.
+ * Buildings the caller administers are deleted with it when nobody else
+ * lives in them. If one still has other residents, the whole deletion is
+ * refused — a building never stays behind without an admin.
  */
 export const deleteAccount = onCall(
   { region: "europe-west6" },
@@ -120,14 +144,30 @@ export const deleteAccount = onCall(
     const userSnap = await userRef.get();
     const managedBuildings =
       (userSnap.data()?.managed_buildings as string[] | undefined) ?? [];
-    if (managedBuildings.length > 0) {
-      throw new HttpsError(
-        "failed-precondition",
-        "You manage one or more buildings. Transfer or delete them before deleting your account."
-      );
+    for (const buildingId of managedBuildings) {
+      const residentsSnap = await firestore
+        .collection("users")
+        .where("linked_uuid", "==", buildingId)
+        .get();
+      if (residentsSnap.docs.some((doc) => doc.id !== uid)) {
+        const buildingSnap = await firestore
+          .collection("buildings")
+          .doc(buildingId)
+          .get();
+        const name = (buildingSnap.data()?.name as string | undefined) ?? buildingId;
+        throw new HttpsError(
+          "failed-precondition",
+          `${name} still has residents. Hand the building over to someone else before deleting your account.`
+        );
+      }
     }
 
     await cleanupResidency(firestore, uid);
+
+    for (const buildingId of managedBuildings) {
+      await deleteBuildingData(firestore, buildingId);
+      logger.info(`Building ${buildingId} deleted with its admin ${uid}.`);
+    }
 
     const joinRequestsSnap = await firestore
       .collection("join_requests")
